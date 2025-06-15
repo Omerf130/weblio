@@ -10,8 +10,8 @@ function App() {
   return (
     <div className='app'>
       <Nav/>
-      <About/>
       <Hero/>
+      <About/>
       <Services/>
       <Contacts/>
     </div>

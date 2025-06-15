@@ -1,0 +1,13 @@
+@use "./assets/styles/variables" as *;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: #fff;
+}
+
+html {
+  /* background-color: rgba(15, 23, 42, 1); */
+  background: $main no-repeat center center/cover;
+}

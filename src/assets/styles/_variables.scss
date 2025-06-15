@@ -1,0 +1,64 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+//Gradients
+$main: linear-gradient(
+  135deg,
+  rgba(15, 23, 42, 1),
+  rgba(30, 41, 59, 1),
+  rgba(51, 65, 85, 1)
+);
+// Colors
+$primary-color: #f3f3e0;
+$secondary-color: hsl(227, 16%, 89%);
+$third-color: #608bc1;
+
+// Fonts
+$font-family-base: "Poppins", sans-serif;
+$font-size-base: 20px;
+$font-sm: 12px;
+$font-md: 24px;
+$font-lg: 30px;
+$hero-title: 50px;
+
+//weights
+$weight-light: 300;
+$weight-normal: 500;
+$weight-bold: 700;
+
+// Spacing
+$gap-small: 5px;
+$gap-medium: 10px;
+$gap-large: 20px;
+$gap-xl: 30px;
+
+//Padding
+$padding-main: 40px 40px;
+
+//borders
+$border-radius: 10px;
+$border: 1px solid #999999b8;
+$shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+$shadow-bold: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.12);
+
+
+//components
+
+.btn-primary {
+  background: $third-color;
+  color: white;
+  font-family: $font-family-base;
+  padding: $gap-medium $gap-large;
+  border: none;
+  border-radius: $border-radius;
+  box-shadow: $shadow;
+  font-size: $font-size-base;
+  font-weight: $weight-bold;
+  width: 150px;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    background: darken($third-color, 10%);
+    box-shadow: $shadow-bold;
+  }
+}

@@ -13,14 +13,15 @@ const Nav = () => {
         <div className="nav-wrapper-mobile">
           <div className="logo" />
           <div className="nav">
-            <GiHamburgerMenu className={`hamburger ${isOpen && "open"}`} onClick={() => setIsOpen(!isOpen)}/>
-            {isOpen && (
-              <nav className="nav-list">
-                <a href="">פרויקטים</a>
-                <a href="">קצת עליי</a>
-                <a href="">צור קשר</a>
-              </nav>
-            )}
+            <GiHamburgerMenu
+              className={`hamburger ${isOpen && "open"}`}
+              onClick={() => setIsOpen(!isOpen)}
+            />
+            <nav className={`nav-list ${isOpen && "show"}`}>
+              <a href="">פרויקטים</a>
+              <a href="">קצת עליי</a>
+              <a href="">צור קשר</a>
+            </nav>
           </div>
         </div>
       ) : (

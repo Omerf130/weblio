@@ -1,9 +1,11 @@
+@use "../../assets/styles/variables" as *;
+
 .nav-container {
   .logo {
     background: url("../../assets/pics/WhatsApp\ Image\ 2025-06-11\ at\ 20.35.03.jpeg")
       no-repeat center center/cover;
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
   }
   .nav-wrapper {
     display: flex;
@@ -13,9 +15,8 @@
     padding: 0 16px;
     .nav-list {
       display: flex;
-      gap: 10px;
-      font-size: 30px;
-
+      gap: $gap-medium;
+      font-size: $font-lg;
       a {
         color: #fff;
       }
@@ -30,7 +31,7 @@
 
     .nav {
       .hamburger {
-        font-size: 28px;
+        font-size: $font-md;
         cursor: pointer;
         transition: all 1s ease;
       }
@@ -38,10 +39,22 @@
         transform: rotate(90deg);
       }
       .nav-list {
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.15);
+        box-shadow: $shadow;
+        top: 100px;
+        right: -100px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        font-size: 20px;
+        gap: $gap-medium;
+        font-size: $font-md;
+        transition: all 1s ease;
+        padding: 0;
+        border-radius: $border-radius;
+        &.show {
+          padding: 10px 80px;
+          right: 10px;
+        }
       }
     }
   }
