@@ -1,0 +1,48 @@
+.nav-container {
+  .logo {
+    background: url("../../assets/pics/WhatsApp\ Image\ 2025-06-11\ at\ 20.35.03.jpeg")
+      no-repeat center center/cover;
+    width: 150px;
+    height: 150px;
+  }
+  .nav-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    .nav-list {
+      display: flex;
+      gap: 10px;
+      font-size: 30px;
+
+      a {
+        color: #fff;
+      }
+    }
+  }
+
+  .nav-wrapper-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+
+    .nav {
+      .hamburger {
+        font-size: 28px;
+        cursor: pointer;
+        transition: all 1s ease;
+      }
+      .open {
+        transform: rotate(90deg);
+      }
+      .nav-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 20px;
+      }
+    }
+  }
+}
