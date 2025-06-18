@@ -1,13 +1,17 @@
 import { CONSTS } from "../../consts";
+import { useInView } from "../../hooks/useInView";
 import './Hero.scss'
 
 const Hero = () => {
   const {HERO:{TITLE, CONTENT, BUTTON}} = CONSTS;
+  const [ref, isInView] = useInView<HTMLDivElement>();
+
+  console.log(ref.current)
 
   return (
     <div className="hero-container">
       <div className="hero-content">
-        <h1>{TITLE}</h1>
+        <h1 className={isInView ? "slide-top" : ""} ref={ref}>{TITLE}</h1>
         <p>{CONTENT}</p>
         <button className="btn-primary">{BUTTON}</button>
       </div>

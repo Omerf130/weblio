@@ -1,0 +1,31 @@
+@use "../../assets/styles/variables" as *;
+
+.about-container {
+  display: flex;
+  padding: 100px 40px;
+  justify-content: space-between;
+  gap: 30px;
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    flex: 2;
+    h1 {
+      font-size: $hero-title;
+      letter-spacing: 2px;
+      font-style: oblique;
+      text-align: right;
+    }
+    h3 {
+      font-size: $font-size-base;
+      text-align: right;
+    }
+  }
+  .about-img {
+    flex: 1;
+    img {
+      width: 500px;
+      height: 300px;
+    }
+  }
+}

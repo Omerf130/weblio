@@ -3,14 +3,14 @@
 .hero-container {
   display: flex;
   justify-content: space-between;
-  padding: $padding-main;
+  padding: 110px 40px;
   direction: rtl;
   .hero-content {
-    display: flex
-;
+    display: flex;
     flex-direction: column;
     gap: 30px;
-    flex: 1;
+    padding: 0 10px;
+    flex: 2;
     h1 {
       font-size: $hero-title;
       letter-spacing: 2px;
@@ -18,14 +18,14 @@
     }
     p {
       width: 70%;
-      font-size:  $font-size-base;
+      font-size: $font-size-base;
     }
   }
   .hero-img {
     flex: 1;
     img {
-      width: 100px;
-      height: 100px;
+      width: 500px;
+      height: 300px;
     }
   }
 }
