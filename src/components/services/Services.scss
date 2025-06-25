@@ -1,6 +1,7 @@
 @use "../../assets/styles/variables" as *;
 
 .services-container {
+  direction: rtl;
   display: flex;
   align-items: center;
   justify-content: center;

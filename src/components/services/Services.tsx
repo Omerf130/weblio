@@ -1,20 +1,25 @@
-import React from 'react'
 import { FaCode } from "react-icons/fa";
-import './services.scss'
+import { BsCartCheckFill } from "react-icons/bs";
+import { IoIosPhonePortrait } from "react-icons/io";
+import { FaPencilAlt } from "react-icons/fa";
+import { IoSearchOutline } from "react-icons/io5";
+import { IoIosMegaphone } from "react-icons/io";
 import { useInView } from '../../hooks/useInView';
+import './services.scss'
 
 const SIZE = 24;
 const Services = () => {
   const [ref, isInView] = useInView<HTMLDivElement>();
 
   const cardsData = [
-    {title: "פיתוח אתרים מאפס", subtitle: "בניית אתרים ייחודיים בקוד מותאם אישית, המשלבים עיצוב עם פונקציונליות מתקדמת ומהירות טעינה מיטבית.", img: <FaCode className='img spin' size={SIZE}/>},
-    {title: "חוויות תלת-מימד", subtitle: "שילוב חוויות אינטראקטיביות בתלת-מימד להצגת מוצרים, סיורים וירטואליים ויצירת חוויות משתמש בלתי נשכחות.", img: <FaCode className='img spin' size={SIZE}/>},
-    {title: "עיצוב גרפי", subtitle: "עיצוב מקצועי של לוגואים, מיתוג, חומרים שיווקיים ועיצוב ממשק משתמש (UI/UX) בסטנדרטים הגבוהים ביותר.", img: <FaCode className='img spin' size={SIZE}/>},
-    {title: "צילומי תדמית", subtitle: "צילומים מקצועיים שמציגים את העסק שלך בצורה הטובה ביותר, מושכים תשומת לב ומעבירים את המסר שלך בדיוק כפי שהתכוונת.", img: <FaCode className='img spin' size={SIZE}/>},
-    {title: "קידום אורגני", subtitle: "תשתית SEO מובנית באתר שלך מהיסוד, עם פתרונות טכניים מתקדמים שיעזרו לך להגיע למקומות הראשונים בגוגל.", img: <FaCode className='img spin' size={SIZE}/>},
-    {title: "אוטומציות ובוטים", subtitle: "פיתוח מערכות אוטומטיות וצ'אטבוטים חכמים שחוסכים לך זמן, מייעלים תהליכים ומשפרים את השירות ללקוחות.", img: <FaCode className='img spin' size={SIZE}/>}
+    {title: "אתרי תדמית", subtitle: "אתרים מרשימים שמציגים את העסק שלך בצורה מקצועית  ומושכת לקוחות חדשים", img: <FaCode className='img spin' size={SIZE}/>,list:["","",""]},
+    {title: "חנויות אונליין", subtitle: "חנויות מקוונות מתקדמות שמאפשרות לך למכור את המוצרים שלך בקלות", img: <BsCartCheckFill className='img spin' size={SIZE}/>,list:["","",""]},
+    {title: "אתרים מותאמים למובייל", subtitle: "אתרים רספונסיביים שנראים ועובדים מצויין בכל מכשיר", img: <IoIosPhonePortrait className='img spin' size={SIZE}/>,list:["","",""]},
+    {title: "עיצוב גרפי", subtitle: "עיצובים מרהיבים שמשקפים את הזהות של העסק שלך", img: <FaPencilAlt className='img spin' size={SIZE}/>,list:["","",""]},
+    {title: "קידום אורגני", subtitle: "אסטרטגיות SEO מתקדמות שיעזרו לאתר שלך להופיע גבוה בתוצאות חיפוש", img: <IoSearchOutline className='img spin' size={SIZE}/>,list:["","",""]},
+    {title: "שייוק דיגיטלי", subtitle: "אסטרטגיות שיווק שיעזרו לך להגיע ללקוחות חדשים ולהגדיל את המכירות", img: <IoIosMegaphone className='img spin' size={SIZE}/>,list:["","",""]}
   ]
+
   return (
     <div className='services-container'>
       <h1 className={isInView ? "slide-top" : ""} ref={ref}>השירותים שלנו</h1>
