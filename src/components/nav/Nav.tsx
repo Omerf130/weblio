@@ -18,8 +18,9 @@ const Nav = () => {
               onClick={() => setIsOpen(!isOpen)}
             />
             <nav className={`nav-list ${isOpen && "show"}`}>
-              <a href="">פרויקטים</a>
-              <a href="">קצת עליי</a>
+              <a href="">מי אנחנו?</a>
+              <a href="">שירותים</a>
+              <a href="">פרוייקטים</a>
               <a href="">צור קשר</a>
             </nav>
           </div>
@@ -28,8 +29,9 @@ const Nav = () => {
         <div className="nav-wrapper">
           <div className="logo" />
           <nav className="nav-list">
-            <a href="">פרויקטים</a>
-            <a href="">קצת עליי</a>
+            <a href="">מי אנחנו</a>
+            <a href="">שירותים</a>
+            <a href="">פרוייקטים</a>
             <a href="">צור קשר</a>
           </nav>
         </div>

@@ -7,6 +7,7 @@ import Loader from './components/loader/Loader'
 import Nav from './components/nav/Nav'
 import Projects from './components/projects/Projects'
 import Services from './components/services/Services'
+import WhyMe from './components/whyMe/WhyMe'
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
       <Hero/>
       <About/>
       <Services/>
+      <WhyMe/>
       <Projects/>
       <Contacts/>
       <Footer/>
