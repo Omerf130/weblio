@@ -1,0 +1,88 @@
+@use "../../assets/styles/variables" as *;
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: $padding-main;
+  gap: 40px;
+  * {
+    color: rgba(255, 255, 255, 0.35);
+  }
+  & > div {
+    width: 100%;
+  }
+  .footer-links {
+    display: grid;
+    gap: 75px;
+    justify-content: center;
+    font-size: 30px;
+
+    // Default: mobile first (up to 640px) — 3 rows, 2 columns
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(3, auto);
+
+    // 640px and up: 2 rows, 3 columns
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(3, auto);
+      grid-template-rows: repeat(2, auto);
+      gap: 50px;
+    }
+
+    // 1200px and up: 1 row, 6 columns
+    @media (min-width: 1200px) {
+      grid-template-columns: repeat(6, auto);
+      grid-template-rows: 1fr;
+      gap: 85px;
+    }
+
+    .link-wrapper {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      .text {
+      }
+      .underline {
+        position: relative;
+        height: 2px;
+        width: 120px;
+        background-color: rgba(255, 255, 255, 0.35);
+        overflow: hidden;
+
+        &::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          width: 0%;
+          background-color: #fff;
+          transition: width 1.2s ease;
+        }
+      }
+
+      &:hover .underline::after {
+        width: 100%;
+      }
+    }
+  }
+  .footer-media {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    gap: 20px;
+    font-size: 30px;
+    cursor: pointer;
+    .media {
+      transition: color 0.3s ease;
+    }
+  }
+  .footer-copyrights {
+    border-top: 1px solid rgba(255, 255, 255, 0.35);
+    padding-top: 10px;
+  }
+}

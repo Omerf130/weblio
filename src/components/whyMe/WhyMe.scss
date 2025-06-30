@@ -1,0 +1,70 @@
+@use "../../assets/styles/variables" as *;
+
+.whyme-container {
+  direction: rtl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 100px 40px;
+  gap: $gap-large;
+  h1 {
+    font-size: $hero-title;
+    letter-spacing: 2px;
+    font-style: oblique;
+  }
+  .whyme-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: $gap-large;
+    .card {
+      border: 1px solid #fff;
+      border-radius: 10px;
+      height: 250px;
+      background-color: #ffffff1a;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: $gap-medium;
+      padding: $padding-card;
+      .card-img {
+        padding: 8px 12px;
+        border-radius: 8px;
+        background-color: #608bc1;
+        .img {
+          &.spin {
+            animation: spin 3s linear infinite;
+          }
+        }
+      }
+      .card-title {
+        font-size: $font-lg;
+        font-weight: bold;
+      }
+      .card-subtitle {
+        font-size: $font-size-base;
+        text-align: right;
+      }
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .whyme-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 640px) {
+  .whyme-cards {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
