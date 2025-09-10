@@ -8,6 +8,10 @@ const useWindowWidth = (maxWidth: number) => {
     return () => window.removeEventListener("resize", handleResize);
   },[maxWidth])
 
+  useEffect(() => {
+    handleResize();
+  },[])
+
   const handleResize = () => {
     setIsBelow(window.innerWidth <= maxWidth);
   }

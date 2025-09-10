@@ -7,19 +7,51 @@
     width: 100px;
     height: 100px;
   }
+
   .nav-wrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     padding: 0 16px;
+
     .nav-list {
       direction: rtl;
       display: flex;
       gap: $gap-medium;
       font-size: $font-lg;
-      a {
+
+      .link-wrapper {
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
         color: #fff;
+
+        .underline {
+          position: relative;
+          height: 2px;
+          width: 100%;
+          max-width: 120px;
+          background-color: rgba(255, 255, 255, 0.35);
+          overflow: hidden;
+
+          &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background-color: #fff;
+            transition: width 1.2s ease;
+          }
+        }
+
+        &:hover .underline::after {
+          width: 100%;
+        }
       }
     }
   }
@@ -39,9 +71,10 @@
       .open {
         transform: rotate(90deg);
       }
+
       .nav-list {
         position: absolute;
-        background-color: rgba(255, 255, 255, 0.15);
+        background-color: rgba(36, 50, 67, 0.833);
         box-shadow: $shadow;
         top: 100px;
         right: -100px;
@@ -52,9 +85,45 @@
         transition: all 1s ease;
         padding: 0;
         border-radius: $border-radius;
+
         &.show {
           padding: 10px 80px;
           right: 10px;
+          z-index: 99999;
+        }
+
+        .link-wrapper {
+          text-decoration: none;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 5px;
+          color: #fff;
+
+
+          .underline {
+            position: relative;
+            height: 2px;
+            width: 100%;
+            max-width: 120px;
+            background-color: rgba(255, 255, 255, 0.35);
+            overflow: hidden;
+
+            &::after {
+              content: "";
+              position: absolute;
+              top: 0;
+              left: 0;
+              height: 100%;
+              width: 0%;
+              background-color: #fff;
+              transition: width 1.2s ease;
+            }
+          }
+
+          &:hover .underline::after {
+            width: 100%;
+          }
         }
       }
     }
