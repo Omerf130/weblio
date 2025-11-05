@@ -1,6 +1,6 @@
 import { CONSTS } from "../../consts";
 import { useInView } from "../../hooks/useInView";
-import './about.scss'
+import './About.scss'
 
 const About = () => {
   const {ABOUT:{TITLE, CONTENT1, CONTENT2, CONTENT3}} = CONSTS;
