@@ -6,7 +6,7 @@ const About = () => {
   const {ABOUT:{TITLE, CONTENT1, CONTENT2, CONTENT3}} = CONSTS;
   const [ref, isInView] = useInView<HTMLDivElement>();
   return (
-    <div className='about-container'>
+    <div className='about-container' id="about">
       <div className='about-content'>
         <h1 className={isInView ? "slide-top" : ""} ref={ref}>{TITLE}</h1>
         <h3>{CONTENT1} {CONTENT2} {CONTENT3}</h3>

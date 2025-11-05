@@ -8,10 +8,10 @@ const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { text: "מי אנחנו", href: "" },
-    { text: "שירותים", href: "" },
-    { text: "פרוייקטים", href: "" },
-    { text: "צור קשר", href: "" },
+    { text: "מי אנחנו", href: "#about" },
+    { text: "שירותים", href: "#services" },
+    { text: "פרוייקטים", href: "#projects" },
+    { text: "צור קשר", href: "#contact" },
   ];
 
   console.log("isMobile",isMobile)

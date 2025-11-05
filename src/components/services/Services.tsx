@@ -21,7 +21,7 @@ const Services = () => {
   ]
 
   return (
-    <div className='services-container'>
+    <div className='services-container' id="services">
       <h1 className={isInView ? "slide-top" : ""} ref={ref}>השירותים שלנו</h1>
       <div className='services-cards'>
         {cardsData.map((card) => (

@@ -27,7 +27,7 @@ const Contacts = () => {
   const [ref, isInView] = useInView<HTMLDivElement>();
 
   return (
-    <div className="contact">
+    <div className="contact" id="contact">
       <h1 className={isInView ? "slide-top" : ""} ref={ref}>{TITLE}</h1>
       <form
         onSubmit={handleSubmit}
