@@ -1,4 +1,3 @@
-import React from 'react'
 import './WhyMe.scss'
 import { FaPencilAlt } from "react-icons/fa";
 import { LuClock4 } from "react-icons/lu";
