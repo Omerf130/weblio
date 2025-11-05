@@ -9,6 +9,7 @@ import Nav from "./components/nav/Nav";
 import Projects from "./components/projects/Projects";
 import Services from "./components/services/Services";
 import WhyMe from "./components/whyMe/WhyMe";
+import BackgroundStars from "./components/background/BackgroundStars";
 
 function App() {
   const [isLoaderDisplay, setIsLoaderDisplay] = useState(true);
@@ -21,6 +22,7 @@ function App() {
   return (
     <div className="app">
       <Nav />
+      <BackgroundStars />
       {isLoaderDisplay ? (
         <Loader />
       ) : (
