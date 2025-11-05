@@ -5,7 +5,7 @@ import { FaPencilAlt } from "react-icons/fa";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoIosMegaphone } from "react-icons/io";
 import { useInView } from '../../hooks/useInView';
-import './services.scss'
+import './Services.scss'
 
 const SIZE = 24;
 const Services = () => {
