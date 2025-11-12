@@ -105,3 +105,10 @@
     }
   }
 }
+
+@media (max-width: 640px) {
+  .project-list-item {
+    width: 100% !important;
+    height: unset !important;
+  }
+}
