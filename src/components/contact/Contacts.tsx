@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Spline3D from "../spline/Spline3D";
 import "./Contacts.scss"
 import { useInView } from "../../hooks/useInView";
 import { CONSTS } from "../../consts";
