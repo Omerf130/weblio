@@ -54,7 +54,7 @@ const Contacts = () => {
         </label>
         <button type="submit">צור קשר</button>
       </form>
-      <Spline3D />
+      {/* <Spline3D /> */}
     </div>
   );
 };
