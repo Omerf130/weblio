@@ -2,8 +2,11 @@ import "./Projects.scss";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import pic1 from '../../assets/pics/a-a.png'
 import pic2 from '../../assets/pics/n-s.png'
+import pic3 from '../../assets/pics/zoukopng.png'
+import { useNavigate } from "react-router-dom";
 
 const Projects = () => {
+  const navigate = useNavigate();
   const projectList = [
     {
       title: "נזי שרון",
@@ -20,8 +23,8 @@ const Projects = () => {
     {
       title: "project3",
       subtitle: "A test subtitle for example",
-      src: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8d2Vic2l0ZXxlbnwwfHwwfHx8MA%3D%3D",
-      to:""
+      src: pic3,
+      to:"https://zoukoisrael.com/"
     },
     {
       title: "project4",
@@ -50,6 +53,7 @@ const Projects = () => {
           </li>
         ))}
       </ul>
+      <button onClick={() => navigate("/projects")}>לפרוקטים נוספים</button>
     </div>
   );
 };
