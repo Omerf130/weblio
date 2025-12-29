@@ -3,6 +3,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import pic1 from '../../assets/pics/a-a.png'
 import pic2 from '../../assets/pics/n-s.png'
 import pic3 from '../../assets/pics/zoukopng.png'
+import pic4 from '../../assets/pics/ganmetukim.png'
 import { useNavigate } from "react-router-dom";
 
 const Projects = () => {
@@ -15,22 +16,22 @@ const Projects = () => {
       to: "https://n-s-tau.vercel.app/"
     },
     {
-      title: "project2",
+      title: "אטיאס אשכנזי ושות'",
       subtitle: "A test subtitle for example",
       src: pic1,
       to:"https://a-a-topaz.vercel.app/"
     },
     {
-      title: "project3",
+      title: "זוקו",
       subtitle: "A test subtitle for example",
       src: pic3,
       to:"https://zoukoisrael.com/"
     },
     {
-      title: "project4",
+      title: "גן מתוקים",
       subtitle: "A test subtitle for example",
-      src: "https://plus.unsplash.com/premium_photo-1681666713641-8d722b681edc?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8d2Vic2l0ZXxlbnwwfHwwfHx8MA%3D%3D",
-      to:""
+      src: pic4,
+      to:"https://ganmetukim.co.il"
     },
   ];
   return (
@@ -53,7 +54,7 @@ const Projects = () => {
           </li>
         ))}
       </ul>
-      <button onClick={() => navigate("/projects")}>לפרוקטים נוספים</button>
+      <button className="project-btn" onClick={() => navigate("/projects")}>לפרוקטים נוספים</button>
     </div>
   );
 };

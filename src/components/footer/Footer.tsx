@@ -2,6 +2,7 @@ import { SiInstagram } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
 import "./Footer.scss";
 import FooterLinkItem from "./FooterLinkItem";
+import { useLocation } from "react-router-dom";
 
 const links = [
   { text: "hero", href: "#hero" },
@@ -13,10 +14,11 @@ const links = [
 ];
 
 const Footer = () => {
+  const location = useLocation();
   return (
     <footer className="footer">
       <div className="footer-links">
-        {links.map((link) => (
+        {location.pathname === "/" && links.map((link) => (
           <FooterLinkItem key={link.href} href={link.href} text={link.text} />
         ))}
       </div>
@@ -25,7 +27,7 @@ const Footer = () => {
         <FaLinkedin className="media red"/>
       </div>
       <div className="footer-copyrights">
-        <p>© 2020 Empathy template</p>
+        <p>© weblio</p>
       </div>
     </footer>
   );
