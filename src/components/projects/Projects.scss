@@ -104,11 +104,58 @@
       }
     }
   }
+
+  .project-btn {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #0077ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #005fcc;
+    }
+  }
 }
+
 
 @media (max-width: 640px) {
   .project-list-item {
     width: 100% !important;
     height: unset !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .project-list-item {
+    width: 100% !important;
+    height: 170px !important;
+
+    &::before {
+      display: none;
+
+    }
+
+
+    .project-content {
+      position: static; // make it part of the flow
+      transform: none !important;
+      opacity: 1 !important;
+      right: unset;
+      top: unset !important;
+      margin: 10px 0; // optional spacing
+      display: flex;
+      flex-direction: column;
+      .project-subtitle {
+        margin-bottom: 60px;
+      }
+    }
+
+    .project-button .arrow {
+      transform: none !important; // remove hover animation
+    }
   }
 }
