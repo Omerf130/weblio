@@ -68,6 +68,14 @@
   }
 }
 
+@media (max-width: 430px) {
+  .services-cards {
+    .card {
+      height: 350px !important;
+    }
+  }
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);

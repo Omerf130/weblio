@@ -95,3 +95,12 @@
     text-align: right;
   }
 }
+
+
+@media (max-width: 430px) {
+  .contact {
+    .contact-form {
+      width: 100% !important;
+    }
+  }
+}
