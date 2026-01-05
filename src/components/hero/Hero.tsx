@@ -17,7 +17,7 @@ const Hero = () => {
           {TITLE}
         </h1>
         <p>{CONTENT}</p>
-        <button className="btn-primary">{BUTTON}</button>
+        <a className="btn-primary" href="#contact">{BUTTON}</a>
       </div>
       <div className="hero-img">
         <img
