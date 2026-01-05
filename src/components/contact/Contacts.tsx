@@ -1,37 +1,46 @@
 import React, { useState } from "react";
-import "./Contacts.scss"
+import "./Contacts.scss";
 import { useInView } from "../../hooks/useInView";
 import { CONSTS } from "../../consts";
 
 const Contacts = () => {
-  const [form, setForm] = useState({ name: "", phone: "" });
-  const {CONTACT:{TITLE}} = CONSTS;
+  const [form, setForm] = useState({
+    name: "",
+    message: "",
+  });
+
+  const {
+    CONTACT: { TITLE },
+  } = CONSTS;
+
+  const [ref, isInView] = useInView<HTMLHeadingElement>();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-  
-    const name = encodeURIComponent(form.name);
-    const phone = encodeURIComponent(form.phone);
-    const message = `שם: ${name}%0Aהודעה:: ${phone}`;
-  
-    const url = `https://web.whatsapp.com/send?phone=972544993155&text=${message}`;
-    window.open(url, "_blank");
+
+    const phoneNumber = "972544993155"; // no "+"
+    const message = encodeURIComponent(
+      `שם: ${form.name}\nהודעה: ${form.message}`
+    );
+
+    // Works on mobile (app) + desktop (web)
+    window.location.href = `https://wa.me/${phoneNumber}?text=${message}`;
   };
-  const [ref, isInView] = useInView<HTMLDivElement>();
 
   return (
     <div className="contact" id="contact">
-      <h1 className={isInView ? "slide-top" : ""} ref={ref}>{TITLE}</h1>
-      <form
-        onSubmit={handleSubmit}
-       className="contact-form"
-      >
+      <h1 ref={ref} className={isInView ? "slide-top" : ""}>
+        {TITLE}
+      </h1>
+
+      <form onSubmit={handleSubmit} className="contact-form">
         <label>
           שם מלא
           <input
@@ -42,18 +51,20 @@ const Contacts = () => {
             required
           />
         </label>
+
         <label>
           איך אני יכול לעזור?
           <textarea
-            name="phone"
-           rows={6}
-            value={form.phone}
+            name="message"
+            rows={6}
+            value={form.message}
             onChange={handleChange}
-            required></textarea>
+            required
+          />
         </label>
+
         <button type="submit">צור קשר</button>
       </form>
-      {/* <Spline3D /> */}
     </div>
   );
 };
