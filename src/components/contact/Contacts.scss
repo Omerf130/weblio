@@ -1,16 +1,16 @@
 @use "../../assets/styles/variables" as *;
 
 .contact {
+  width: 80%;
+  margin: 0 auto; // ✅ flex-safe centering
   border: 1px solid #fff;
   border-radius: 10px;
   background-color: #ffffff1a;
-  width: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: $gap-medium;
   padding: $padding-card;
-  justify-self: center;
   direction: rtl;
 
   .contact-form {
@@ -27,15 +27,13 @@
       font-weight: bold;
       font-size: 16px;
 
-      input, textarea {
+      input,
+      textarea {
         width: 100%;
-        height: 100%;
         padding: 6px;
         font-size: 16px;
-        border: 1px solid #ccc;
-        border: none;
-        transition: border 0.3s ease;
         background-color: transparent;
+        border: none;
         border-bottom: 1px solid #fff;
         direction: rtl;
 
@@ -44,6 +42,7 @@
           outline: none;
         }
       }
+
       textarea {
         resize: none;
       }
@@ -66,41 +65,15 @@
   }
 }
 
-.card {
-  border: 1px solid #fff;
-  border-radius: 10px;
-  height: 250px;
-  background-color: #ffffff1a;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: $gap-medium;
-  padding: $padding-card;
-  .card-img {
-    padding: 8px 12px;
-    border-radius: 8px;
-    background-color: #608bc1;
-    .img {
-      &.spin {
-        animation: spin 3s linear infinite;
-      }
-    }
-  }
-  .card-title {
-    font-size: $font-lg;
-    font-weight: bold;
-  }
-  .card-subtitle {
-    font-size: $font-size-base;
-    text-align: right;
-  }
-}
-
-
+/* ===== MOBILE FIX ===== */
 @media (max-width: 430px) {
   .contact {
-    .contact-form {
-      width: 100% !important;
-    }
+    width: 100%;
+    margin-inline: auto; // ✅ iOS-safe horizontal centering
+  }
+
+  .contact-form {
+    width: 100% !important;
+    padding: 0;
   }
 }
