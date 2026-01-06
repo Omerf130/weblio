@@ -5,12 +5,11 @@ import FooterLinkItem from "./FooterLinkItem";
 import { useLocation } from "react-router-dom";
 
 const links = [
-  { text: "hero", href: "#hero" },
-  { text: "about", href: "#about" },
-  { text: "services", href: "#services" },
-  { text: "projects", href: "#projects" },
-  { text: "why me?", href: "#whyme" },
-  { text: "contact", href: "#contact" },
+  // { text: "hero", href: "#hero" },
+  { text: "פרוייקטים", href: "#projects" },
+  { text: "שירותים", href: "#services" },
+  { text: "למה אני", href: "#whyme" },
+  { text: "מי אנחנו", href: "#about" },
 ];
 
 const Footer = () => {
@@ -27,7 +26,7 @@ const Footer = () => {
         <FaLinkedin className="media red"/>
       </div>
       <div className="footer-copyrights">
-        <p>© weblio</p>
+        <p>© weblio 2025</p>
       </div>
     </footer>
   );
