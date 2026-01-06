@@ -15,7 +15,7 @@ const WhyMe = () => {
     {title: "פתרונות מתקדמים", subtitle: "אנחנו משתמשים בטכנולוגיות החדשיות ביותר כדי לספק לך את הפתרונות הטובים ביותר", img: <IoIosSettings className='img spin' size={SIZE}/>}
   ]
   return (
-    <div className='whyme-container'>
+    <div className='whyme-container' id="whyme">
       <h1>למה אני?</h1>
       <div className="whyme-cards">
         {dataCards.map((card) => (
