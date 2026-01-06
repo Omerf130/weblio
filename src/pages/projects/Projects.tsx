@@ -18,9 +18,9 @@ const Projects = () => {
 
     const projectList = [
         { title: "נזי שרון", subtitle: "מעצבת פנים", src: pic2, to: "https://n-s-tau.vercel.app/" },
-        { title: "אטיאס אשכנזי ושות'", subtitle: "A test subtitle for example", src: pic1, to: "https://a-a-topaz.vercel.app/" },
-        { title: "זוקו", subtitle: "A test subtitle for example", src: pic3, to: "https://zoukoisrael.com/" },
-        { title: "גן מתוקים", subtitle: "A test subtitle for example", src: pic4, to: "https://ganmetukim.co.il" },
+        { title: "אטיאס אשכנזי ושות'", subtitle: "משרד עורכי דין", src: pic1, to: "https://a-a-topaz.vercel.app/" },
+        { title: "זוקו", subtitle: "", src: pic3, to: "https://zoukoisrael.com/" },
+        { title: "גן מתוקים", subtitle: "", src: pic4, to: "https://ganmetukim.co.il" },
     ];
 
     return (

@@ -17,19 +17,19 @@ const Projects = () => {
     },
     {
       title: "אטיאס אשכנזי ושות'",
-      subtitle: "A test subtitle for example",
+      subtitle: "משרד עורכי דין",
       src: pic1,
       to:"https://a-a-topaz.vercel.app/"
     },
     {
       title: "זוקו",
-      subtitle: "A test subtitle for example",
+      subtitle: "",
       src: pic3,
       to:"https://zoukoisrael.com/"
     },
     {
       title: "גן מתוקים",
-      subtitle: "A test subtitle for example",
+      subtitle: "",
       src: pic4,
       to:"https://ganmetukim.co.il"
     },
