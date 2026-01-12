@@ -5,6 +5,7 @@ import pic1 from '../../assets/pics/a-a.png';
 import pic2 from '../../assets/pics/n-s.png';
 import pic3 from '../../assets/pics/zoukopng.png';
 import pic4 from '../../assets/pics/ganmetukim.png';
+import pic5 from '../../assets/pics/pic5.jpeg';
 import "./Projects.scss";
 import { useEffect } from 'react';
 
@@ -21,6 +22,7 @@ const Projects = () => {
         { title: "אטיאס אשכנזי ושות'", subtitle: "משרד עורכי דין", src: pic1, to: "https://a-a-topaz.vercel.app/" },
         { title: "זוקו", subtitle: "", src: pic3, to: "https://zoukoisrael.com/" },
         { title: "גן מתוקים", subtitle: "", src: pic4, to: "https://ganmetukim.co.il" },
+        { title: "גן מתוקים", subtitle: "", src: pic5, to: "https://basketball-umber-theta.vercel.app/" },
     ];
 
     return (
