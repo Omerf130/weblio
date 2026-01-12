@@ -22,7 +22,7 @@ const Projects = () => {
         { title: "אטיאס אשכנזי ושות'", subtitle: "משרד עורכי דין", src: pic1, to: "https://a-a-topaz.vercel.app/" },
         { title: "זוקו", subtitle: "", src: pic3, to: "https://zoukoisrael.com/" },
         { title: "גן מתוקים", subtitle: "", src: pic4, to: "https://ganmetukim.co.il" },
-        { title: "גן מתוקים", subtitle: "", src: pic5, to: "https://basketball-umber-theta.vercel.app/" },
+        { title: "דור - מאמן כדורסל", subtitle: "", src: pic5, to: "https://basketball-umber-theta.vercel.app/" },
     ];
 
     return (
