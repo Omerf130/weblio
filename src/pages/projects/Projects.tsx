@@ -6,6 +6,8 @@ import pic2 from '../../assets/pics/n-s.png';
 import pic3 from '../../assets/pics/zoukopng.png';
 import pic4 from '../../assets/pics/ganmetukim.png';
 import pic5 from '../../assets/pics/pic5.jpeg';
+import pic6 from '../../assets/pics/insta.jpeg';
+import pic7 from '../../assets/pics/noah.jpeg';
 import "./Projects.scss";
 import { useEffect } from 'react';
 
@@ -23,6 +25,8 @@ const Projects = () => {
         { title: "זוקו", subtitle: "", src: pic3, to: "https://zoukoisrael.com/" },
         { title: "גן מתוקים", subtitle: "", src: pic4, to: "https://ganmetukim.co.il" },
         { title: "דור - מאמן כדורסל", subtitle: "", src: pic5, to: "https://basketball-umber-theta.vercel.app/" },
+        { title: "עדן - דודי שמש", subtitle: "דודי שמש ואינסטלציה", src: pic6, to: "https://www.eden-shemesh.co.il/" },
+        { title: "נוח - סטודנטים לסיעוד", subtitle: "סטודנטים לסיעוד", src: pic7, to: "https://www.noah-sn.co.il/" },
     ];
 
     return (
