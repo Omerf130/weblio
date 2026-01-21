@@ -1,79 +1,212 @@
 @use "../../assets/styles/variables" as *;
 
 .contact {
-  width: 80%;
-  margin: 0 auto; // ✅ flex-safe centering
-  border: 1px solid #fff;
-  border-radius: 10px;
-  background-color: #ffffff1a;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: $gap-medium;
-  padding: $padding-card;
+  width: 90%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 80px 60px;
   direction: rtl;
+  position: relative;
+  border: 2px solid rgba(96, 139, 193, 0.3);
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(51, 65, 85, 0.4));
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 2px;
+    background: linear-gradient(135deg, $third-color, rgba(96, 139, 193, 0.3), $third-color);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 48px;
+    font-weight: $weight-bold;
+    margin-bottom: 15px;
+    color: $primary-color;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    text-shadow: 0 2px 10px rgba(96, 139, 193, 0.3);
+    
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -15px;
+      right: 50%;
+      transform: translateX(50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, $third-color, transparent);
+      border-radius: 2px;
+      box-shadow: 0 0 10px rgba(96, 139, 193, 0.5);
+    }
+  }
+  
+  & > p {
+    text-align: center;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 30px auto 0;
+    max-width: 600px;
+    line-height: 1.6;
+  }
 
   .contact-form {
-    width: 60%;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 700px;
+    margin: 60px auto 0;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding: 20px;
+    gap: 30px;
 
     label {
       display: flex;
       flex-direction: column;
-      font-weight: bold;
-      font-size: 16px;
+      gap: 12px;
+      position: relative;
+
+      span {
+        font-size: 18px;
+        font-weight: $weight-normal;
+        color: $secondary-color;
+        padding-right: 5px;
+      }
 
       input,
       textarea {
         width: 100%;
-        padding: 6px;
-        font-size: 16px;
-        background-color: transparent;
-        border: none;
-        border-bottom: 1px solid #fff;
+        padding: 18px 20px;
+        font-size: 17px;
+        font-family: $font-family-base;
+        background: rgba(51, 65, 85, 0.4);
+        border: 2px solid rgba(96, 139, 193, 0.3);
+        border-radius: 12px;
         direction: rtl;
+        color: $primary-color;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.25);
+        }
 
         &:focus {
-          border-color: #ffffff73;
           outline: none;
+          border-color: $third-color;
+          background: rgba(51, 65, 85, 0.6);
+          transform: translateY(-2px);
+          box-shadow: 
+            0 8px 20px rgba(96, 139, 193, 0.15),
+            0 0 0 4px rgba(96, 139, 193, 0.1);
+        }
+
+        &:hover:not(:focus) {
+          border-color: rgba(96, 139, 193, 0.5);
         }
       }
 
       textarea {
-        resize: none;
+        resize: vertical;
+        min-height: 160px;
+        line-height: 1.6;
       }
     }
 
     button {
-      padding: 10px;
-      font-size: 16px;
-      background-color: #0077ff;
+      align-self: center;
+      padding: 18px 60px;
+      font-size: 20px;
+      font-weight: $weight-bold;
+      font-family: $font-family-base;
+      background: $third-color;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+      }
 
       &:hover {
-        background-color: #005fcc;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(96, 139, 193, 0.4);
+        
+        &::before {
+          width: 300px;
+          height: 300px;
+        }
+      }
+
+      &:active {
+        transform: translateY(-1px);
       }
     }
   }
 }
 
 /* ===== MOBILE FIX ===== */
+@media (max-width: 768px) {
+  .contact {
+    width: 95%;
+    padding: 60px 30px;
+
+    h1 {
+      font-size: 36px;
+    }
+
+    .contact-form {
+      gap: 25px;
+      
+      label span {
+        font-size: 16px;
+      }
+      
+      input,
+      textarea {
+        padding: 15px 18px;
+        font-size: 16px;
+      }
+      
+      button {
+        padding: 16px 40px;
+        font-size: 18px;
+      }
+    }
+  }
+}
+
 @media (max-width: 430px) {
   .contact {
     width: 100%;
-    margin-inline: auto; // ✅ iOS-safe horizontal centering
-  }
-
-  .contact-form {
-    width: 100% !important;
-    padding: 0;
+    padding: 40px 20px;
+    
+    h1 {
+      font-size: 28px;
+    }
   }
 }

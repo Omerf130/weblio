@@ -39,31 +39,34 @@ const Contacts = () => {
       <h1 ref={ref} className={isInView ? "slide-top" : ""}>
         {TITLE}
       </h1>
+      <p>נשמח לשמוע ממך! מלא את הטופס ונחזור אליך בהקדם</p>
 
       <form onSubmit={handleSubmit} className="contact-form">
         <label>
-          שם מלא
+          <span>שם מלא</span>
           <input
             type="text"
             name="name"
             value={form.name}
             onChange={handleChange}
+            placeholder="הכנס את שמך המלא"
             required
           />
         </label>
 
         <label>
-          איך אני יכול לעזור?
+          <span>איך אני יכול לעזור?</span>
           <textarea
             name="message"
             rows={6}
             value={form.message}
             onChange={handleChange}
+            placeholder="ספר לי על הפרויקט שלך..."
             required
           />
         </label>
 
-        <button type="submit">צור קשר</button>
+        <button type="submit">שלח הודעה</button>
       </form>
     </div>
   );
