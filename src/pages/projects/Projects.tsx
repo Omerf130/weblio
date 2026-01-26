@@ -8,6 +8,7 @@ import pic4 from '../../assets/pics/ganmetukim.png';
 import pic5 from '../../assets/pics/pic5.jpeg';
 import pic6 from '../../assets/pics/insta.jpeg';
 import pic7 from '../../assets/pics/noah.jpeg';
+import pic8 from '../../assets/pics/deeb-drive.jpeg';
 import "./Projects.scss";
 import { useEffect } from 'react';
 
@@ -27,6 +28,7 @@ const Projects = () => {
         { title: "דור - מאמן כדורסל", subtitle: "", src: pic5, to: "https://basketball-umber-theta.vercel.app/" },
         { title: "עדן - דודי שמש", subtitle: "דודי שמש ואינסטלציה", src: pic6, to: "https://www.eden-shemesh.co.il/" },
         { title: "נוח - סטודנטים לסיעוד", subtitle: "סטודנטים לסיעוד", src: pic7, to: "https://www.noah-sn.co.il/" },
+        { title: "דיב-דרייב", subtitle: "בית ספר לנהיגה", src: pic8, to: "https://driver-lilac.vercel.app/" },
     ];
 
     return (
