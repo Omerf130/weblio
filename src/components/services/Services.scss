@@ -67,13 +67,30 @@
 @media (max-width: 640px) {
   .services-cards {
     grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    width: 100%;
+    
+    .card {
+      border: 2px solid #fff !important;
+      border-radius: 10px !important;
+      background-color: #ffffff1a !important;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      height: auto !important;
+      min-height: 300px !important;
+      width: 100% !important;
+      display: flex !important;
+    }
   }
 }
 
 @media (max-width: 430px) {
   .services-cards {
     .card {
-      height: 350px !important;
+      height: auto !important;
+      min-height: 350px !important;
+      border: 2px solid #fff !important;
+      background-color: #ffffff1a !important;
     }
   }
 }
