@@ -14,6 +14,10 @@ const Nav = () => {
     { text: "צור קשר", href: "#contact" },
   ];
 
+  const handleLinkClick = () => {
+    setIsOpen(false);
+  };
+
   console.log("isMobile",isMobile)
 
   return (
@@ -26,9 +30,14 @@ const Nav = () => {
               className={`hamburger ${isOpen && "open"}`}
               onClick={() => setIsOpen(!isOpen)}
             />
-            <nav className={`nav-list ${isOpen && "show"}`}>
+            <nav className={`nav-list ${isOpen ? "show" : ""}`}>
               {navLinks.map((link, i) => (
-                <a key={i} href={link.href} className="link-wrapper">
+                <a 
+                  key={i} 
+                  href={link.href} 
+                  className="link-wrapper"
+                  onClick={handleLinkClick}
+                >
                   <div className="text">{link.text}</div>
                   <div className="underline" />
                 </a>

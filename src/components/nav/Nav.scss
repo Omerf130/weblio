@@ -77,19 +77,25 @@
         background-color: rgba(36, 50, 67, 0.833);
         box-shadow: $shadow;
         top: 100px;
-        right: -100px;
+        right: -300px;
         display: flex;
         flex-direction: column;
         gap: $gap-medium;
         font-size: $font-md;
-        transition: all 1s ease;
+        transition: all 0.3s ease-in-out;
         padding: 0;
         border-radius: $border-radius;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
 
         &.show {
           padding: 10px 80px;
           right: 10px;
           z-index: 99999;
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
         }
 
         .link-wrapper {

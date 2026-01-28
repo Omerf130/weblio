@@ -18,6 +18,18 @@ function App() {
     setTimeout(() => {
       setIsLoaderDisplay(false);
     }, 1500);
+
+    // Detect Facebook in-app browser and add class
+    const isFacebookBrowser = () => {
+      const ua = navigator.userAgent || navigator.vendor;
+      return (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1) || (ua.indexOf("Instagram") > -1);
+    };
+
+    if (isFacebookBrowser()) {
+      document.body.classList.add("fb-browser");
+      // Force a reflow to ensure proper rendering
+      document.body.style.transform = "translateZ(0)";
+    }
   }, []);
   return (
     <div className="app">
