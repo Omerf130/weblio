@@ -5,6 +5,9 @@
   justify-content: space-between;
   padding: 110px 40px;
   direction: rtl;
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
 
   .hero-content {
     display: flex;
@@ -12,25 +15,37 @@
     gap: 30px;
     padding: 0 10px;
     flex: 2;
-    z-index: 999;
+    z-index: 1;
+    position: relative;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 
     h1 {
       font-size: $hero-title;
       letter-spacing: 2px;
       font-style: oblique;
+      position: relative;
+      z-index: 1;
     }
 
     p {
       width: 70%;
       font-size: $font-size-base;
+      position: relative;
+      z-index: 1;
     }
     .btn-primary {
       text-decoration: none;
+      position: relative;
+      z-index: 1;
     }
   }
 
   .hero-img {
     flex: 1;
+    position: relative;
+    z-index: 1;
 
     img {
       width: 500px;
@@ -63,12 +78,31 @@
     flex-direction: column;
     align-items: center;
     gap: 30px;
+    padding: 80px 20px 60px;
+    margin-bottom: 40px;
+    overflow: hidden;
 
     .hero-content {
       align-items: center;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
 
       h1 {
         text-align: center;
+        font-size: 32px !important;
+        max-width: 100%;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+      
+      p {
+        width: 100%;
+        text-align: center;
+        font-size: 16px !important;
+        max-width: 100%;
+        overflow-wrap: break-word;
+        word-break: break-word;
       }
     }
 

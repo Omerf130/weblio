@@ -43,16 +43,74 @@
 .fb-browser .projects-container {
   position: relative;
   z-index: 1;
+  isolation: isolate;
 }
 
 .fb-browser .contact {
   position: relative;
-  z-index: 10;
+  z-index: 100 !important;
   isolation: isolate;
 }
 
 .fb-browser .footer {
   position: relative;
-  z-index: 5;
+  z-index: 50;
+  isolation: isolate;
 }
 
+/* Prevent text overflow and ensure proper containment */
+.fb-browser .hero-content,
+.fb-browser .about-content {
+  overflow: hidden;
+  max-width: 100%;
+  contain: layout style;
+}
+
+.fb-browser .hero-content > *,
+.fb-browser .about-content > * {
+  position: relative !important;
+  z-index: 1 !important;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Global App Styles */
+.app {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Ensure sections stack properly */
+.hero-container,
+.about-container,
+.services-container,
+.whyme-container,
+.projects-container {
+  position: relative;
+  z-index: auto;
+  isolation: isolate;
+}
+
+.contact {
+  position: relative !important;
+  z-index: 100 !important;
+  isolation: isolate !important;
+}
+
+.nav-container {
+  position: relative;
+  z-index: 1000;
+}
+
+.footer {
+  position: relative;
+  z-index: 50;
+}
+
+/* Prevent unwanted overflow */
+* {
+  max-width: 100%;
+}

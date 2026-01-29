@@ -7,6 +7,7 @@
   gap: 30px;
   position: relative;
   z-index: 1;
+  isolation: isolate;
   
   .about-content {
     display: flex;
@@ -16,20 +17,30 @@
     direction: rtl;
     position: relative;
     z-index: 1;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     
     h1 {
       font-size: $hero-title;
       letter-spacing: 2px;
       font-style: oblique;
       text-align: right;
+      position: relative;
+      z-index: 1;
     }
     h3 {
       font-size: $font-size-base;
       text-align: right;
+      position: relative;
+      z-index: 1;
+      line-height: 1.6;
     }
   }
   .about-img {
     flex: 1;
+    position: relative;
+    z-index: 1;
     img {
       width: 500px;
       height: 300px;
@@ -63,12 +74,29 @@
     flex-direction: column;
     align-items: center;
     gap: 30px;
+    padding: 60px 20px;
+    margin-bottom: 60px;
+    overflow: hidden;
 
     .about-content {
       align-items: center;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
 
       h1, h3{
         text-align: center;
+        max-width: 100%;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+      
+      h1 {
+        font-size: 32px !important;
+      }
+      
+      h3 {
+        font-size: 18px !important;
       }
     }
 
