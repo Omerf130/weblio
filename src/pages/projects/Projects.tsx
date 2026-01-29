@@ -32,7 +32,7 @@ const Projects = () => {
     ];
 
     return (
-        <>
+        <div className="project-page-wrapper">
             <ProjectsNav />
             <div className="project-page-container">
 
@@ -66,7 +66,7 @@ const Projects = () => {
 
             </div>
             <Footer />
-        </>
+        </div>
     );
 };
 

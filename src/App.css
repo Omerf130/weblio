@@ -110,7 +110,9 @@
   z-index: 50;
 }
 
-/* Prevent unwanted overflow */
-* {
+/* Prevent text overflow only */
+h1, h2, h3, h4, h5, h6, p, span, a {
   max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }

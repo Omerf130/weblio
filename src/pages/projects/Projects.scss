@@ -1,20 +1,33 @@
 @use "../../assets/styles/variables" as *;
 
+.project-page-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  background: $main;
+  position: relative;
+}
+
 .project-page-container {
   padding: $padding-main;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
   display: flex;
   flex-direction: column;
   gap: 30px;
   align-items: center;
   justify-content: flex-start;
   direction: rtl;
+  position: relative;
+  overflow-x: hidden;
 
   .project-page-content-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 30px;
+    width: 100%;
+    max-width: 1400px;
   }
 
   .project-page-title {
@@ -26,7 +39,7 @@
     list-style: none;
     padding: 0;
     margin: 0;
-
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -37,6 +50,8 @@
   /* ---------- CARD ---------- */
   .project-page-list-item {
     width: 520px;
+    max-width: 520px;
+    min-width: 280px;
     height: 320px;
     position: relative;
     overflow: hidden;
@@ -44,6 +59,7 @@
     cursor: pointer;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
     transition: transform 0.35s ease, box-shadow 0.35s ease;
+    flex-shrink: 0;
 
     &:hover {
       transform: translateY(-6px) scale(1.01);
