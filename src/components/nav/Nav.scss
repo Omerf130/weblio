@@ -64,34 +64,49 @@
 
     .nav {
       .hamburger {
-        font-size: $font-md;
+        font-size: 40px;
         cursor: pointer;
-        transition: all 1s ease;
+        transition: all 0.4s ease;
+        color: $primary-color;
+        z-index: 100000;
+        position: relative;
+        padding: 8px;
+        
+        &:hover {
+          color: $third-color;
+        }
       }
+      
       .open {
         transform: rotate(90deg);
+        color: $third-color;
       }
 
       .nav-list {
         position: fixed;
-        background-color: rgba(36, 50, 67, 0.833);
-        box-shadow: $shadow;
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(51, 65, 85, 0.98));
+        backdrop-filter: blur(10px);
+        box-shadow: 
+          0 10px 40px rgba(0, 0, 0, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(96, 139, 193, 0.3);
         top: 100px;
-        right: -300px;
+        right: -350px;
         display: flex;
         flex-direction: column;
-        gap: $gap-medium;
+        gap: 5px;
         font-size: $font-md;
-        transition: all 0.3s ease-in-out;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         padding: 0;
-        border-radius: $border-radius;
+        border-radius: 16px;
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
+        min-width: 200px;
 
         &.show {
-          padding: 10px 80px;
-          right: 10px;
+          padding: 20px 30px;
+          right: 20px;
           z-index: 99999;
           opacity: 1;
           visibility: visible;
@@ -103,17 +118,46 @@
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 5px;
-          color: #fff;
-
+          gap: 8px;
+          color: $primary-color;
+          padding: 15px 20px;
+          border-radius: 10px;
+          transition: all 0.3s ease;
+          position: relative;
+          
+          &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(96, 139, 193, 0.1);
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+          }
+          
+          &:hover {
+            transform: translateX(-5px);
+            
+            &::before {
+              opacity: 1;
+            }
+          }
+          
+          .text {
+            position: relative;
+            z-index: 1;
+            font-weight: $weight-normal;
+          }
 
           .underline {
             position: relative;
-            height: 2px;
+            height: 3px;
             width: 100%;
-            max-width: 120px;
-            background-color: rgba(255, 255, 255, 0.35);
+            max-width: 100px;
+            background-color: rgba(96, 139, 193, 0.3);
             overflow: hidden;
+            border-radius: 2px;
+            z-index: 1;
 
             &::after {
               content: "";
@@ -122,8 +166,9 @@
               left: 0;
               height: 100%;
               width: 0%;
-              background-color: #fff;
-              transition: width 1.2s ease;
+              background: linear-gradient(90deg, $third-color, lighten($third-color, 20%));
+              transition: width 0.6s ease;
+              box-shadow: 0 0 8px rgba(96, 139, 193, 0.6);
             }
           }
 
