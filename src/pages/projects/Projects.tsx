@@ -9,6 +9,8 @@ import pic5 from '../../assets/pics/pic5.jpeg';
 import pic6 from '../../assets/pics/insta.jpeg';
 import pic7 from '../../assets/pics/noah.jpeg';
 import pic8 from '../../assets/pics/deeb-drive.jpeg';
+import pic9 from '../../assets/pics/shiputi.jpeg';
+import pic10 from '../../assets/pics/clean.jpeg';
 import "./Projects.scss";
 import { useEffect } from 'react';
 
@@ -21,14 +23,16 @@ const Projects = () => {
     }, []);
 
     const projectList = [
-        { title: "נזי שרון", subtitle: "מעצבת פנים", src: pic2, to: "https://n-s-tau.vercel.app/" },
+        { title: "נזי שרון", subtitle: "מעצבת פנים", src: pic2, to: "https://n-s-tau.vercel000.app/" },
         { title: "אטיאס אשכנזי ושות'", subtitle: "משרד עורכי דין", src: pic1, to: "https://a-a-topaz.vercel.app/" },
-        { title: "זוקו", subtitle: "", src: pic3, to: "https://zoukoisrael.com/" },
-        { title: "גן מתוקים", subtitle: "", src: pic4, to: "https://ganmetukim.co.il" },
+        { title: "זוקו", subtitle: "שיעורי ריקוד מקצועיים", src: pic3, to: "https://zoukoisrael.com/" },
+        { title: "גן מתוקים", subtitle: "גן ילדים - גבעתיים", src: pic4, to: "https://ganmetukim.co.il" },
         { title: "דור - מאמן כדורסל", subtitle: "", src: pic5, to: "https://basketball-umber-theta.vercel.app/" },
         { title: "עדן - דודי שמש", subtitle: "דודי שמש ואינסטלציה", src: pic6, to: "https://www.eden-shemesh.co.il/" },
         { title: "נוח - סטודנטים לסיעוד", subtitle: "סטודנטים לסיעוד", src: pic7, to: "https://www.noah-sn.co.il/" },
         { title: "דיב-דרייב", subtitle: "בית ספר לנהיגה", src: pic8, to: "https://driver-lilac.vercel.app/" },
+        { title: "שיפוטי", subtitle: "בלוג משפטי למשרד עורכי דין", src: pic9, to: "https://shiputi.co.il/" },
+        { title: "מבריק 100", subtitle: "שירותי ניקיון", src: pic10, to: "https://clean-seven-rho.vercel.app/" },
     ];
 
     return (

@@ -1,11 +1,16 @@
 @use "../../assets/styles/variables" as *;
 
 .nav-container {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
   .logo {
     background: url("../../assets/pics/WhatsApp\ Image\ 2025-06-11\ at\ 20.35.03.jpeg")
       no-repeat center center/cover;
     width: 100px;
     height: 100px;
+    flex-shrink: 0;
   }
 
   .nav-wrapper {
@@ -13,29 +18,49 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 0 16px;
+    padding: 0 32px;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      background: rgba(15, 23, 42, 0.7);
+    }
 
     .nav-list {
       direction: rtl;
       display: flex;
-      gap: $gap-medium;
-      font-size: $font-lg;
+      gap: $gap-large;
+      font-size: $font-size-base;
+      font-family: $font-family-base;
+      font-weight: $weight-normal;
 
       .link-wrapper {
         text-decoration: none;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 5px;
-        color: #fff;
+        gap: 4px;
+        color: rgba(255, 255, 255, 0.8);
+        padding: 8px 12px;
+        border-radius: $border-radius;
+        transition: color 0.25s ease, background 0.25s ease;
+
+        &:hover {
+          color: #fff;
+          background: rgba(96, 139, 193, 0.12);
+        }
 
         .underline {
           position: relative;
           height: 2px;
           width: 100%;
           max-width: 120px;
-          background-color: rgba(255, 255, 255, 0.35);
+          background-color: rgba(255, 255, 255, 0.15);
           overflow: hidden;
+          border-radius: 1px;
 
           &::after {
             content: "";
@@ -44,8 +69,8 @@
             left: 0;
             height: 100%;
             width: 0%;
-            background-color: #fff;
-            transition: width 1.2s ease;
+            background: linear-gradient(90deg, $third-color, lighten($third-color, 15%));
+            transition: width 0.4s ease;
           }
         }
 

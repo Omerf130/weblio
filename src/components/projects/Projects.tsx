@@ -1,19 +1,19 @@
 import "./Projects.scss";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import pic1 from '../../assets/pics/a-a.png'
-import pic2 from '../../assets/pics/n-s.png'
+import pic2 from '../../assets/pics/shiputi.jpeg'
 import pic3 from '../../assets/pics/zoukopng.png'
-import pic4 from '../../assets/pics/ganmetukim.png'
+import pic5 from '../../assets/pics/clean.jpeg'
 import { useNavigate } from "react-router-dom";
 
 const Projects = () => {
   const navigate = useNavigate();
   const projectList = [
     {
-      title: "נזי שרון",
-      subtitle: "מעצבת פנים",
+      title: "בלוג משפטי",
+      subtitle: "בלוג משפטי למשרד עורכי דין",
       src: pic2,
-      to: "https://n-s-tau.vercel.app/"
+      to: "https://shiputi.co.il/"
     },
     {
       title: "אטיאס אשכנזי ושות'",
@@ -23,15 +23,15 @@ const Projects = () => {
     },
     {
       title: "זוקו",
-      subtitle: "",
+      subtitle: "שיעורי ריקוד מקצועיים",
       src: pic3,
       to:"https://zoukoisrael.com/"
     },
     {
-      title: "גן מתוקים",
-      subtitle: "",
-      src: pic4,
-      to:"https://ganmetukim.co.il"
+      title: "מבריק 100",
+      subtitle: "חברת ניקיון",
+      src: pic5,
+      to:"https://clean-seven-rho.vercel.app/"
     },
   ];
   return (
