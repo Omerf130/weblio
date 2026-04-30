@@ -7,7 +7,10 @@ const ProjectsNav = () => {
     return (
         <div className="nav-container">
             <div className="nav-wrapper">
-                <div className="logo" onClick={() => navigate("/")}/>
+                <a className="logo" onClick={() => navigate("/")}>
+                  <span className="logo-mark" />
+                  <span className="logo-text"><em>web</em>lio</span>
+                </a>
                 
             </div>
         </div>
