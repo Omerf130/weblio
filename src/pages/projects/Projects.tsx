@@ -11,6 +11,7 @@ import pic7 from '../../assets/pics/noah.jpeg';
 import pic8 from '../../assets/pics/deeb-drive.jpeg';
 import pic9 from '../../assets/pics/shiputi.jpeg';
 import pic10 from '../../assets/pics/clean.jpeg';
+import pic11 from '../../assets/pics/lace.jpeg';
 import "./Projects.scss";
 import { useEffect } from 'react';
 
@@ -33,6 +34,7 @@ const Projects = () => {
         { title: "דיב-דרייב", subtitle: "בית ספר לנהיגה", src: pic8, to: "https://driver-lilac.vercel.app/" },
         { title: "שיפוטי", subtitle: "בלוג משפטי למשרד עורכי דין", src: pic9, to: "https://shiputi.co.il/" },
         { title: "מבריק 100", subtitle: "שירותי ניקיון", src: pic10, to: "https://clean-seven-rho.vercel.app/" },
+        { title: "lace", subtitle: "סוכנות דוגמנות", src: pic11, to: "https://www.lacemodel.com/" },
     ];
 
     return (

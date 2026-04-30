@@ -1,6 +1,7 @@
 import "./Projects.scss";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import pic1 from '../../assets/pics/a-a.png'
+// import pic1 from '../../assets/pics/a-a.png'
+import pic4 from '../../assets/pics/lace.jpeg'
 import pic2 from '../../assets/pics/shiputi.jpeg'
 import pic3 from '../../assets/pics/zoukopng.png'
 import pic5 from '../../assets/pics/clean.jpeg'
@@ -16,10 +17,10 @@ const Projects = () => {
       to: "https://shiputi.co.il/"
     },
     {
-      title: "אטיאס אשכנזי ושות'",
-      subtitle: "משרד עורכי דין",
-      src: pic1,
-      to:"https://a-a-topaz.vercel.app/"
+      title: "lace",
+      subtitle: "סוכנות דוגמנות",
+      src: pic4,
+      to:"https://www.lacemodel.com/"
     },
     {
       title: "זוקו",

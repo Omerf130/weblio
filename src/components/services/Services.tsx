@@ -17,7 +17,7 @@ const Services = () => {
     {title: "אתרים מותאמים למובייל", subtitle: "אתרים רספונסיביים שנראים ועובדים מצויין בכל מכשיר", img: <IoIosPhonePortrait className='img spin' size={SIZE}/>,list:["🔝 - התאמה לכל גודל מסך","🔝 - טעינה מהירה","🔝 - חוויית משתמש אופטימלית"]},
     {title: "עיצוב גרפי", subtitle: "עיצובים מרהיבים שמשקפים את הזהות של העסק שלך", img: <FaPencilAlt className='img spin' size={SIZE}/>,list:["🔝 - עיצוב לוגו","🔝 - מיתוג עסקי","🔝 - חומרי שיווק"]},
     {title: "קידום אורגני", subtitle: "אסטרטגיות SEO מתקדמות שיעזרו לאתר שלך להופיע גבוה בתוצאות חיפוש", img: <IoSearchOutline className='img spin' size={SIZE}/>,list:["🔝 - מחקר מילות מפתח","🔝 - אופטימיזציה טכנית","🔝 - בניית קישורים איכותיים"]},
-    {title: "שייוק דיגיטלי", subtitle: "אסטרטגיות שיווק שיעזרו לך להגיע ללקוחות חדשים ולהגדיל את המכירות", img: <IoIosMegaphone className='img spin' size={SIZE}/>,list:["🔝 - ניהול רשתות חברתיות","🔝 - קמפיינים ממומנים","🔝 - שיווק בדואר אלקטרוני"]}
+    {title: "כרטיסי ביקור", subtitle: "יצירת כרטיסי ביקור לעסקים בצורה מקצועית ומושכת לקוחות חדשים", img: <IoIosMegaphone className='img spin' size={SIZE}/>,list:["🔝 - כרטיסי ביקור מעוצבים","🔝 - כרטיסי ביקור שימשכו כל לקוח"]}
   ]
 
   return (
