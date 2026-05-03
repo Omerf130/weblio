@@ -31,6 +31,15 @@ function App() {
       document.body.style.transform = "translateZ(0)";
     }
   }, []);
+
+  useEffect(() => {
+    if (!isLoaderDisplay && window.location.hash) {
+      const el = document.querySelector(window.location.hash);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [isLoaderDisplay]);
   return (
     <div className="app">
       <Nav />

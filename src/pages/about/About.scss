@@ -1,0 +1,160 @@
+@use "../../assets/styles/variables" as *;
+
+.about-page-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  background: $main;
+  position: relative;
+}
+
+.about-page-container {
+  padding: $padding-main;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  direction: rtl;
+  position: relative;
+  overflow-x: hidden;
+
+  .about-page-content {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: $gap-xl;
+    color: $primary-color;
+  }
+
+  .about-page-title {
+    font-size: $hero-title;
+    text-align: center;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #ffffff 30%, $third-color 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: $gap-medium;
+  }
+
+  .about-page-section {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-medium;
+    padding-top: $gap-large;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    line-height: 1.7;
+
+    p {
+      font-size: $font-size-base;
+      color: rgba(255, 255, 255, 0.85);
+    }
+  }
+
+  .about-page-intro {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .about-page-greeting {
+    font-size: $font-md !important;
+    font-weight: $weight-bold;
+    color: $primary-color !important;
+  }
+
+  .about-page-h2 {
+    font-size: $font-lg;
+    font-weight: $weight-bold;
+    color: $third-color;
+    letter-spacing: 1px;
+  }
+
+  .about-page-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $gap-medium;
+
+    li {
+      font-size: $font-size-base;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.6;
+    }
+  }
+
+  .about-page-list-bulleted {
+    padding-right: 24px;
+    list-style: disc;
+
+    li {
+      list-style: disc;
+    }
+  }
+
+  .about-page-cta {
+    align-items: flex-start;
+    text-align: right;
+
+    .about-page-cta-btn {
+      margin-top: $gap-large;
+      align-self: center;
+      padding: 14px 40px;
+      font-size: $font-md;
+      font-weight: $weight-bold;
+      color: white;
+      background: linear-gradient(135deg, $third-color, $fifth-color);
+      border: none;
+      border-radius: $border-radius;
+      box-shadow: $shadow;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: $shadow-bold;
+        background: linear-gradient(135deg, $fifth-color, $third-color);
+      }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .about-page-container {
+    padding: 24px 18px 60px;
+
+    .about-page-content {
+      gap: $gap-large;
+    }
+
+    .about-page-title {
+      font-size: 32px;
+    }
+
+    .about-page-h2 {
+      font-size: 22px;
+    }
+
+    .about-page-section {
+      padding-top: $gap-medium;
+
+      p,
+      .about-page-list li {
+        font-size: 16px;
+      }
+    }
+
+    .about-page-greeting {
+      font-size: 20px !important;
+    }
+
+    .about-page-cta .about-page-cta-btn {
+      padding: 12px 28px;
+      font-size: 18px;
+      width: 100%;
+    }
+  }
+}

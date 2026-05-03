@@ -36,6 +36,27 @@
       z-index: 1;
       line-height: 1.6;
     }
+
+    .about-btn {
+      align-self: flex-start;
+      margin-top: $gap-medium;
+      padding: 12px 32px;
+      font-size: $font-size-base;
+      font-weight: $weight-bold;
+      color: white;
+      background: linear-gradient(135deg, $third-color, $fifth-color);
+      border: none;
+      border-radius: $border-radius;
+      box-shadow: $shadow;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: $shadow-bold;
+        background: linear-gradient(135deg, $fifth-color, $third-color);
+      }
+    }
   }
   .about-img {
     flex: 1;
@@ -97,6 +118,10 @@
       
       h3 {
         font-size: 18px !important;
+      }
+
+      .about-btn {
+        align-self: center;
       }
     }
 
