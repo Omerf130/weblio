@@ -26,7 +26,14 @@ const Footer = () => {
         <h3>עקבו אחרינו</h3>
         <div className="footer-media">
           <SiInstagram className="media" />
-          <FaLinkedin className="media"/>
+          <a
+            href="https://www.linkedin.com/in/omer-faclieru-b15bb2275/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+          >
+            <FaLinkedin className="media" />
+          </a>
         </div>
       </div>
 
