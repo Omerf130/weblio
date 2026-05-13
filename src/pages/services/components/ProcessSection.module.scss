@@ -1,0 +1,137 @@
+@use "../../../assets/styles/variables" as *;
+
+.section {
+  scroll-margin-top: 5rem;
+}
+
+.h2 {
+  margin: 0 0 2rem;
+  font-size: clamp(1.5rem, 3vw, $font-lg);
+  font-weight: $weight-bold;
+  color: $third-color;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  inset-inline-end: calc(1.25rem + 6px);
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    rgba(96, 139, 193, 0.6),
+    rgba(96, 139, 193, 0.15)
+  );
+  border-radius: 2px;
+}
+
+.item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  align-items: start;
+}
+
+.badge {
+  grid-column: 2;
+  grid-row: 1;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $weight-bold;
+  font-size: 0.9rem;
+  color: #fff;
+  background: linear-gradient(145deg, $third-color, darken($third-color, 12%));
+  box-shadow: 0 4px 16px rgba(96, 139, 193, 0.4);
+  z-index: 1;
+}
+
+.body {
+  grid-column: 1;
+  grid-row: 1;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  max-width: 100%;
+}
+
+.stepTitle {
+  margin: 0 0 $gap-small;
+  font-size: 1.1rem;
+  font-weight: $weight-bold;
+  color: $primary-color;
+}
+
+.stepDesc {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: rgba(243, 243, 224, 0.82);
+}
+
+@media (min-width: 900px) {
+  .timeline {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+
+  .timeline::before {
+    top: calc(1.25rem + 6px);
+    bottom: auto;
+    inset-inline: 8%;
+    height: 2px;
+    width: auto;
+    inset-inline-end: 8%;
+    background: linear-gradient(
+      90deg,
+      rgba(96, 139, 193, 0.15),
+      rgba(96, 139, 193, 0.55),
+      rgba(96, 139, 193, 0.15)
+    );
+  }
+
+  .item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .badge {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .body {
+    grid-column: auto;
+    grid-row: auto;
+    width: 100%;
+    text-align: center;
+    min-height: 8.5rem;
+  }
+}

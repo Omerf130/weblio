@@ -10,7 +10,7 @@ const Contacts = () => {
   });
 
   const {
-    CONTACT: { TITLE },
+    CONTACT: { TITLE, WHATSAPP_PHONE },
   } = CONSTS;
 
   const [ref, isInView] = useInView<HTMLHeadingElement>();
@@ -25,7 +25,7 @@ const Contacts = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const phoneNumber = "972544993155"; // no "+"
+    const phoneNumber = WHATSAPP_PHONE;
     const message = encodeURIComponent(
       `שם: ${form.name}\nהודעה: ${form.message}`
     );

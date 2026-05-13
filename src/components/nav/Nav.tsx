@@ -2,6 +2,7 @@ import "./Nav.scss";
 import useWindowWidth from "../../hooks/useWindowWidth";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Nav = () => {
   const isMobile = useWindowWidth(640);
@@ -9,7 +10,7 @@ const Nav = () => {
 
   const navLinks = [
     { text: "מי אנחנו", href: "#about" },
-    { text: "שירותים", href: "#services" },
+    { text: "שירותים", href: "/services", router: true as const },
     { text: "פרוייקטים", href: "#projects" },
     { text: "צור קשר", href: "#contact" },
   ];
@@ -17,8 +18,6 @@ const Nav = () => {
   const handleLinkClick = () => {
     setIsOpen(false);
   };
-
-  console.log("isMobile",isMobile)
 
   return (
     <div className="nav-container">
@@ -34,17 +33,29 @@ const Nav = () => {
               onClick={() => setIsOpen(!isOpen)}
             />
             <nav className={`nav-list ${isOpen ? "show" : ""}`}>
-              {navLinks.map((link, i) => (
-                <a 
-                  key={i} 
-                  href={link.href} 
-                  className="link-wrapper"
-                  onClick={handleLinkClick}
-                >
-                  <div className="text">{link.text}</div>
-                  <div className="underline" />
-                </a>
-              ))}
+              {navLinks.map((link, i) =>
+                "router" in link && link.router ? (
+                  <Link
+                    key={i}
+                    to={link.href}
+                    className="link-wrapper"
+                    onClick={handleLinkClick}
+                  >
+                    <div className="text">{link.text}</div>
+                    <div className="underline" />
+                  </Link>
+                ) : (
+                  <a
+                    key={i}
+                    href={link.href}
+                    className="link-wrapper"
+                    onClick={handleLinkClick}
+                  >
+                    <div className="text">{link.text}</div>
+                    <div className="underline" />
+                  </a>
+                )
+              )}
             </nav>
           </div>
         </div>
@@ -55,12 +66,19 @@ const Nav = () => {
             <span className="logo-text"><em>web</em>lio</span>
           </a>
           <nav className="nav-list">
-            {navLinks.map((link, i) => (
-              <a key={i} href={link.href} className="link-wrapper">
-                <div className="text">{link.text}</div>
-                <div className="underline" />
-              </a>
-            ))}
+            {navLinks.map((link, i) =>
+              "router" in link && link.router ? (
+                <Link key={i} to={link.href} className="link-wrapper">
+                  <div className="text">{link.text}</div>
+                  <div className="underline" />
+                </Link>
+              ) : (
+                <a key={i} href={link.href} className="link-wrapper">
+                  <div className="text">{link.text}</div>
+                  <div className="underline" />
+                </a>
+              )
+            )}
           </nav>
         </div>
       )}

@@ -11,6 +11,7 @@ import "./index.scss";
 import "./assets/styles/main.scss";
 import Projects from "./pages/projects/Projects.tsx";
 import AboutPage from "./pages/about/About.tsx";
+import ServicesPage from "./pages/services/ServicesPage.tsx";
 import ReactGA from "react-ga4";
 import GATracker from "./components/GATracker/GATracker.tsx";
 
@@ -28,6 +29,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/" element={<App />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/services" element={<ServicesPage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
