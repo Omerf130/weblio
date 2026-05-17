@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { CONSTS } from "../../consts";
 import { useInView } from "../../hooks/useInView";
-import './About.scss'
+import aboutHeroImg from "../../assets/pics/computer (1).webp";
+import "./About.scss";
 
 const About = () => {
   const {ABOUT:{TITLE, CONTENT1, CONTENT2, CONTENT3, BUTTON}} = CONSTS;
@@ -17,7 +18,12 @@ const About = () => {
         </button>
       </div>
       <div className="about-img">
-        <img src="https://plus.unsplash.com/premium_photo-1681666713641-8d722b681edc?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8d2Vic2l0ZXxlbnwwfHwwfHx8MA%3D%3D" alt="web dev" />
+        <img
+          src={aboutHeroImg}
+          alt="עבודה על פיתוח ועיצוב אתרים מול מסך מחשב — נוכחות דיגיטלית מקצועית"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
     </div>
   )

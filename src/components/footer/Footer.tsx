@@ -1,5 +1,5 @@
 import { SiInstagram } from "react-icons/si";
-import { FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 import "./Footer.scss";
 import FooterLinkItem from "./FooterLinkItem";
 import { useLocation } from "react-router-dom";
@@ -33,6 +33,14 @@ const Footer = () => {
             aria-label="LinkedIn"
           >
             <FaLinkedin className="media" />
+          </a>
+          <a
+            href="https://github.com/Omerf130"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+          >
+            <FaGithub className="media" />
           </a>
         </div>
       </div>

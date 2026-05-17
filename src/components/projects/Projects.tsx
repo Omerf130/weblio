@@ -6,9 +6,11 @@ import pic2 from '../../assets/pics/shiputi.jpeg'
 import pic3 from '../../assets/pics/zoukopng.png'
 import pic5 from '../../assets/pics/clean.jpeg'
 import { useNavigate } from "react-router-dom";
+import { useInView } from "../../hooks/useInView";
 
 const Projects = () => {
   const navigate = useNavigate();
+  const [headingRef, headingInView] = useInView<HTMLHeadingElement>();
   const projectList = [
     {
       title: "בלוג משפטי",
@@ -37,7 +39,12 @@ const Projects = () => {
   ];
   return (
     <div className="project-container" id="projects">
-      <h1 className="project-h1">פרוייקטים</h1>
+      <h1
+        ref={headingRef}
+        className={`project-heading ${headingInView ? "slide-top" : ""}`}
+      >
+        פרוייקטים
+      </h1>
       <ul className="project-ul">
         {projectList.map((project) => (
           <li className="project-list-item" key={project.title}>
@@ -55,7 +62,13 @@ const Projects = () => {
           </li>
         ))}
       </ul>
-      <button className="project-btn" onClick={() => navigate("/projects")}>לפרוקטים נוספים</button>
+      <button
+        type="button"
+        className="project-btn"
+        onClick={() => navigate("/projects")}
+      >
+        לפרויקטים נוספים
+      </button>
     </div>
   );
 };

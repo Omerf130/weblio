@@ -1,4 +1,5 @@
-import './WhyMe.scss'
+import "./WhyMe.scss";
+import { useInView } from "../../hooks/useInView";
 import { FaPencilAlt } from "react-icons/fa";
 import { LuClock4 } from "react-icons/lu";
 import { CiSearch } from "react-icons/ci";
@@ -7,6 +8,7 @@ import { IoIosSettings } from "react-icons/io";
 const SIZE = 24;
 
 const WhyMe = () => {
+  const [headingRef, headingInView] = useInView<HTMLHeadingElement>();
   const dataCards = [
     {title: "עיצוב ייחודי", subtitle: "כל אתר שאנחנו בונים הוא ייחודי ומותאם אישית לצרכים שלך ולאופי של העסק שלך.", img: <FaPencilAlt className='img spin' size={SIZE}/>},
     {title: "ביצועים מהירים", subtitle: "האתרים שלנו נבנים עם דגש על מהירות טעינה ואוטימיזציה לחוויית משתמש מעולה.", img: <LuClock4 className='img spin' size={SIZE}/>},
@@ -16,7 +18,12 @@ const WhyMe = () => {
   ]
   return (
     <div className='whyme-container' id="whyme">
-      <h1>למה אני?</h1>
+      <h1
+        ref={headingRef}
+        className={`whyme-heading ${headingInView ? "slide-top" : ""}`}
+      >
+        למה אני?
+      </h1>
       <div className="whyme-cards">
         {dataCards.map((card) => (
           <div className="card">

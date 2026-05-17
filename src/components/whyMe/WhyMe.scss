@@ -6,13 +6,26 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding: 100px 40px;
+  padding: clamp(3rem, 8vw, 5rem) clamp(1.25rem, 4vw, 2.5rem);
   gap: $gap-large;
 
-  h1 {
-    font-size: $hero-title;
-    letter-spacing: 2px;
-    font-style: oblique;
+  .whyme-heading {
+    margin: 0;
+    width: 100%;
+    text-align: center;
+    font-size: clamp(2rem, 4.5vw, $hero-title);
+    font-weight: $weight-bold;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    font-style: normal;
+    background: linear-gradient(
+      135deg,
+      rgba(243, 243, 224, 0.98) 25%,
+      rgba(96, 139, 193, 0.95) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .whyme-cards {

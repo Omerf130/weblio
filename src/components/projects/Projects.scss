@@ -1,5 +1,7 @@
 @use "../../assets/styles/variables" as *;
 
+$ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
 .project-container {
   padding: $padding-main;
   display: flex;
@@ -8,6 +10,25 @@
   align-items: center;
   justify-content: center;
   direction: rtl;
+
+  .project-heading {
+    margin: 0;
+    width: 100%;
+    text-align: center;
+    font-size: clamp(2rem, 4.5vw, $hero-title);
+    font-weight: $weight-bold;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    font-style: normal;
+    background: linear-gradient(
+      135deg,
+      rgba(243, 243, 224, 0.98) 25%,
+      rgba(96, 139, 193, 0.95) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
 
   .project-ul {
@@ -108,17 +129,38 @@
   }
 
   .project-btn {
-    padding: 10px;
-    font-size: 16px;
-    background-color: #0077ff;
-    color: white;
-    border: none;
-    border-radius: 6px;
+    margin-top: 0.25rem;
+    padding: 0.65rem 1.65rem;
+    font-family: $font-family-base;
+    font-size: 0.9rem;
+    font-weight: $weight-bold;
+    letter-spacing: 0.04em;
+    color: #fff;
+    background: linear-gradient(135deg, $third-color, $fifth-color);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    box-shadow:
+      0 4px 16px rgba(96, 139, 193, 0.35),
+      0 2px 6px rgba(0, 0, 0, 0.15);
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition:
+      transform 0.32s $ease-out-soft,
+      box-shadow 0.32s $ease-out-soft,
+      filter 0.32s $ease-out-soft,
+      border-color 0.32s $ease-out-soft;
 
     &:hover {
-      background-color: #005fcc;
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.28);
+      box-shadow:
+        0 10px 28px rgba(96, 139, 193, 0.4),
+        0 4px 12px rgba(0, 0, 0, 0.2);
+      filter: brightness(1.05);
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba(243, 243, 224, 0.85);
+      outline-offset: 4px;
     }
   }
 }
