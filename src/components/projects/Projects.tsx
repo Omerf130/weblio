@@ -3,6 +3,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import pic4 from "../../assets/pics/lace.jpeg";
 import pic2 from "../../assets/pics/shiputi.jpeg";
 import pic3 from "../../assets/pics/zoukopng.png";
+import pic1 from "../../assets/pics/jozeglaperfume.jpeg";
 import pic5 from "../../assets/pics/clean.jpeg";
 import { useNavigate } from "react-router-dom";
 import Reveal, { staggerItem, staggerParent } from "../motion/Reveal";
@@ -24,10 +25,10 @@ const Projects = () => {
       to: "https://www.lacemodel.com/",
     },
     {
-      title: "זוקו",
-      subtitle: "שיעורי ריקוד מקצועיים",
-      src: pic3,
-      to: "https://zoukoisrael.com/",
+      title: "jozef la perfume",
+      subtitle: "חנות בשמים",
+      src: pic1,
+      to: "https://www.jozeflaperfume.co.il/",
     },
     {
       title: "מבריק 100",

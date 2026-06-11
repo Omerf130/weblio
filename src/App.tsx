@@ -8,6 +8,7 @@ import Loader from "./components/loader/Loader";
 import Nav from "./components/nav/Nav";
 import Projects from "./components/projects/Projects";
 import Services from "./components/services/Services";
+import Testimonials from "./components/testimonials/Testimonials";
 import WhyMe from "./components/whyMe/WhyMe";
 import BackgroundStars from "./components/background/BackgroundStars";
 
@@ -53,6 +54,7 @@ function App() {
           <Services />
           <WhyMe />
           <Projects />
+          <Testimonials />
           <Contacts />
           <Footer />
         </>
