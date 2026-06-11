@@ -3,9 +3,15 @@ export const CONSTS = {
 
   },
   HERO: {
-    TITLE:"weblio",
-    CONTENT:"יוצרים פתרונות דיגיטליים לעסקים",
-    BUTTON:"בוא נתחיל",
+    TITLE: "weblio",
+    CONTENT: "יוצרים פתרונות דיגיטליים לעסקים",
+    BUTTON: "בוא נתחיל",
+    EYEBROW: "weblio · web design & development",
+    HEADLINE: "אתרים שגורמים לעסקים לבלוט",
+    SUBTITLE:
+      "אני מעצב ובונה אתרים מודרניים, רספונסיביים וחוויות דיגיטליות שעוזרות לעסקים להיראות מקצועיים ולהפוך מבקרים ללקוחות.",
+    CTA_PRIMARY: "בואו נבנה אתר",
+    CTA_SECONDARY: "לראות פרויקטים",
   },
   HOMEPAGE_SERVICES: {
     TITLE: "השירותים שלנו",

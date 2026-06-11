@@ -32,91 +32,137 @@ $ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
 
   .project-ul {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: $gap-xl;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 1080px;
 
     .project-list-item {
-      width: 500px;
-      height: 300px;
       position: relative;
+      width: 100%;
+      height: 320px;
       overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+      transition:
+        transform 0.45s $ease-out-soft,
+        border-color 0.45s $ease-out-soft,
+        box-shadow 0.45s $ease-out-soft;
+
+      a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        text-decoration: none;
+        color: inherit;
+      }
 
       &::after {
         content: "";
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.3);
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.75) 0%,
+          rgba(0, 0, 0, 0.35) 45%,
+          rgba(0, 0, 0, 0.15) 100%
+        );
         z-index: 1;
-      }
-
-      &::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: $fifth-color;
-        transform: translateX(-100%);
-        transition: transform 0.6s ease;
-        z-index: 2;
+        transition: background 0.45s $ease-out-soft;
       }
 
       &:hover {
-        &::before {
-          transform: translateX(0);
+        transform: translateY(-6px);
+        border-color: rgba(96, 139, 193, 0.45);
+        box-shadow:
+          0 22px 50px rgba(0, 0, 0, 0.5),
+          0 0 32px rgba(96, 139, 193, 0.22);
+
+        &::after {
+          background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.8) 0%,
+            rgba(0, 0, 0, 0.4) 45%,
+            rgba(96, 139, 193, 0.18) 100%
+          );
+        }
+
+        .project-img {
+          transform: scale(1.08);
+          filter: brightness(0.92);
         }
 
         .project-content {
-          transform: scale(1.2);
-          right: 50px;
+          right: 26px;
+          opacity: 1;
+        }
+
+        .project-button {
+          transform: translateY(0);
           opacity: 1;
         }
       }
 
       .project-content {
         position: absolute;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+        right: 22px;
+        bottom: 22px;
         z-index: 3;
-        opacity: 0;
-        transition: all 0.6s ease;
+        opacity: 0.95;
+        transition:
+          right 0.45s $ease-out-soft,
+          opacity 0.45s $ease-out-soft;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        max-width: 80%;
 
         .project-title {
           font-size: $font-lg;
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+          font-weight: $weight-bold;
+          color: #fff;
+          text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
         }
 
         .project-subtitle {
           font-size: $font-md;
-          text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+          color: rgba(255, 255, 255, 0.85);
+          text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
         }
 
         .project-button {
-          background: linear-gradient(270deg, #f06449, #ef3636);
-          border-radius: 6px;
-          padding: 10px 25px;
+          margin-top: 10px;
+          background: linear-gradient(135deg, $third-color, $fifth-color);
+          border-radius: 999px;
+          padding: 8px 18px;
           width: fit-content;
-          transition: all 0.6s ease;
+          opacity: 0;
+          transform: translateY(6px);
+          transition:
+            transform 0.45s $ease-out-soft,
+            opacity 0.45s $ease-out-soft,
+            box-shadow 0.45s $ease-out-soft;
           display: flex;
           align-items: center;
-          justify-content: space-between;
           gap: 10px;
           cursor: pointer;
-          font-weight: bold;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+          font-size: 0.85rem;
+          font-weight: $weight-bold;
+          color: #fff;
+          box-shadow: 0 6px 18px rgba(96, 139, 193, 0.4);
 
           .arrow {
-            transition: transform 0.6s ease;
+            transition: transform 0.4s $ease-out-soft;
           }
 
           &:hover .arrow {
-            transform: translateX(-15px);
+            transform: translateX(-6px);
           }
         }
       }
@@ -124,6 +170,11 @@ $ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
       .project-img {
         width: 100%;
         height: 100%;
+        object-fit: cover;
+        display: block;
+        transition:
+          transform 0.6s $ease-out-soft,
+          filter 0.6s $ease-out-soft;
       }
     }
   }
@@ -166,73 +217,32 @@ $ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 
-@media (max-width: 640px) {
+@media (max-width: 900px) {
   .project-container {
     .project-ul {
-      width: 100%;
-      
+      grid-template-columns: 1fr;
+
       .project-list-item {
-        width: 100% !important;
-        height: 200px !important;
-        border-radius: 8px;
-        overflow: hidden;
-
-        &::before {
-          display: none !important;
-        }
-
-        &::after {
-          background-color: rgba(0, 0, 0, 0.5) !important;
-        }
+        height: 260px;
 
         .project-content {
-          position: absolute !important;
-          transform: translateY(-50%) !important;
-          opacity: 1 !important;
-          right: 15px !important;
-          top: 50% !important;
-          left: auto !important;
-          display: flex !important;
-          flex-direction: column !important;
-          gap: 8px !important;
-          z-index: 10 !important;
-          
+          right: 18px;
+          bottom: 18px;
+          opacity: 1;
+
           .project-title {
-            font-size: 22px !important;
-            font-weight: bold !important;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+            font-size: 22px;
           }
-          
+
           .project-subtitle {
-            font-size: 16px !important;
-            margin-bottom: 10px !important;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+            font-size: 15px;
           }
-          
+
           .project-button {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            background: linear-gradient(270deg, #f06449, #ef3636) !important;
-            border-radius: 6px !important;
-            padding: 12px 30px !important;
-            width: fit-content !important;
-            -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-            touch-action: manipulation;
-            cursor: pointer;
-            font-weight: bold !important;
-            font-size: 16px !important;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5) !important;
-            gap: 10px !important;
-            
-            span {
-              color: #fff !important;
-            }
-            
-            .arrow {
-              transform: none !important;
-              color: #fff !important;
-            }
+            opacity: 1;
+            transform: translateY(0);
+            font-size: 0.8rem;
+            padding: 8px 16px;
           }
         }
       }
@@ -240,45 +250,19 @@ $ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 }
 
-@media (max-width: 430px) {
+@media (max-width: 480px) {
   .project-container {
     .project-ul {
       .project-list-item {
-        width: 100% !important;
-        height: 180px !important;
-
-        &::before {
-          display: none !important;
-        }
+        height: 220px;
 
         .project-content {
-          position: absolute !important;
-          transform: translateY(-50%) !important;
-          opacity: 1 !important;
-          right: 12px !important;
-          top: 50% !important;
-          display: flex !important;
-          flex-direction: column !important;
-          gap: 6px !important;
-          z-index: 10 !important;
-          
           .project-title {
-            font-size: 20px !important;
+            font-size: 20px;
           }
-          
+
           .project-subtitle {
-            font-size: 14px !important;
-            margin-bottom: 8px !important;
-          }
-          
-          .project-button {
-            padding: 10px 25px !important;
-            font-size: 15px !important;
-            display: flex !important;
-            
-            .arrow {
-              transform: none !important;
-            }
+            font-size: 14px;
           }
         }
       }

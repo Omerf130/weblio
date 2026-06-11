@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { FaCode } from "react-icons/fa";
 import { BsCartCheckFill } from "react-icons/bs";
 import { MdRocketLaunch } from "react-icons/md";
 import type { IconType } from "react-icons";
-import { useInView } from "../../hooks/useInView";
 import { CONSTS } from "../../consts";
+import Reveal, { staggerItem, staggerParent } from "../motion/Reveal";
 import "./Services.scss";
 
 const ICONS: Record<
@@ -20,7 +21,6 @@ const headingId = "home-services-heading";
 const subtitleId = "home-services-subtitle";
 
 const Services = () => {
-  const [ref, isInView] = useInView<HTMLElement>();
   const { TITLE, SUBTITLE, CTA_VIEW_ALL, PREVIEW_ITEMS } = CONSTS.HOMEPAGE_SERVICES;
 
   return (
@@ -31,35 +31,45 @@ const Services = () => {
       aria-describedby={subtitleId}
       dir="rtl"
     >
-      <header className="home-services__header" ref={ref}>
-        <h2 className={`home-services__title ${isInView ? "slide-top" : ""}`} id={headingId}>
+      <Reveal as="header" className="home-services__header">
+        <h2 className="home-services__title" id={headingId}>
           {TITLE}
         </h2>
         <p id={subtitleId} className="home-services__subtitle">
           {SUBTITLE}
         </p>
-      </header>
+      </Reveal>
 
-      <ul className="home-services__grid">
+      <motion.ul
+        className="home-services__grid"
+        variants={staggerParent}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
         {PREVIEW_ITEMS.map((item) => {
           const Icon = ICONS[item.id];
           return (
-            <li key={item.id} className="home-services__card">
+            <motion.li
+              key={item.id}
+              className="home-services__card"
+              variants={staggerItem}
+            >
               <div className="home-services__icon" aria-hidden>
                 <Icon size={22} />
               </div>
               <h3 className="home-services__card-title">{item.title}</h3>
               <p className="home-services__card-line">{item.line}</p>
-            </li>
+            </motion.li>
           );
         })}
-      </ul>
+      </motion.ul>
 
-      <div className="home-services__actions">
+      <Reveal className="home-services__actions" delay={0.1}>
         <Link className="home-services__cta" to="/services">
           {CTA_VIEW_ALL}
         </Link>
-      </div>
+      </Reveal>
     </section>
   );
 };

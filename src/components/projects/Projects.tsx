@@ -1,54 +1,61 @@
-import "./Projects.scss";
+import { motion } from "framer-motion";
 import { FaArrowLeftLong } from "react-icons/fa6";
-// import pic1 from '../../assets/pics/a-a.png'
-import pic4 from '../../assets/pics/lace.jpeg'
-import pic2 from '../../assets/pics/shiputi.jpeg'
-import pic3 from '../../assets/pics/zoukopng.png'
-import pic5 from '../../assets/pics/clean.jpeg'
+import pic4 from "../../assets/pics/lace.jpeg";
+import pic2 from "../../assets/pics/shiputi.jpeg";
+import pic3 from "../../assets/pics/zoukopng.png";
+import pic5 from "../../assets/pics/clean.jpeg";
 import { useNavigate } from "react-router-dom";
-import { useInView } from "../../hooks/useInView";
+import Reveal, { staggerItem, staggerParent } from "../motion/Reveal";
+import "./Projects.scss";
 
 const Projects = () => {
   const navigate = useNavigate();
-  const [headingRef, headingInView] = useInView<HTMLHeadingElement>();
   const projectList = [
     {
       title: "בלוג משפטי",
       subtitle: "בלוג משפטי למשרד עורכי דין",
       src: pic2,
-      to: "https://shiputi.co.il/"
+      to: "https://shiputi.co.il/",
     },
     {
       title: "lace",
       subtitle: "סוכנות דוגמנות",
       src: pic4,
-      to:"https://www.lacemodel.com/"
+      to: "https://www.lacemodel.com/",
     },
     {
       title: "זוקו",
       subtitle: "שיעורי ריקוד מקצועיים",
       src: pic3,
-      to:"https://zoukoisrael.com/"
+      to: "https://zoukoisrael.com/",
     },
     {
       title: "מבריק 100",
       subtitle: "חברת ניקיון",
       src: pic5,
-      to:"https://clean-seven-rho.vercel.app/"
+      to: "https://clean-seven-rho.vercel.app/",
     },
   ];
+
   return (
     <div className="project-container" id="projects">
-      <h1
-        ref={headingRef}
-        className={`project-heading ${headingInView ? "slide-top" : ""}`}
-      >
+      <Reveal as="h1" className="project-heading">
         פרוייקטים
-      </h1>
-      <ul className="project-ul">
+      </Reveal>
+      <motion.ul
+        className="project-ul"
+        variants={staggerParent}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.15 }}
+      >
         {projectList.map((project) => (
-          <li className="project-list-item" key={project.title}>
-            <a href={project.to} target="blank">
+          <motion.li
+            className="project-list-item"
+            key={project.title}
+            variants={staggerItem}
+          >
+            <a href={project.to} target="_blank" rel="noopener noreferrer">
               <div className="project-content">
                 <div className="project-title">{project.title}</div>
                 <div className="project-subtitle">{project.subtitle}</div>
@@ -57,18 +64,20 @@ const Projects = () => {
                   <FaArrowLeftLong className="arrow" />
                 </div>
               </div>
-              <img className="project-img" src={project.src} />
+              <img className="project-img" src={project.src} alt={project.title} />
             </a>
-          </li>
+          </motion.li>
         ))}
-      </ul>
-      <button
-        type="button"
-        className="project-btn"
-        onClick={() => navigate("/projects")}
-      >
-        לפרויקטים נוספים
-      </button>
+      </motion.ul>
+      <Reveal delay={0.05}>
+        <button
+          type="button"
+          className="project-btn"
+          onClick={() => navigate("/projects")}
+        >
+          לפרויקטים נוספים
+        </button>
+      </Reveal>
     </div>
   );
 };

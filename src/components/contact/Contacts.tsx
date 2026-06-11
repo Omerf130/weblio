@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Contacts.scss";
-import { useInView } from "../../hooks/useInView";
+import Reveal from "../motion/Reveal";
 import { CONSTS } from "../../consts";
 
 const Contacts = () => {
@@ -12,8 +12,6 @@ const Contacts = () => {
   const {
     CONTACT: { TITLE, WHATSAPP_PHONE },
   } = CONSTS;
-
-  const [ref, isInView] = useInView<HTMLHeadingElement>();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -36,9 +34,7 @@ const Contacts = () => {
 
   return (
     <div className="contact" id="contact">
-      <h1 ref={ref} className={isInView ? "slide-top" : ""}>
-        {TITLE}
-      </h1>
+      <Reveal as="h1">{TITLE}</Reveal>
       <p>נשמח לשמוע ממך! מלא את הטופס ונחזור אליך בהקדם</p>
 
       <form onSubmit={handleSubmit} className="contact-form">
