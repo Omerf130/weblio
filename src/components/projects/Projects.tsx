@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import pic4 from "../../assets/pics/lace.jpeg";
 import pic2 from "../../assets/pics/shiputi.jpeg";
-import pic3 from "../../assets/pics/zoukopng.png";
 import pic1 from "../../assets/pics/jozeglaperfume.jpeg";
 import pic5 from "../../assets/pics/clean.jpeg";
 import { useNavigate } from "react-router-dom";
