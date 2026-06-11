@@ -97,6 +97,38 @@ export const CONSTS = {
     /** Digits only, without + — used by wa.me and the contact form */
     WHATSAPP_PHONE: "972544993155",
   },
+  METRICS: {
+    ITEMS: [
+      {
+        id: "clients",
+        target: 10,
+        suffix: "+",
+        label: "לקוחות מרוצים",
+        display: null,
+      },
+      {
+        id: "projects",
+        target: 15,
+        suffix: "+",
+        label: "פרויקטים שהושלמו",
+        display: null,
+      },
+      {
+        id: "responsive",
+        target: 100,
+        suffix: "%",
+        label: "מותאם למובייל",
+        display: null,
+      },
+      {
+        id: "support",
+        target: null,
+        suffix: "",
+        label: "ליווי ותמיכה",
+        display: "24/7",
+      },
+    ],
+  },
   TESTIMONIALS: {
     TITLE: "לקוחות מספרים",
     SUBTITLE:

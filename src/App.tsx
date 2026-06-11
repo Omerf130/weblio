@@ -5,6 +5,7 @@ import Contacts from "./components/contact/Contacts";
 import Footer from "./components/footer/Footer";
 import Hero from "./components/hero/Hero";
 import Loader from "./components/loader/Loader";
+import Metrics from "./components/metrics/Metrics";
 import Nav from "./components/nav/Nav";
 import Projects from "./components/projects/Projects";
 import Services from "./components/services/Services";
@@ -50,6 +51,7 @@ function App() {
       ) : (
         <>
           <Hero />
+          <Metrics />
           <About />
           <Services />
           <WhyMe />
