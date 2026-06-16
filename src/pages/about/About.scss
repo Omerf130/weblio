@@ -1,5 +1,7 @@
 @use "../../assets/styles/variables" as *;
 
+$ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
 .about-page-wrapper {
   min-height: 100vh;
   width: 100%;
@@ -28,15 +30,78 @@
     color: $primary-color;
   }
 
+  .about-page-hero {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+    padding-bottom: $gap-large;
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.65s $ease-out-soft,
+      transform 0.65s $ease-out-soft;
+
+    &--visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .about-page-hero-img {
+    flex: 0 0 auto;
+    width: min(100%, 280px);
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: -10%;
+      z-index: 0;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        rgba(96, 139, 193, 0.4) 0%,
+        rgba(96, 139, 193, 0.06) 60%,
+        transparent 72%
+      );
+      filter: blur(16px);
+      pointer-events: none;
+    }
+
+    img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      display: block;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      object-position: center top;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow:
+        0 24px 56px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(96, 139, 193, 0.08);
+    }
+  }
+
+  .about-page-hero-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $gap-medium;
+  }
+
   .about-page-title {
-    font-size: $hero-title;
-    text-align: center;
-    letter-spacing: 2px;
+    margin: 0;
+    font-size: clamp(1.75rem, 4vw, $font-lg);
+    font-weight: $weight-bold;
+    letter-spacing: 0.04em;
+    line-height: 1.25;
     background: linear-gradient(135deg, #ffffff 30%, $third-color 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: $gap-medium;
   }
 
   .about-page-section {
@@ -48,27 +113,59 @@
     line-height: 1.7;
 
     p {
+      margin: 0;
       font-size: $font-size-base;
       color: rgba(255, 255, 255, 0.85);
     }
   }
 
-  .about-page-intro {
-    border-top: none;
-    padding-top: 0;
-  }
-
-  .about-page-greeting {
-    font-size: $font-md !important;
-    font-weight: $weight-bold;
-    color: $primary-color !important;
-  }
-
   .about-page-h2 {
+    margin: 0;
     font-size: $font-lg;
     font-weight: $weight-bold;
     color: $third-color;
-    letter-spacing: 1px;
+    letter-spacing: 0.04em;
+  }
+
+  .about-page-cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $gap-medium;
+  }
+
+  .about-page-card {
+    padding: 1rem 1.15rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: rgba(243, 243, 224, 0.88);
+    transition:
+      border-color 0.25s $ease-out-soft,
+      background 0.25s $ease-out-soft;
+
+    &:hover {
+      border-color: rgba(96, 139, 193, 0.35);
+      background: rgba(96, 139, 193, 0.08);
+    }
+  }
+
+  .about-page-card-panel {
+    padding: 1.25rem 1.35rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: $gap-medium;
+
+    p {
+      margin: 0;
+    }
   }
 
   .about-page-list {
@@ -100,24 +197,62 @@
     text-align: right;
 
     .about-page-cta-btn {
-      margin-top: $gap-large;
+      margin-top: $gap-medium;
       align-self: center;
-      padding: 14px 40px;
-      font-size: $font-md;
+      padding: 0.65rem 1.75rem;
+      font-family: $font-family-base;
+      font-size: 0.95rem;
       font-weight: $weight-bold;
-      color: white;
+      letter-spacing: 0.04em;
+      color: #fff;
       background: linear-gradient(135deg, $third-color, $fifth-color);
-      border: none;
-      border-radius: $border-radius;
-      box-shadow: $shadow;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      box-shadow:
+        0 4px 16px rgba(96, 139, 193, 0.35),
+        0 2px 6px rgba(0, 0, 0, 0.15);
       cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+      transition:
+        transform 0.32s $ease-out-soft,
+        box-shadow 0.32s $ease-out-soft,
+        filter 0.32s $ease-out-soft,
+        border-color 0.32s $ease-out-soft;
 
       &:hover {
-        transform: translateY(-2px) scale(1.03);
-        box-shadow: $shadow-bold;
-        background: linear-gradient(135deg, $fifth-color, $third-color);
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.28);
+        box-shadow:
+          0 10px 28px rgba(96, 139, 193, 0.4),
+          0 4px 12px rgba(0, 0, 0, 0.2);
+        filter: brightness(1.05);
       }
+
+      &:focus-visible {
+        outline: 2px solid rgba(243, 243, 224, 0.85);
+        outline-offset: 4px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .about-page-container {
+    .about-page-hero {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .about-page-hero-img {
+      width: min(100%, 260px);
+    }
+
+    .about-page-hero-text {
+      align-items: center;
+    }
+
+    .about-page-cards {
+      grid-template-columns: 1fr;
     }
   }
 }
@@ -131,7 +266,7 @@
     }
 
     .about-page-title {
-      font-size: 32px;
+      font-size: 28px;
     }
 
     .about-page-h2 {
@@ -142,18 +277,13 @@
       padding-top: $gap-medium;
 
       p,
-      .about-page-list li {
+      .about-page-list li,
+      .about-page-card {
         font-size: 16px;
       }
     }
 
-    .about-page-greeting {
-      font-size: 20px !important;
-    }
-
     .about-page-cta .about-page-cta-btn {
-      padding: 12px 28px;
-      font-size: 18px;
       width: 100%;
     }
   }

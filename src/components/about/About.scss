@@ -59,6 +59,24 @@ $ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
       z-index: 1;
     }
 
+    .about-greeting {
+      margin: 0;
+      font-size: clamp(1.05rem, 2.2vw, $font-md);
+      font-weight: $weight-bold;
+      text-align: right;
+      line-height: 1.4;
+      color: $primary-color;
+    }
+
+    .about-paragraph {
+      margin: 0;
+      font-size: clamp(0.95rem, 2vw, $font-size-base);
+      font-weight: $weight-normal;
+      text-align: right;
+      line-height: 1.65;
+      color: rgba(243, 243, 224, 0.72);
+    }
+
     .about-btn {
       align-self: flex-start;
       margin-top: 0.35rem;
@@ -99,25 +117,55 @@ $ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   .about-img {
     flex: 1 1 min(0, 26rem);
-    max-width: min(100%, 440px);
+    max-width: min(100%, 380px);
     position: relative;
     z-index: 1;
     border-radius: 22px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.04);
-    box-shadow:
-      0 24px 56px rgba(0, 0, 0, 0.35),
-      0 0 0 1px rgba(96, 139, 193, 0.08);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    overflow: visible;
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.65s $ease-out-soft,
+      transform 0.65s $ease-out-soft;
+
+    &--visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: -12%;
+      z-index: 0;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        rgba(96, 139, 193, 0.42) 0%,
+        rgba(96, 139, 193, 0.08) 55%,
+        transparent 72%
+      );
+      filter: blur(18px);
+      pointer-events: none;
+    }
 
     img {
+      position: relative;
+      z-index: 1;
       width: 100%;
       height: auto;
       display: block;
-      aspect-ratio: 16 / 10;
+      aspect-ratio: 4 / 5;
       object-fit: cover;
+      object-position: center top;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow:
+        0 24px 56px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(96, 139, 193, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
   }
 }
@@ -150,7 +198,9 @@ $ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
       width: 100%;
 
       h1,
-      h3 {
+      h3,
+      .about-greeting,
+      .about-paragraph {
         text-align: center;
       }
 
