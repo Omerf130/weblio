@@ -62,7 +62,7 @@ const AboutPage = () => {
             <div className="about-page-hero-img">
               <img
                 src={aboutPhoto}
-                alt="עומר — מפתח ומעצב אתרים, Weblio"
+                alt="עומר - מפתח ומעצב אתרים, Weblio"
                 loading="eager"
                 decoding="async"
               />
