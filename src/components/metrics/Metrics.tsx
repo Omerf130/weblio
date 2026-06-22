@@ -43,17 +43,41 @@ const MetricCounter = ({ target, suffix, display }: CounterProps) => {
     return () => controls.stop();
   }, [isNumeric, inView, target, reduceMotion]);
 
+  // Safety net: in some older WebViews (notably the Facebook / Instagram
+  // in-app browser) IntersectionObserver can fail to fire for elements that
+  // start in view. If we never observed an intersection after a short window,
+  // force the final value so the user never sees a stuck "0".
+  useEffect(() => {
+    if (!isNumeric || inView) return;
+    const t = window.setTimeout(() => {
+      if (numberRef.current) {
+        numberRef.current.textContent = String(target);
+      }
+    }, 2500);
+    return () => window.clearTimeout(t);
+  }, [isNumeric, inView, target]);
+
   if (!isNumeric) {
     return (
-      <span ref={viewRef} className="metrics__value-text">
-        {display}
+      <span
+        ref={viewRef}
+        className="metrics__value-text"
+        aria-label={display ?? undefined}
+      >
+        <span className="metrics__value-number">{display}</span>
       </span>
     );
   }
 
   return (
-    <span ref={viewRef} className="metrics__value-text">
-      <span ref={numberRef}>0</span>
+    <span
+      ref={viewRef}
+      className="metrics__value-text"
+      aria-label={`${target}${suffix}`}
+    >
+      <span ref={numberRef} className="metrics__value-number">
+        0
+      </span>
       <span className="metrics__suffix" aria-hidden>
         {suffix}
       </span>

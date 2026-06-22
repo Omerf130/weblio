@@ -20,7 +20,7 @@ $ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: flex;
     flex-direction: column;
     gap: clamp(1.25rem, 3vw, 1.75rem);
-    flex: 1 1 min(0, 28rem);
+    flex: 1 1 0;
     min-width: 0;
     direction: rtl;
     position: relative;
@@ -116,7 +116,7 @@ $ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .about-img {
-    flex: 1 1 min(0, 26rem);
+    flex: 1 1 0;
     max-width: min(100%, 380px);
     position: relative;
     z-index: 1;
@@ -194,6 +194,11 @@ $ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     margin-bottom: clamp(2rem, 8vw, 3rem);
 
     .about-content {
+      // Force natural content height in column flex. Without this, the
+      // base `flex: 1 1 0` collapses the item to height 0 in older
+      // WebViews (Facebook / Instagram in-app browser), hiding the
+      // title, greeting, paragraphs, and CTA.
+      flex: 0 0 auto;
       align-items: center;
       width: 100%;
 

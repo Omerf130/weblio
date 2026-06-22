@@ -151,14 +151,28 @@ $ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   font-weight: 800;
   letter-spacing: -0.01em;
   line-height: 1;
-  background: linear-gradient(135deg, #ffffff 25%, $third-color 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   transition: transform 0.4s $ease-out-soft;
 }
 
+// Gradient + clip live on the elements that DIRECTLY contain the text
+// glyphs. Putting the clip on the parent and letting children inherit
+// `-webkit-text-fill-color: transparent` makes nested text invisible in
+// older WebViews (Facebook / Instagram in-app browser).
+%metrics-gradient-text {
+  display: inline-block;
+  background: linear-gradient(135deg, #ffffff 25%, $third-color 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.metrics__value-number {
+  @extend %metrics-gradient-text;
+}
+
 .metrics__suffix {
+  @extend %metrics-gradient-text;
   margin-inline-start: 4px;
   font-size: 0.65em;
   font-weight: 700;
