@@ -9,7 +9,7 @@ const links = [
   { text: "פרוייקטים", href: "#projects" },
   { text: "שירותים", href: "#services" },
   { text: "למה אני", href: "#whyme" },
-  { text: "מי אנחנו", href: "#about" },
+  { text: "קצת עליי", href: "#about" },
 ];
 
 const Footer = () => {

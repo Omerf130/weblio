@@ -9,7 +9,7 @@ const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { text: "מי אנחנו", href: "#about" },
+    { text: "קצת עליי", href: "#about" },
     { text: "שירותים", href: "/services", router: true as const },
     { text: "פרוייקטים", href: "#projects" },
     { text: "צור קשר", href: "#contact" },
