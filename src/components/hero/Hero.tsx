@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   motion,
@@ -8,8 +8,10 @@ import {
 } from "framer-motion";
 import { CONSTS } from "../../consts";
 import HeroBackground from "./HeroBackground";
-import CodeCard from "./CodeCard";
+import FloatingBrowser from "./FloatingBrowser";
 import "./Hero.scss";
+
+const Hero3DScene = lazy(() => import("./Hero3DScene"));
 
 const EASE_OUT_SOFT = [0.25, 0.46, 0.45, 0.94] as const;
 
@@ -38,19 +40,37 @@ const Hero = () => {
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement | null>(null);
 
-  // Mouse position normalised 0..1 relative to the hero, shared with bg + card
+  // Mouse position normalised 0..1 relative to the hero, shared with bg + card + 3D scene
   const mouseX = useMotionValue(0.5);
   const mouseY = useMotionValue(0.5);
 
   const [interactive, setInteractive] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     if (prefersReducedMotion) {
       setInteractive(false);
-      return;
+    } else {
+      setInteractive(window.matchMedia("(pointer: fine)").matches);
     }
-    const fine = window.matchMedia("(pointer: fine)").matches;
-    setInteractive(fine);
+
+    const mobileMq = window.matchMedia("(max-width: 767px)");
+    const tabletMq = window.matchMedia("(max-width: 1200px)");
+
+    const updateMobile = () => setIsMobile(mobileMq.matches);
+    const updateTablet = () => setIsTablet(tabletMq.matches);
+
+    updateMobile();
+    updateTablet();
+
+    mobileMq.addEventListener("change", updateMobile);
+    tabletMq.addEventListener("change", updateTablet);
+
+    return () => {
+      mobileMq.removeEventListener("change", updateMobile);
+      tabletMq.removeEventListener("change", updateTablet);
+    };
   }, [prefersReducedMotion]);
 
   useEffect(() => {
@@ -82,6 +102,17 @@ const Hero = () => {
     <section className="hero" id="hero" ref={sectionRef} dir="rtl">
       <HeroBackground mouseX={mouseX} mouseY={mouseY} interactive={interactive} />
 
+      <Suspense fallback={null}>
+        <Hero3DScene
+          mouseX={mouseX}
+          mouseY={mouseY}
+          interactive={interactive}
+          simple={isTablet || isMobile}
+          autoRotate={!interactive && !prefersReducedMotion}
+          isMobile={isMobile}
+        />
+      </Suspense>
+
       <div className="hero__inner">
         <motion.div
           className="hero__text"
@@ -90,6 +121,20 @@ const Hero = () => {
           variants={parentVariants}
         >
           <motion.span className="hero__eyebrow" variants={itemVariants}>
+            <motion.span
+              className="hero__eyebrow-dot"
+              aria-hidden
+              animate={
+                interactive
+                  ? { opacity: [1, 0.4, 1], scale: [1, 0.85, 1] }
+                  : undefined
+              }
+              transition={
+                interactive
+                  ? { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                  : undefined
+              }
+            />
             {HERO.EYEBROW}
           </motion.span>
           <motion.h1 className="hero__title" variants={itemVariants}>
@@ -112,14 +157,13 @@ const Hero = () => {
           </motion.div>
         </motion.div>
 
-        <motion.div
-          className="hero__visual"
-          initial={{ opacity: 0, y: 36 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8, ease: EASE_OUT_SOFT }}
-        >
-          <CodeCard mouseX={mouseX} mouseY={mouseY} interactive={interactive} />
-        </motion.div>
+        <div className="hero__visual">
+          <FloatingBrowser
+            mouseX={mouseX}
+            mouseY={mouseY}
+            interactive={interactive}
+          />
+        </div>
       </div>
     </section>
   );

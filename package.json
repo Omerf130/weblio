@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
     "@splinetool/react-spline": "^4.0.0",
     "framer-motion": "^12.40.0",
     "install": "^0.13.0",
@@ -18,12 +20,14 @@
     "react-ga4": "^2.1.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.11.0",
-    "sass": "^1.89.2"
+    "sass": "^1.89.2",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@types/three": "^0.185.0",
     "@vitejs/plugin-react-swc": "^3.9.0",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
