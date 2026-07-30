@@ -14,6 +14,7 @@ import AboutPage from "./pages/about/About.tsx";
 import ServicesPage from "./pages/services/ServicesPage.tsx";
 import ReactGA from "react-ga4";
 import GATracker from "./components/GATracker/GATracker.tsx";
+import CookieConsent from "./components/cookieConsent/CookieConsent";
 
 // Initialize Google Analytics
 ReactGA.initialize("G-9G2M3T5KEG");
@@ -25,6 +26,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
     <GATracker/>
+    <CookieConsent />
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/projects" element={<Projects />} />
