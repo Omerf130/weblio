@@ -107,8 +107,15 @@ export const CONSTS = {
   },
   CONTACT: {
     TITLE: "צרו קשר",
+    SUBTITLE: "נשמח לשמוע ממך! מלאו את הטופס או פנו אלינו ישירות.",
+    BUSINESS_NAME: "Weblio",
     /** Digits only, without + — used by wa.me and the contact form */
     WHATSAPP_PHONE: "972544993155",
+    DISPLAY_PHONE: "054-499-3155",
+    TEL: "+972544993155",
+    EMAIL: "ofaclieru@gmail.com",
+    WHATSAPP_LABEL: "WhatsApp",
+    FORM_SUBMIT_LABEL: "שלחו לי הודעה",
   },
   METRICS: {
     ITEMS: [
