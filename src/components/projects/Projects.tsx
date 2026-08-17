@@ -4,12 +4,11 @@ import pic4 from "../../assets/pics/lace.jpeg";
 import pic2 from "../../assets/pics/shiputi.jpeg";
 import pic1 from "../../assets/pics/jozeglaperfume.jpeg";
 import pic5 from "../../assets/pics/clean.jpeg";
-import { useNavigate } from "react-router-dom";
 import Reveal, { staggerItem, staggerParent } from "../motion/Reveal";
+import { assetSrc } from "../../utils/assetSrc";
 import "./Projects.scss";
 
 const Projects = () => {
-  const navigate = useNavigate();
   const projectList = [
     {
       title: "בלוג משפטי",
@@ -64,19 +63,15 @@ const Projects = () => {
                   <FaArrowLeftLong className="arrow" />
                 </div>
               </div>
-              <img className="project-img" src={project.src} alt={project.title} />
+              <img className="project-img" src={assetSrc(project.src)} alt={project.title} />
             </a>
           </motion.li>
         ))}
       </motion.ul>
       <Reveal delay={0.05}>
-        <button
-          type="button"
-          className="project-btn"
-          onClick={() => navigate("/projects")}
-        >
+        <a href="/projects" className="project-btn">
           לפרויקטים נוספים
-        </button>
+        </a>
       </Reveal>
     </div>
   );

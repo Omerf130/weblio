@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom";
 import { CONSTS } from "../../consts";
 import { useInView } from "../../hooks/useInView";
+import { assetSrc } from "../../utils/assetSrc";
 import aboutPhoto from "../../assets/pics/about.jpeg";
 import "./About.scss";
 
@@ -10,7 +10,6 @@ const About = () => {
   } = CONSTS;
   const [headingRef, headingInView] = useInView<HTMLHeadingElement>();
   const [imgRef, imgInView] = useInView<HTMLDivElement>();
-  const navigate = useNavigate();
 
   return (
     <div className="about-container" id="about">
@@ -27,20 +26,16 @@ const About = () => {
             {paragraph}
           </p>
         ))}
-        <button
-          type="button"
-          className="about-btn"
-          onClick={() => navigate("/about")}
-        >
+        <a href="/about" className="about-btn">
           {BUTTON}
-        </button>
+        </a>
       </div>
       <div
         ref={imgRef}
         className={`about-img ${imgInView ? "about-img--visible" : ""}`}
       >
         <img
-          src={aboutPhoto}
+          src={assetSrc(aboutPhoto)}
           alt="עומר — מפתח ומעצב אתרים, Weblio"
           loading="lazy"
           decoding="async"

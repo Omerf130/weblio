@@ -58,7 +58,7 @@ function App() {
           <Projects />
           <Testimonials />
           <Contacts />
-          <Footer />
+          <Footer showQuickLinks />
         </>
       )}
     </div>

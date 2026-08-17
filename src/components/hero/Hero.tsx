@@ -1,5 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Suspense, useEffect, useRef, useState } from "react";
 import {
   motion,
   useMotionValue,
@@ -9,9 +8,8 @@ import {
 import { CONSTS } from "../../consts";
 import HeroBackground from "./HeroBackground";
 import FloatingBrowser from "./FloatingBrowser";
+import Hero3DScene from "./Hero3DSceneLoader";
 import "./Hero.scss";
-
-const Hero3DScene = lazy(() => import("./Hero3DScene"));
 
 const EASE_OUT_SOFT = [0.25, 0.46, 0.45, 0.94] as const;
 
@@ -36,7 +34,6 @@ const itemVariants: Variants = {
 
 const Hero = () => {
   const { HERO } = CONSTS;
-  const navigate = useNavigate();
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement | null>(null);
 
@@ -147,13 +144,12 @@ const Hero = () => {
             <a className="hero__cta hero__cta--primary" href="#contact">
               {HERO.CTA_PRIMARY}
             </a>
-            <button
-              type="button"
+            <a
+              href="/projects"
               className="hero__cta hero__cta--secondary"
-              onClick={() => navigate("/projects")}
             >
               {HERO.CTA_SECONDARY}
-            </button>
+            </a>
           </motion.div>
         </motion.div>
 

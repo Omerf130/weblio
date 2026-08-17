@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaCode } from "react-icons/fa";
 import { BsCartCheckFill } from "react-icons/bs";
@@ -66,9 +65,9 @@ const Services = () => {
       </motion.ul>
 
       <Reveal className="home-services__actions" delay={0.1}>
-        <Link className="home-services__cta" to="/services">
+        <a className="home-services__cta" href="/services">
           {CTA_VIEW_ALL}
-        </Link>
+        </a>
       </Reveal>
     </section>
   );

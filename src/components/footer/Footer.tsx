@@ -2,7 +2,6 @@ import { SiInstagram } from "react-icons/si";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import "./Footer.scss";
 import FooterLinkItem from "./FooterLinkItem";
-import { useLocation } from "react-router-dom";
 
 const links = [
   // { text: "hero", href: "#hero" },
@@ -12,8 +11,11 @@ const links = [
   { text: "קצת עליי", href: "#about" },
 ];
 
-const Footer = () => {
-  const location = useLocation();
+type FooterProps = {
+  showQuickLinks?: boolean;
+};
+
+const Footer = ({ showQuickLinks = false }: FooterProps) => {
   return (
     <footer className="footer">
       
@@ -55,7 +57,7 @@ const Footer = () => {
       <div className="footer-section">
         <h3>קישורים מהירים</h3>
         <div className="footer-links">
-          {location.pathname === "/" && links.map((link) => (
+          {showQuickLinks && links.map((link) => (
             <FooterLinkItem key={link.href} href={link.href} text={link.text} />
           ))}
         </div>
