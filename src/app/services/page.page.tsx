@@ -1,3 +1,5 @@
-export default function ServicesPlaceholderPage() {
-  return <main>דף זה יועבר ב-CP4</main>;
+import ServicesPage from "../../pages/services/ServicesPage";
+
+export default function ServicesRoute() {
+  return <ServicesPage />;
 }

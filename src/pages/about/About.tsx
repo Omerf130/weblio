@@ -1,16 +1,17 @@
+"use client";
+
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import ProjectsNav from "../../components/projectsNav/ProjectsNav";
 import Footer from "../../components/footer/Footer";
 import { CONSTS } from "../../consts";
 import { useInView } from "../../hooks/useInView";
+import { assetSrc } from "../../utils/assetSrc";
 import aboutPhoto from "../../assets/pics/about.jpeg";
 import "./About.scss";
 
 const AboutPage = () => {
   const ABOUT_PAGE = CONSTS.ABOUT_PAGE;
   const { META } = ABOUT_PAGE;
-  const navigate = useNavigate();
   const [heroRef, heroInView] = useInView<HTMLElement>();
 
   useEffect(() => {
@@ -61,7 +62,7 @@ const AboutPage = () => {
           >
             <div className="about-page-hero-img">
               <img
-                src={aboutPhoto}
+                src={assetSrc(aboutPhoto)}
                 alt="עומר - מפתח ומעצב אתרים, Weblio"
                 loading="eager"
                 decoding="async"
@@ -115,13 +116,9 @@ const AboutPage = () => {
           <section className="about-page-section about-page-cta">
             <h2 className="about-page-h2">{ABOUT_PAGE.CTA.TITLE}</h2>
             <p>{ABOUT_PAGE.CTA.CONTENT1}</p>
-            <button
-              type="button"
-              className="about-page-cta-btn"
-              onClick={() => navigate("/#contact")}
-            >
+            <a href="/#contact" className="about-page-cta-btn">
               {ABOUT_PAGE.CTA.BUTTON}
-            </button>
+            </a>
           </section>
         </article>
       </div>

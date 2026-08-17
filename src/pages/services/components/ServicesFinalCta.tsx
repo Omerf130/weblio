@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { CONSTS } from "../../../consts";
 import styles from "./ServicesFinalCta.module.scss";
 
@@ -11,9 +10,9 @@ const ServicesFinalCta = () => {
         {FINAL_CTA.TITLE}
       </h2>
       <p className={styles.text}>{FINAL_CTA.TEXT}</p>
-      <Link className={styles.link} to="/#contact">
+      <a className={styles.link} href="/#contact">
         {FINAL_CTA.BUTTON}
-      </Link>
+      </a>
     </section>
   );
 };

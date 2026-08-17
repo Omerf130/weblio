@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect } from "react";
 import ProjectsNav from "../../components/projectsNav/ProjectsNav";
 import Footer from "../../components/footer/Footer";

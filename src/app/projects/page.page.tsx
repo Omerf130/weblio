@@ -1,3 +1,5 @@
-export default function ProjectsPlaceholderPage() {
-  return <main>דף זה יועבר ב-CP4</main>;
+import Projects from "../../pages/projects/Projects";
+
+export default function ProjectsRoute() {
+  return <Projects />;
 }

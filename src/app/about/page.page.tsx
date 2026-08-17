@@ -1,3 +1,5 @@
-export default function AboutPlaceholderPage() {
-  return <main>דף זה יועבר ב-CP4</main>;
+import AboutPage from "../../pages/about/About";
+
+export default function AboutRoute() {
+  return <AboutPage />;
 }

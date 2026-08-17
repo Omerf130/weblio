@@ -1,6 +1,9 @@
+"use client";
+
 import { FaArrowLeftLong } from 'react-icons/fa6';
 import Footer from '../../components/footer/Footer';
 import ProjectsNav from '../../components/projectsNav/ProjectsNav';
+import { assetSrc } from '../../utils/assetSrc';
 import pic1 from '../../assets/pics/a-a.png';
 import pic2 from '../../assets/pics/n-s.png';
 import pic3 from '../../assets/pics/zoukopng.png';
@@ -52,7 +55,7 @@ const Projects = () => {
                     <ul className="project-page-ul">
                         {projectList.map((project) => (
                             <li className="project-page-list-item" key={project.title}>
-                                <a href={project.to} target="_blank">
+                                <a href={project.to} target="_blank" rel="noopener noreferrer">
                                     <div className="project-page-card-content">
                                         <div className="project-page-card-title">{project.title}</div>
                                         <div className="project-page-card-subtitle">{project.subtitle}</div>
@@ -63,7 +66,7 @@ const Projects = () => {
                                         </div>
                                     </div>
 
-                                    <img className="project-page-img" src={project.src} />
+                                    <img className="project-page-img" src={assetSrc(project.src)} alt="" />
                                 </a>
                             </li>
                         ))}
