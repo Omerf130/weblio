@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import "./globals.scss";
 
 type RootLayoutProps = {
   children: ReactNode;
