@@ -24,6 +24,7 @@
     "src/app/**/*.ts",
     "src/app/**/*.tsx",
     "src/lib/**/*.ts",
+    "src/types/**/*.ts",
     "src/components/admin/**/*.tsx",
     "src/components/admin/**/*.ts",
     "src/models/**/*.ts",

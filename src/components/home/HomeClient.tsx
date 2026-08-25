@@ -13,11 +13,16 @@ import Projects from "../projects/Projects";
 import Services from "../services/Services";
 import Testimonials from "../testimonials/Testimonials";
 import WhyMe from "../whyMe/WhyMe";
+import type { PublicProjectDto } from "../../types/project";
 import { useHomePageEffects } from "../../hooks/useHomePageEffects";
 import "./HomeShell.scss";
 import "../../assets/styles/main.scss";
 
-export default function HomeClient() {
+export default function HomeClient({
+  homeProjects,
+}: {
+  homeProjects?: PublicProjectDto[];
+}) {
   const [isLoaderDisplay, setIsLoaderDisplay] = useState(true);
 
   useEffect(() => {
@@ -43,7 +48,7 @@ export default function HomeClient() {
           <About />
           <Services />
           <WhyMe />
-          <Projects />
+          <Projects projects={homeProjects} />
           <Testimonials />
           <Contacts />
           <Footer showQuickLinks />

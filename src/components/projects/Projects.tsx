@@ -1,73 +1,67 @@
+"use client";
+
 import { motion } from "framer-motion";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import pic4 from "../../assets/pics/lace.jpeg";
-import pic2 from "../../assets/pics/shiputi.jpeg";
-import pic1 from "../../assets/pics/jozeglaperfume.jpeg";
-import pic5 from "../../assets/pics/clean.jpeg";
+import type { PublicProjectDto } from "../../types/project";
 import Reveal, { staggerItem, staggerParent } from "../motion/Reveal";
-import { assetSrc } from "../../utils/assetSrc";
+import { PROJECT_LINK_REL, projectHref, projectImageSrc } from "../../utils/projectLinks";
 import "./Projects.scss";
 
-const Projects = () => {
-  const projectList = [
-    {
-      title: "בלוג משפטי",
-      subtitle: "בלוג משפטי למשרד עורכי דין",
-      src: pic2,
-      to: "https://shiputi.co.il/",
-    },
-    {
-      title: "lace",
-      subtitle: "סוכנות דוגמנות",
-      src: pic4,
-      to: "https://www.lacemodel.com/",
-    },
-    {
-      title: "jozef la perfume",
-      subtitle: "חנות בשמים",
-      src: pic1,
-      to: "https://www.jozeflaperfume.co.il/",
-    },
-    {
-      title: "מבריק 100",
-      subtitle: "חברת ניקיון",
-      src: pic5,
-      to: "https://clean-seven-rho.vercel.app/",
-    },
-  ];
+type ProjectsProps = {
+  projects?: PublicProjectDto[];
+};
+
+const Projects = ({ projects = [] }: ProjectsProps) => {
+  const hasProjects = projects.length > 0;
 
   return (
     <div className="project-container" id="projects">
       <Reveal as="h1" className="project-heading">
         פרוייקטים
       </Reveal>
-      <motion.ul
-        className="project-ul"
-        variants={staggerParent}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-      >
-        {projectList.map((project) => (
-          <motion.li
-            className="project-list-item"
-            key={project.title}
-            variants={staggerItem}
-          >
-            <a href={project.to} target="_blank" rel="noopener noreferrer">
-              <div className="project-content">
-                <div className="project-title">{project.title}</div>
-                <div className="project-subtitle">{project.subtitle}</div>
-                <div className="project-button">
-                  <span>Take me</span>
-                  <FaArrowLeftLong className="arrow" />
+
+      {hasProjects ? (
+        <motion.ul
+          className="project-ul"
+          variants={staggerParent}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+        >
+          {projects.map((project) => (
+            <motion.li
+              className="project-list-item"
+              key={project.id}
+              variants={staggerItem}
+            >
+              <a
+                href={projectHref(project.projectUrl)}
+                target="_blank"
+                rel={PROJECT_LINK_REL}
+              >
+                <div className="project-content">
+                  <div className="project-title">{project.title}</div>
+                  {project.subtitle ? (
+                    <div className="project-subtitle">{project.subtitle}</div>
+                  ) : null}
+                  <div className="project-button">
+                    <span>{project.ctaLabel}</span>
+                    <FaArrowLeftLong className="arrow" />
+                  </div>
                 </div>
-              </div>
-              <img className="project-img" src={assetSrc(project.src)} alt={project.title} />
-            </a>
-          </motion.li>
-        ))}
-      </motion.ul>
+                <img
+                  className="project-img"
+                  src={projectImageSrc(project.imageUrl)}
+                  alt={project.imageAlt}
+                />
+              </a>
+            </motion.li>
+          ))}
+        </motion.ul>
+      ) : (
+        <p className="project-empty">פרויקטים חדשים בקרוב</p>
+      )}
+
       <Reveal delay={0.05}>
         <a href="/projects" className="project-btn">
           לפרויקטים נוספים

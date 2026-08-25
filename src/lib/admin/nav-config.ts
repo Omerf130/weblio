@@ -34,8 +34,7 @@ export const ADMIN_NAV_ITEMS: AdminNavItemConfig[] = [
   {
     id: "projects",
     label: "פרויקטים",
-    disabled: true,
-    comingSoon: true,
+    href: "/admin/projects",
     icon: MdWork,
   },
   {

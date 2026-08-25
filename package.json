@@ -14,7 +14,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "seed:admin": "tsx --env-file=.env.local scripts/seed-admin.ts",
-    "test:auth": "tsx --test tests/auth/**/*.test.ts"
+    "seed:projects": "tsx --env-file=.env.local scripts/seed-projects.ts",
+    "test:auth": "tsx --test tests/auth/**/*.test.ts",
+    "test:projects": "tsx --test tests/projects/**/*.test.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

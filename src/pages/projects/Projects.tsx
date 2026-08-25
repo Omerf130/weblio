@@ -1,86 +1,74 @@
 "use client";
 
-import { FaArrowLeftLong } from 'react-icons/fa6';
-import Footer from '../../components/footer/Footer';
-import ProjectsNav from '../../components/projectsNav/ProjectsNav';
-import { assetSrc } from '../../utils/assetSrc';
-import pic1 from '../../assets/pics/a-a.png';
-import pic2 from '../../assets/pics/n-s.png';
-import pic3 from '../../assets/pics/zoukopng.png';
-import pic4 from '../../assets/pics/ganmetukim.png';
-import pic5 from '../../assets/pics/pic5.jpeg';
-import pic6 from '../../assets/pics/insta.jpeg';
-import pic7 from '../../assets/pics/noah.jpeg';
-import pic8 from '../../assets/pics/deeb-drive.jpeg';
-import pic9 from '../../assets/pics/shiputi.jpeg';
-import pic10 from '../../assets/pics/clean.jpeg';
-import pic11 from '../../assets/pics/lace.jpeg';
-import pic12 from '../../assets/pics/neziki.jpeg';
-import pic13 from '../../assets/pics/jozeglaperfume.jpeg';
+import { useEffect } from "react";
+import { FaArrowLeftLong } from "react-icons/fa6";
+import Footer from "../../components/footer/Footer";
+import ProjectsNav from "../../components/projectsNav/ProjectsNav";
+import type { PublicProjectDto } from "../../types/project";
+import { PROJECT_LINK_REL, projectHref, projectImageSrc } from "../../utils/projectLinks";
 import "./Projects.scss";
-import { useEffect } from 'react';
 
-const Projects = () => {
-    useEffect(() => {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-    }, []);
+type ProjectsPageProps = {
+  projects?: PublicProjectDto[];
+};
 
-    const projectList = [
-        { title: "אטיאס אשכנזי ושות'", subtitle: "משרד עורכי דין", src: pic1, to: "https://www.ashkenazilaw.co.il/" },
-        { title: "זוקו", subtitle: "שיעורי ריקוד מקצועיים", src: pic3, to: "https://zoukoisrael.com/" },
-        { title: "עדן - דודי שמש", subtitle: "דודי שמש ואינסטלציה", src: pic6, to: "https://www.eden-shemesh.co.il/" },
-        { title: "נזיקי", subtitle: "בלוג משפטי בנושא נזיקין", src: pic12, to: "https://www.neziki.org.il/" },
-        { title: "נוח - סטודנטים לסיעוד", subtitle: "סטודנטים לסיעוד", src: pic7, to: "https://www.noah-sn.co.il/" },
-        { title: "jozef la perfume", subtitle: "חנות בשמים", src: pic13, to: "https://www.jozeflaperfume.co.il/" },
-        { title: "דיב-דרייב", subtitle: "בית ספר לנהיגה", src: pic8, to: "https://driver-lilac.vercel.app/" },
-        { title: "שיפוטי", subtitle: "בלוג משפטי למשרד עורכי דין", src: pic9, to: "https://shiputi.co.il/" },
-        { title: "מבריק 100", subtitle: "שירותי ניקיון", src: pic10, to: "https://clean-seven-rho.vercel.app/" },
-        { title: "lace", subtitle: "סוכנות דוגמנות", src: pic11, to: "https://www.lacemodel.com/" },
-        { title: "גן מתוקים", subtitle: "גן ילדים - גבעתיים", src: pic4, to: "https://ganmetukim.co.il" },
-        { title: "נזי שרון", subtitle: "מעצבת פנים", src: pic2, to: "https://n-s-tau.vercel000.app/" },
-        { title: "דור - מאמן כדורסל", subtitle: "", src: pic5, to: "https://basketball-umber-theta.vercel.app/" },
-    ];
+const Projects = ({ projects = [] }: ProjectsPageProps) => {
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, []);
 
-    return (
-        <div className="project-page-wrapper">
-            <ProjectsNav />
-            <div className="project-page-container">
+  const hasProjects = projects.length > 0;
 
-                <div className="project-page-content-wrapper">
-                    <h1 className="project-page-title">פרוייקטים</h1>
+  return (
+    <div className="project-page-wrapper">
+      <ProjectsNav />
+      <div className="project-page-container">
+        <div className="project-page-content-wrapper">
+          <h1 className="project-page-title">פרוייקטים</h1>
 
-                    <ul className="project-page-ul">
-                        {projectList.map((project) => (
-                            <li className="project-page-list-item" key={project.title}>
-                                <a href={project.to} target="_blank" rel="noopener noreferrer">
-                                    <div className="project-page-card-content">
-                                        <div className="project-page-card-title">{project.title}</div>
-                                        <div className="project-page-card-subtitle">{project.subtitle}</div>
+          {hasProjects ? (
+            <ul className="project-page-ul">
+              {projects.map((project) => (
+                <li className="project-page-list-item" key={project.id}>
+                  <a
+                    href={projectHref(project.projectUrl)}
+                    target="_blank"
+                    rel={PROJECT_LINK_REL}
+                  >
+                    <div className="project-page-card-content">
+                      <div className="project-page-card-title">{project.title}</div>
+                      {project.subtitle ? (
+                        <div className="project-page-card-subtitle">{project.subtitle}</div>
+                      ) : null}
 
-                                        <div className="project-page-button">
-                                            <span>Take me</span>
-                                            <FaArrowLeftLong className="project-page-arrow" />
-                                        </div>
-                                    </div>
+                      <div className="project-page-button">
+                        <span>{project.ctaLabel}</span>
+                        <FaArrowLeftLong className="project-page-arrow" />
+                      </div>
+                    </div>
 
-                                    <img className="project-page-img" src={assetSrc(project.src)} alt="" />
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
+                    <img
+                      className="project-page-img"
+                      src={projectImageSrc(project.imageUrl)}
+                      alt={project.imageAlt}
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="project-page-empty">פרוייקטים נוספים בקרוב</p>
+          )}
 
-                    <h2 className="project-page-bottom-text">
-                        פרוייקטים נוספים בקרוב
-                    </h2>
-                </div>
-
-            </div>
-            <Footer />
+          <h2 className="project-page-bottom-text">פרוייקטים נוספים בקרוב</h2>
         </div>
-    );
+      </div>
+      <Footer />
+    </div>
+  );
 };
 
 export default Projects;

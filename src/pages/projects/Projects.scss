@@ -161,6 +161,14 @@
     margin-top: 40px;
     animation: pulse-scale 2.2s ease-in-out infinite;
   }
+
+  .project-page-empty {
+    margin: 2rem 0;
+    text-align: center;
+    color: rgba(243, 243, 224, 0.75);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
 }
 
 /* ---------- MOBILE ---------- */
