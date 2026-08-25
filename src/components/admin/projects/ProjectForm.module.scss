@@ -92,6 +92,28 @@
   color: #fecaca;
 }
 
+.fieldError {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #fecaca;
+}
+
+.imagePreview {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.fileInput {
+  width: 100%;
+  color: rgba(243, 243, 224, 0.88);
+  font: inherit;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

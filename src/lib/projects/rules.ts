@@ -1,4 +1,5 @@
 import type { PublicProjectDto } from "@/types/project";
+import { resolveProjectImageAlt } from "@/lib/validations/project";
 
 export const HOME_PROJECTS_MAX = 4;
 export const HOME_MAX_FOUR_ERROR = "ניתן להציג עד 4 פרויקטים בדף הבית.";
@@ -80,7 +81,7 @@ export function mapToPublicProjectDto(source: HomeProjectSource): PublicProjectD
     title: source.title,
     subtitle: source.subtitle,
     imageUrl: source.image.url,
-    imageAlt: source.image.alt,
+    imageAlt: resolveProjectImageAlt(source.image.alt, source.title),
     projectUrl: source.projectUrl,
     ctaLabel: source.ctaLabel,
   };
@@ -92,7 +93,7 @@ export function mapToHomePublicProjectDto(source: HomeProjectSource): PublicProj
     title: source.homeTitle?.trim() || source.title,
     subtitle: source.homeSubtitle?.trim() || source.subtitle,
     imageUrl: source.image.url,
-    imageAlt: source.image.alt,
+    imageAlt: resolveProjectImageAlt(source.image.alt, source.title),
     projectUrl: source.projectUrl,
     ctaLabel: source.ctaLabel,
   };

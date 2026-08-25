@@ -48,8 +48,8 @@ export default function AdminHeader({
           </div>
         </div>
 
-        <form action={logoutAction} className={styles.logoutForm}>
-          <button type="submit" className={styles.logoutButton}>
+        <form action={logoutAction} className={styles.logoutForm} suppressHydrationWarning>
+          <button type="submit" className={styles.logoutButton} suppressHydrationWarning>
             התנתקות
           </button>
         </form>

@@ -59,11 +59,19 @@ export const ADMIN_NAV_ITEMS: AdminNavItemConfig[] = [
 ];
 
 export function getAdminPageTitle(pathname: string): string {
-  const matched = ADMIN_NAV_ITEMS.find(
-    (item) => item.href && (pathname === item.href || pathname.startsWith(`${item.href}/`))
+  const matchedItems = ADMIN_NAV_ITEMS.filter((item) =>
+    isAdminNavItemActive(pathname, item)
   );
 
-  return matched?.label ?? "לוח בקרה";
+  if (matchedItems.length === 0) {
+    return "לוח בקרה";
+  }
+
+  const bestMatch = matchedItems.reduce((longest, item) =>
+    (item.href?.length ?? 0) > (longest.href?.length ?? 0) ? item : longest
+  );
+
+  return bestMatch.label;
 }
 
 export function isAdminNavItemActive(pathname: string, item: AdminNavItemConfig): boolean {

@@ -23,17 +23,6 @@ const httpsUrlSchema = z
     message: "URL must start with https://",
   });
 
-const imageUrlSchema = z
-  .string()
-  .trim()
-  .max(2048)
-  .refine(
-    (value) =>
-      value.startsWith("/") ||
-      (value.startsWith("https://") && !value.toLowerCase().startsWith("javascript:")),
-    { message: "Image URL must be a relative path or https URL" }
-  );
-
 const orderSchema = z.coerce.number().int().min(0).max(9999);
 
 function parseTechnologiesInput(value: unknown): string[] {
@@ -60,13 +49,12 @@ const technologiesSchema = z
   .optional()
   .default([]);
 
-export const projectInputSchema = z.object({
+export const projectFieldsSchema = z.object({
   title: plainText(120).min(1, "Title is required"),
   subtitle: plainText(200).optional().default(""),
   homeTitle: optionalPlainText(120),
   homeSubtitle: optionalPlainText(200),
-  imageUrl: imageUrlSchema,
-  imageAlt: plainText(200).min(1, "Image alt is required"),
+  imageAlt: optionalPlainText(200),
   projectUrl: httpsUrlSchema,
   ctaLabel: plainText(60).min(1, "CTA label is required").default("Take me"),
   isPublished: z.coerce.boolean().default(false),
@@ -77,23 +65,33 @@ export const projectInputSchema = z.object({
   technologies: technologiesSchema,
 });
 
-export type ProjectInput = z.infer<typeof projectInputSchema>;
+export type ProjectFieldsInput = z.infer<typeof projectFieldsSchema>;
 
-export function parseProjectInput(input: unknown): ProjectInput {
-  return projectInputSchema.parse(input);
+/** @deprecated Use projectFieldsSchema — image URL comes from Blob upload, not form input. */
+export const projectInputSchema = projectFieldsSchema;
+
+/** @deprecated Use ProjectFieldsInput */
+export type ProjectInput = ProjectFieldsInput;
+
+export function parseProjectFields(input: unknown): ProjectFieldsInput {
+  return projectFieldsSchema.parse(input);
 }
 
+export function safeParseProjectFields(input: unknown) {
+  return projectFieldsSchema.safeParse(input);
+}
+
+/** @deprecated Use safeParseProjectFields */
 export function safeParseProjectInput(input: unknown) {
-  return projectInputSchema.safeParse(input);
+  return safeParseProjectFields(input);
 }
 
-export function projectInputFromFormData(formData: FormData): unknown {
+export function projectFieldsFromFormData(formData: FormData): unknown {
   return {
     title: formData.get("title"),
     subtitle: formData.get("subtitle") ?? "",
     homeTitle: formData.get("homeTitle") ?? undefined,
     homeSubtitle: formData.get("homeSubtitle") ?? undefined,
-    imageUrl: formData.get("imageUrl"),
     imageAlt: formData.get("imageAlt"),
     projectUrl: formData.get("projectUrl"),
     ctaLabel: formData.get("ctaLabel") ?? "Take me",
@@ -106,10 +104,22 @@ export function projectInputFromFormData(formData: FormData): unknown {
   };
 }
 
+/** @deprecated Use projectFieldsFromFormData */
+export function projectInputFromFormData(formData: FormData): unknown {
+  return projectFieldsFromFormData(formData);
+}
+
+export function resolveProjectImageAlt(
+  imageAlt: string | undefined,
+  title: string
+): string {
+  const trimmed = imageAlt?.trim();
+  return trimmed ? trimmed : title.trim();
+}
+
 export type PublishValidationInput = {
   title: string;
   imageUrl: string;
-  imageAlt: string;
   projectUrl: string;
 };
 
@@ -119,11 +129,7 @@ export function validatePublishFields(input: PublishValidationInput): string | n
   }
 
   if (!input.imageUrl.trim()) {
-    return "קישור לתמונה נדרש לפרסום.";
-  }
-
-  if (!input.imageAlt.trim()) {
-    return "טקסט חלופי לתמונה נדרש לפרסום.";
+    return "תמונת פרויקט נדרשת לפרסום.";
   }
 
   if (!input.projectUrl.trim()) {

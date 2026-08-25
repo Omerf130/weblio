@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import {
   createProjectAction,
   updateProjectAction,
   type ProjectActionState,
 } from "@/lib/projects/actions";
 import type { AdminProjectDto } from "@/types/project";
+import ProjectImageField from "./ProjectImageField";
 import styles from "./ProjectForm.module.scss";
 
 const initialState: ProjectActionState = {};
@@ -17,8 +18,24 @@ type ProjectFormProps = {
 };
 
 export default function ProjectForm({ project }: ProjectFormProps) {
+  const [isMounted, setIsMounted] = useState(false);
   const action = project ? updateProjectAction : createProjectAction;
   const [state, formAction, isPending] = useActionState(action, initialState);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <section className={styles.formSection}>
+        <h1 className={styles.title}>
+          {project ? "עריכת פרויקט" : "פרויקט חדש"}
+        </h1>
+        <div className={styles.form} aria-busy="true" aria-label="טוען טופס..." />
+      </section>
+    );
+  }
 
   return (
     <section className={styles.formSection}>
@@ -26,7 +43,11 @@ export default function ProjectForm({ project }: ProjectFormProps) {
         {project ? "עריכת פרויקט" : "פרויקט חדש"}
       </h1>
 
-      <form className={styles.form} action={formAction}>
+      <form
+        className={styles.form}
+        action={formAction}
+        suppressHydrationWarning
+      >
         {project ? <input type="hidden" name="id" value={project.id} /> : null}
 
         <div className={styles.grid}>
@@ -83,34 +104,21 @@ export default function ProjectForm({ project }: ProjectFormProps) {
             />
           </div>
 
-          <div className={styles.fieldFull}>
-            <label className={styles.label} htmlFor="imageUrl">
-              קישור לתמונה
-            </label>
-            <input
-              id="imageUrl"
-              name="imageUrl"
-              className={styles.input}
-              defaultValue={project?.imageUrl ?? ""}
-              placeholder="/pics/example.jpeg"
-              required
-              disabled={isPending}
-            />
-            <span className={styles.hint}>
-              קישור לתמונה (העלאת קבצים תתווסף בהמשך)
-            </span>
-          </div>
+          <ProjectImageField
+            currentImageUrl={project?.imageUrl}
+            isRequired={!project}
+            disabled={isPending}
+          />
 
           <div className={styles.fieldFull}>
             <label className={styles.label} htmlFor="imageAlt">
-              טקסט חלופי לתמונה
+              טקסט חלופי לתמונה (אופציונלי)
             </label>
             <input
               id="imageAlt"
               name="imageAlt"
               className={styles.input}
               defaultValue={project?.imageAlt ?? ""}
-              required
               disabled={isPending}
             />
           </div>

@@ -11,14 +11,13 @@ import {
   mapToHomePublicProjectDto,
   wouldExceedHomeFeaturedLimit,
 } from "../../src/lib/projects/rules";
-import { safeParseProjectInput } from "../../src/lib/validations/project";
+import { safeParseProjectFields } from "../../src/lib/validations/project";
 
 describe("project validation", () => {
   it("accepts a valid project input", () => {
-    const parsed = safeParseProjectInput({
+    const parsed = safeParseProjectFields({
       title: "פרויקט",
       subtitle: "תיאור",
-      imageUrl: "/pics/example.jpeg",
       imageAlt: "פרויקט",
       projectUrl: "https://example.com",
       ctaLabel: "Take me",
@@ -37,22 +36,10 @@ describe("project validation", () => {
   });
 
   it("rejects non-https project URLs", () => {
-    const parsed = safeParseProjectInput({
+    const parsed = safeParseProjectFields({
       title: "פרויקט",
-      imageUrl: "/pics/example.jpeg",
       imageAlt: "פרויקט",
       projectUrl: "http://example.com",
-    });
-
-    assert.equal(parsed.success, false);
-  });
-
-  it("rejects javascript image URLs", () => {
-    const parsed = safeParseProjectInput({
-      title: "פרויקט",
-      imageUrl: "javascript:alert(1)",
-      imageAlt: "פרויקט",
-      projectUrl: "https://example.com",
     });
 
     assert.equal(parsed.success, false);
@@ -114,13 +101,14 @@ describe("public filtering and ordering", () => {
       title: "שיפוטי",
       subtitle: "בלוג משפטי למשרד עורכי דין",
       homeTitle: "בלוג משפטי",
-      image: { url: "/pics/shiputi.jpeg", alt: "שיפוטי" },
+      image: { url: "/pics/shiputi.jpeg", alt: "" },
       projectUrl: "https://shiputi.co.il/",
       ctaLabel: "Take me",
     });
 
     assert.equal(dto.title, "בלוג משפטי");
     assert.equal(dto.subtitle, "בלוג משפטי למשרד עורכי דין");
+    assert.equal(dto.imageAlt, "שיפוטי");
   });
 
   it("derives stable seed keys", () => {

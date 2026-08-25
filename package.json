@@ -22,6 +22,7 @@
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "@splinetool/react-spline": "^4.0.0",
+    "@vercel/blob": "^2.8.0",
     "bcryptjs": "^3.0.3",
     "framer-motion": "^12.40.0",
     "install": "^0.13.0",
