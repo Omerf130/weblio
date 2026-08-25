@@ -1,0 +1,145 @@
+@use "../../../assets/styles/variables" as *;
+
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  background: $main;
+  direction: rtl;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1.25rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.92);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.brandMark {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, $third-color, lighten($third-color, 22%));
+}
+
+.brandText {
+  font-size: 1.2rem;
+  font-weight: $weight-bold;
+  color: #fff;
+
+  em {
+    font-style: normal;
+    color: $third-color;
+  }
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.navItem,
+.navItemActive,
+.navItemDisabled {
+  display: block;
+  padding: 0.7rem 0.85rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  text-align: right;
+}
+
+.navItemActive {
+  background: rgba(96, 139, 193, 0.2);
+  color: $primary-color;
+  font-weight: $weight-bold;
+}
+
+.navItemDisabled {
+  color: rgba(243, 243, 224, 0.4);
+  cursor: not-allowed;
+  user-select: none;
+}
+
+.footer {
+  margin-top: auto;
+  padding-top: 1.5rem;
+}
+
+.logoutForm {
+  width: 100%;
+}
+
+.logoutButton {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: rgba(243, 243, 224, 0.85);
+  font-family: $font-family-base;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topBar {
+  padding: 1.25rem 1.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(243, 243, 224, 0.75);
+  font-size: 0.9rem;
+}
+
+.content {
+  flex: 1;
+  padding: 1.75rem;
+}
+
+@media (max-width: 768px) {
+  .shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .sidebar {
+    border-left: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .navItem,
+  .navItemActive,
+  .navItemDisabled {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .footer {
+    margin-top: 1rem;
+    padding-top: 0;
+  }
+}
