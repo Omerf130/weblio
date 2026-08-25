@@ -1,0 +1,43 @@
+@use "../../assets/styles/variables" as *;
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.5rem 1.1rem;
+  background: rgba(15, 23, 42, 0.96);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.brandMark {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, $third-color, lighten($third-color, 22%));
+  box-shadow: 0 0 14px rgba(96, 139, 193, 0.35);
+}
+
+.brandText {
+  font-size: 1.2rem;
+  font-weight: $weight-bold;
+  color: #fff;
+
+  em {
+    font-style: normal;
+    color: $third-color;
+  }
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
