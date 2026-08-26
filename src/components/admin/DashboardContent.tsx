@@ -1,20 +1,26 @@
 "use client";
 
+import Link from "next/link";
 import { useAdminUser } from "./AdminUserContext";
 import styles from "./DashboardContent.module.scss";
 
-const COMING_SOON_CARDS = [
+const QUICK_LINKS = [
   {
     title: "פניות",
     description: "צפייה וניהול פניות מהטופס באתר.",
+    href: "/admin/leads",
+    ready: true,
   },
   {
     title: "פרויקטים",
     description: "ניהול פרויקטים שמוצגים באתר.",
+    href: "/admin/projects",
+    ready: true,
   },
   {
     title: "תוכן האתר",
     description: "עריכת תוכן עמודי הבית והאתר.",
+    ready: false,
   },
 ] as const;
 
@@ -31,11 +37,19 @@ export default function DashboardContent() {
       </p>
 
       <div className={styles.cards}>
-        {COMING_SOON_CARDS.map((card) => (
+        {QUICK_LINKS.map((card) => (
           <article key={card.title} className={styles.card}>
             <div className={styles.cardHeader}>
               <h2 className={styles.cardTitle}>{card.title}</h2>
-              <span className={styles.cardBadge}>בקרוב</span>
+              {card.ready ? (
+                "href" in card && card.href ? (
+                  <Link href={card.href} className={styles.cardLink}>
+                    כניסה
+                  </Link>
+                ) : null
+              ) : (
+                <span className={styles.cardBadge}>בקרוב</span>
+              )}
             </div>
             <p className={styles.cardDescription}>{card.description}</p>
           </article>

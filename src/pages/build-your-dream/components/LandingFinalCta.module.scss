@@ -1,0 +1,19 @@
+.inner {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.title {
+  margin: 0 0 1rem;
+  font-size: var(--landing-h2);
+  font-weight: 800;
+  color: var(--landing-ink);
+}
+
+.text {
+  margin: 0 0 1.5rem;
+  font-size: var(--landing-body);
+  color: var(--landing-ink-muted);
+  line-height: 1.7;
+}

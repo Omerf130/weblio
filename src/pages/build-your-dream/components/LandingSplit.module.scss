@@ -1,0 +1,62 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+  align-items: center;
+}
+
+.visual {
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -8%;
+    background: radial-gradient(circle, rgba(251, 146, 60, 0.14), transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+.copy {
+  max-width: 34rem;
+}
+
+.accentLine {
+  display: block;
+  width: 3.5rem;
+  height: 4px;
+  margin-bottom: 1.15rem;
+  border-radius: 999px;
+  background: var(--landing-gradient);
+}
+
+.title {
+  margin: 0 0 1rem;
+  font-size: var(--landing-h2);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--landing-ink);
+}
+
+.text {
+  margin: 0 0 1.35rem;
+  font-size: var(--landing-body);
+  color: var(--landing-ink-muted);
+  line-height: 1.75;
+}
+
+.reversed .visual {
+  order: 2;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .reversed .visual {
+    order: 0;
+  }
+}

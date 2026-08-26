@@ -1,0 +1,37 @@
+.landing-theme {
+  --landing-bg: #fffbf7;
+  --landing-bg-warm: #fff4e8;
+  --landing-bg-accent: #fef0e6;
+  --landing-cream: #fff9f2;
+  --landing-champagne: #faf3e8;
+  --landing-ink: #1c1917;
+  --landing-ink-muted: #57534e;
+  --landing-text: var(--landing-ink);
+  --landing-text-muted: var(--landing-ink-muted);
+  --landing-primary: #ea580c;
+  --landing-primary-dark: #c2410c;
+  --landing-gold: #d97706;
+  --landing-coral: #fb7185;
+  --landing-gradient: linear-gradient(135deg, #c2410c 0%, #ea580c 52%, #d97706 100%);
+  --landing-gradient-soft: linear-gradient(
+    180deg,
+    rgba(255, 251, 247, 0) 0%,
+    rgba(255, 244, 232, 0.85) 100%
+  );
+  --landing-shadow-sm: 0 4px 16px rgba(28, 25, 23, 0.06);
+  --landing-shadow: 0 16px 40px rgba(234, 88, 12, 0.14);
+  --landing-shadow-lg: 0 24px 56px rgba(28, 25, 23, 0.12);
+  --landing-shadow-hover: 0 20px 44px rgba(234, 88, 12, 0.18);
+  --landing-radius: 24px;
+  --landing-radius-sm: 16px;
+  --landing-max: 1120px;
+  --landing-display: clamp(2.35rem, 6vw, 4.25rem);
+  --landing-h2: clamp(1.75rem, 3.8vw, 2.5rem);
+  --landing-lead: clamp(1.05rem, 2vw, 1.2rem);
+  --landing-body: clamp(1rem, 1.6vw, 1.0625rem);
+  --landing-section-py-tight: clamp(2.5rem, 5vw, 3.75rem);
+  --landing-section-py: clamp(3rem, 6vw, 5rem);
+  --landing-section-py-loose: clamp(3.5rem, 7vw, 5.5rem);
+  --landing-transition: 0.22s ease;
+  color: var(--landing-text);
+}

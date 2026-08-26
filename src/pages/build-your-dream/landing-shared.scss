@@ -1,0 +1,44 @@
+.landing-theme {
+  h1,
+  h2,
+  h3 {
+    color: var(--landing-ink);
+  }
+
+  .landingEyebrow {
+    display: inline-block;
+    margin: 0 0 1rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    background: var(--landing-champagne);
+    border: 1px solid rgba(217, 119, 6, 0.22);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--landing-primary-dark);
+  }
+
+  .landingSectionTitle {
+    margin: 0 0 0.85rem;
+    font-size: var(--landing-h2);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--landing-ink);
+  }
+
+  .landingSectionLead {
+    margin: 0;
+    font-size: var(--landing-lead);
+    line-height: 1.7;
+    color: var(--landing-ink-muted);
+  }
+
+  .landingAccentLine {
+    display: block;
+    width: 3.5rem;
+    height: 4px;
+    margin-bottom: 1.15rem;
+    border-radius: 999px;
+    background: var(--landing-gradient);
+  }
+}

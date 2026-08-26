@@ -1,0 +1,9 @@
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: calc(var(--landing-radius-sm) - 2px);
+  background: var(--landing-bg-warm);
+}

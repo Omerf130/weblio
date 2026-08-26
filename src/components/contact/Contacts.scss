@@ -300,7 +300,61 @@ $ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 @media (prefers-reduced-motion: reduce) {
   .contact__details-link,
   .contact__field input,
-  .contact__submit {
+  .contact__submit,
+  .contact__success-link {
     transition: none;
   }
+}
+
+.contact__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  text-align: center;
+  min-height: 100%;
+}
+
+.contact__success-icon {
+  font-size: clamp(2.5rem, 6vw, 3.25rem);
+  color: $primary-color;
+  filter: drop-shadow(0 4px 16px rgba(96, 139, 193, 0.35));
+}
+
+.contact__success-title {
+  margin: 0;
+  font-size: clamp(1.15rem, 2.5vw, 1.35rem);
+  font-weight: $weight-bold;
+  color: rgba(243, 243, 224, 0.95);
+}
+
+.contact__success-text {
+  margin: 0;
+  max-width: 320px;
+  line-height: 1.65;
+  color: rgba(243, 243, 224, 0.72);
+}
+
+.contact__success-link {
+  margin-top: 0.35rem;
+  padding: 0.65rem 1.1rem;
+  border: 1px solid rgba(96, 139, 193, 0.35);
+  border-radius: 999px;
+  background: rgba(96, 139, 193, 0.12);
+  color: $primary-color;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s $ease-out-soft, border-color 0.2s $ease-out-soft;
+}
+
+.contact__success-link:hover {
+  background: rgba(96, 139, 193, 0.2);
+  border-color: rgba(96, 139, 193, 0.5);
+}
+
+.contact__error--form {
+  margin-top: 0.25rem;
 }

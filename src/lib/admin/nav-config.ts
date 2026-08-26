@@ -1,6 +1,7 @@
 import type { IconType } from "react-icons";
 import {
   MdArticle,
+  MdCampaign,
   MdDashboard,
   MdDesignServices,
   MdInbox,
@@ -14,6 +15,7 @@ export type AdminNavItemConfig = {
   href?: string;
   disabled?: boolean;
   comingSoon?: boolean;
+  badgeCount?: number;
   icon: IconType;
 };
 
@@ -27,8 +29,7 @@ export const ADMIN_NAV_ITEMS: AdminNavItemConfig[] = [
   {
     id: "leads",
     label: "פניות",
-    disabled: true,
-    comingSoon: true,
+    href: "/admin/leads",
     icon: MdInbox,
   },
   {
@@ -36,6 +37,12 @@ export const ADMIN_NAV_ITEMS: AdminNavItemConfig[] = [
     label: "פרויקטים",
     href: "/admin/projects",
     icon: MdWork,
+  },
+  {
+    id: "landing-page",
+    label: "דף נחיתה",
+    href: "/admin/landing-page",
+    icon: MdCampaign,
   },
   {
     id: "services",

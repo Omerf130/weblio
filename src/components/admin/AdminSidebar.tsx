@@ -8,6 +8,7 @@ import styles from "./AdminSidebar.module.scss";
 
 type AdminSidebarProps = {
   pathname: string;
+  unreadLeadCount?: number;
   onNavigate?: () => void;
   className?: string;
   id?: string;
@@ -15,6 +16,7 @@ type AdminSidebarProps = {
 
 export default function AdminSidebar({
   pathname,
+  unreadLeadCount = 0,
   onNavigate,
   className,
   id,
@@ -32,7 +34,11 @@ export default function AdminSidebar({
         {ADMIN_NAV_ITEMS.map((item: AdminNavItemConfig) => (
           <AdminNavItem
             key={item.id}
-            item={item}
+            item={
+              item.id === "leads"
+                ? { ...item, badgeCount: unreadLeadCount }
+                : item
+            }
             isActive={isAdminNavItemActive(pathname, item)}
             onNavigate={onNavigate}
           />

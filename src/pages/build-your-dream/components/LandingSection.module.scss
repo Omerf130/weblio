@@ -1,0 +1,78 @@
+.section {
+  position: relative;
+  padding: var(--landing-section-py) clamp(1.25rem, 4vw, 2rem);
+}
+
+.density_tight {
+  padding-top: var(--landing-section-py-tight);
+  padding-bottom: var(--landing-section-py-tight);
+}
+
+.density_loose {
+  padding-top: var(--landing-section-py-loose);
+  padding-bottom: var(--landing-section-py-loose);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--landing-max);
+  margin: 0 auto;
+}
+
+.default {
+  background: var(--landing-bg);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--landing-gradient-soft);
+    pointer-events: none;
+  }
+}
+
+.warm {
+  background: var(--landing-bg-warm);
+}
+
+.accent {
+  background: linear-gradient(180deg, var(--landing-bg) 0%, var(--landing-bg-accent) 100%);
+}
+
+.cream {
+  background: var(--landing-cream);
+}
+
+.champagne {
+  background: var(--landing-champagne);
+}
+
+.glow {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(251, 146, 60, 0.12), transparent 55%),
+    var(--landing-bg);
+}
+
+.banner {
+  background: var(--landing-gradient);
+  color: #fff;
+
+  h2,
+  h3,
+  p {
+    color: #fff;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding-top: var(--landing-section-py-tight);
+    padding-bottom: var(--landing-section-py-tight);
+  }
+
+  .density_loose {
+    padding-top: var(--landing-section-py);
+    padding-bottom: var(--landing-section-py);
+  }
+}

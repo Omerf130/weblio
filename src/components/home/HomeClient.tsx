@@ -13,6 +13,7 @@ import Projects from "../projects/Projects";
 import Services from "../services/Services";
 import Testimonials from "../testimonials/Testimonials";
 import WhyMe from "../whyMe/WhyMe";
+import type { WebsiteLeadFormAction } from "../contact/contact-form-types";
 import type { PublicProjectDto } from "../../types/project";
 import { useHomePageEffects } from "../../hooks/useHomePageEffects";
 import "./HomeShell.scss";
@@ -20,8 +21,10 @@ import "../../assets/styles/main.scss";
 
 export default function HomeClient({
   homeProjects,
+  leadFormAction,
 }: {
   homeProjects?: PublicProjectDto[];
+  leadFormAction?: WebsiteLeadFormAction;
 }) {
   const [isLoaderDisplay, setIsLoaderDisplay] = useState(true);
 
@@ -50,7 +53,7 @@ export default function HomeClient({
           <WhyMe />
           <Projects projects={homeProjects} />
           <Testimonials />
-          <Contacts />
+          <Contacts leadFormAction={leadFormAction} />
           <Footer showQuickLinks />
         </>
       )}

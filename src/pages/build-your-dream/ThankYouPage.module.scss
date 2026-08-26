@@ -1,0 +1,107 @@
+.page {
+  min-height: 100vh;
+  background: var(--landing-bg);
+  color: var(--landing-text);
+}
+
+.header {
+  max-width: var(--landing-max);
+  margin: 0 auto;
+  padding: 1.5rem clamp(1.25rem, 4vw, 2rem) 0;
+}
+
+.main {
+  padding: clamp(2rem, 6vw, 4rem) clamp(1.25rem, 4vw, 2rem) 4rem;
+}
+
+.card {
+  max-width: 680px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: var(--landing-radius);
+  padding: clamp(1.75rem, 4vw, 2.75rem);
+  box-shadow: var(--landing-shadow);
+}
+
+.step {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--landing-primary);
+}
+
+.title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.subtitle {
+  margin: 0 0 1.75rem;
+  color: var(--landing-text-muted);
+  line-height: 1.7;
+}
+
+.nextSteps {
+  margin-bottom: 2rem;
+  padding: 1.25rem;
+  border-radius: var(--landing-radius-sm);
+  background: var(--landing-bg-warm);
+}
+
+.nextStepsTitle {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.nextSteps ul {
+  margin: 0;
+  padding-right: 1.2rem;
+  color: var(--landing-text-muted);
+  line-height: 1.8;
+}
+
+.qualificationTitle {
+  margin: 0 0 0.35rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.qualificationSubtitle {
+  margin: 0 0 1.25rem;
+  color: var(--landing-text-muted);
+  line-height: 1.65;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.submit {
+  margin-top: 0.5rem;
+  min-height: 52px;
+  padding: 0.9rem 1.5rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--landing-gradient);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(234, 88, 12, 0.28);
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+
+.error {
+  margin: 0;
+  color: #dc2626;
+}

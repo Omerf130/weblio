@@ -14,6 +14,10 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
 
     /* Linting */
     "strict": true,
@@ -24,5 +28,23 @@
     "noUncheckedSideEffectImports": true
   },
   "include": ["src"],
-  "exclude": ["src/app", "src/lib", "src/models", "src/components/admin"]
+  "exclude": [
+    "src/app",
+    "src/models",
+    "src/components/admin",
+    "src/lib/db",
+    "src/lib/auth",
+    "src/lib/data",
+    "src/lib/admin",
+    "src/lib/build-your-dream-landing",
+    "src/lib/storage",
+    "src/lib/validations",
+    "src/lib/projects",
+    "src/lib/leads/actions.ts",
+    "src/lib/leads/completion-token.ts",
+    "src/lib/leads/rules.ts",
+    "src/lib/content/build-your-dream/get-build-your-dream-content.ts",
+    "src/lib/content/build-your-dream/static-content.ts",
+    "src/lib/env.ts"
+  ]
 }

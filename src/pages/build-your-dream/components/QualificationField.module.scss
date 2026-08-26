@@ -1,0 +1,24 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  label {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--landing-text);
+  }
+
+  input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(28, 25, 23, 0.12);
+    font: inherit;
+
+    &:focus-visible {
+      outline: 3px solid rgba(234, 88, 12, 0.25);
+      border-color: var(--landing-primary);
+    }
+  }
+}

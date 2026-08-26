@@ -34,7 +34,12 @@ export default function AdminNavItem({
       onClick={onNavigate}
     >
       <Icon className={styles.icon} aria-hidden />
-      <span>{item.label}</span>
+      <span className={styles.labelWrap}>
+        <span>{item.label}</span>
+        {item.badgeCount && item.badgeCount > 0 ? (
+          <span className={styles.countBadge}>{item.badgeCount}</span>
+        ) : null}
+      </span>
     </a>
   );
 }

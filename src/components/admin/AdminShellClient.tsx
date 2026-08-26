@@ -10,10 +10,15 @@ import styles from "./AdminShellClient.module.scss";
 
 type AdminShellClientProps = {
   admin: AdminUserContextValue;
+  unreadLeadCount?: number;
   children: ReactNode;
 };
 
-export default function AdminShellClient({ admin, children }: AdminShellClientProps) {
+export default function AdminShellClient({
+  admin,
+  unreadLeadCount = 0,
+  children,
+}: AdminShellClientProps) {
   const pathname = usePathname() ?? "/admin";
   const pageTitle = getAdminPageTitle(pathname);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -61,6 +66,7 @@ export default function AdminShellClient({ admin, children }: AdminShellClientPr
       >
         <AdminSidebar
           pathname={pathname}
+          unreadLeadCount={unreadLeadCount}
           className={styles.desktopSidebar}
         />
 
@@ -85,6 +91,7 @@ export default function AdminShellClient({ admin, children }: AdminShellClientPr
             <AdminSidebar
               id="admin-mobile-nav"
               pathname={pathname}
+              unreadLeadCount={unreadLeadCount}
               onNavigate={closeMobileNav}
               className={`${styles.mobileDrawer} ${styles.mobileDrawerOpen}`.trim()}
             />

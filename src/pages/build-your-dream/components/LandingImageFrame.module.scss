@@ -1,0 +1,40 @@
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--landing-radius);
+  background: #fff;
+  box-shadow: var(--landing-shadow-lg);
+}
+
+.hero {
+  padding: 0.65rem;
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(234, 88, 12, 0.18), rgba(245, 158, 11, 0.12));
+  box-shadow: var(--landing-shadow);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0.65rem;
+    border-radius: calc(var(--landing-radius) - 4px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+.editorial {
+  padding: 0.5rem;
+  border: 1px solid rgba(234, 88, 12, 0.12);
+  box-shadow: var(--landing-shadow-sm);
+}
+
+.tilted {
+  transform: rotate(-1.5deg);
+}
+
+@media (max-width: 768px) {
+  .tilted {
+    transform: none;
+  }
+}
