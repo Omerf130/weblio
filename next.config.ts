@@ -6,7 +6,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
   // Keep Vite route components in src/pages/ out of the Next Pages Router.
-  pageExtensions: ["page.tsx", "page.ts", "layout.tsx", "layout.ts"],
+  // Include "ts" (not "tsx") so App Router Route Handlers use standard route.ts
+  // naming required by Vercel server-file tracing.
+  pageExtensions: ["page.tsx", "page.ts", "layout.tsx", "layout.ts", "ts"],
   experimental: {
     serverActions: {
       bodySizeLimit: "6mb",
