@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:vite": "vite",
     "dev:next": "next dev",
-    "build": "tsc -b tsconfig.vite.json && vite build",
+    "build": "next build",
     "build:vite": "tsc -b tsconfig.vite.json && vite build",
     "build:next": "next build",
     "start:next": "next start",
