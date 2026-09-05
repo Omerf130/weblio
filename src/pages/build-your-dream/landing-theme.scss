@@ -1,27 +1,69 @@
 .landing-theme {
-  --landing-bg: #fffbf7;
-  --landing-bg-warm: #fff4e8;
-  --landing-bg-accent: #fef0e6;
-  --landing-cream: #fff9f2;
-  --landing-champagne: #faf3e8;
+  // Raw turquoise scale
+  --landing-turquoise-darkest: #087f82;
+  --landing-turquoise-dark: #0d9fa2;
+  --landing-turquoise: #20c4c7;
+  --landing-turquoise-light: #57d6d6;
+  --landing-aqua: #a8eeee;
+  --landing-aqua-soft: #e8fafa;
+  --landing-background: #f6fdfd;
+
+  // Semantic surfaces
+  --landing-bg: var(--landing-background);
+  --landing-bg-warm: var(--landing-aqua-soft);
+  --landing-bg-accent: #dff5f5;
+  --landing-cream: #eff9f9;
+  --landing-champagne: var(--landing-aqua-soft);
+  --landing-surface: #ffffff;
+
+  // Text
   --landing-ink: #1c1917;
   --landing-ink-muted: #57534e;
   --landing-text: var(--landing-ink);
   --landing-text-muted: var(--landing-ink-muted);
-  --landing-primary: #ea580c;
-  --landing-primary-dark: #c2410c;
-  --landing-gold: #d97706;
-  --landing-coral: #fb7185;
-  --landing-gradient: linear-gradient(135deg, #c2410c 0%, #ea580c 52%, #d97706 100%);
+
+  // Brand / interactive
+  --landing-primary: var(--landing-turquoise-dark);
+  --landing-primary-dark: var(--landing-turquoise-darkest);
+  --landing-primary-hover: var(--landing-turquoise-darkest);
+  --landing-primary-soft: color-mix(in srgb, var(--landing-turquoise) 14%, white);
+  --landing-accent: var(--landing-turquoise);
+  --landing-border: color-mix(in srgb, var(--landing-turquoise) 18%, transparent);
+  --landing-border-strong: color-mix(in srgb, var(--landing-turquoise-dark) 28%, transparent);
+  --landing-focus-ring: color-mix(in srgb, var(--landing-turquoise) 35%, transparent);
+
+  // Gradients
+  --landing-gradient: linear-gradient(
+    135deg,
+    var(--landing-turquoise-darkest) 0%,
+    var(--landing-turquoise-dark) 45%,
+    var(--landing-turquoise) 100%
+  );
   --landing-gradient-soft: linear-gradient(
     180deg,
-    rgba(255, 251, 247, 0) 0%,
-    rgba(255, 244, 232, 0.85) 100%
+    transparent 0%,
+    color-mix(in srgb, var(--landing-aqua-soft) 85%, transparent) 100%
   );
-  --landing-shadow-sm: 0 4px 16px rgba(28, 25, 23, 0.06);
-  --landing-shadow: 0 16px 40px rgba(234, 88, 12, 0.14);
-  --landing-shadow-lg: 0 24px 56px rgba(28, 25, 23, 0.12);
-  --landing-shadow-hover: 0 20px 44px rgba(234, 88, 12, 0.18);
+  --landing-gradient-glow: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--landing-turquoise-light) 16%, transparent),
+    transparent 70%
+  );
+  --landing-gradient-icon: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--landing-turquoise) 14%, white),
+    color-mix(in srgb, var(--landing-turquoise-light) 10%, white)
+  );
+
+  // Shadows
+  --landing-shadow-sm: 0 4px 16px rgba(8, 79, 82, 0.06);
+  --landing-shadow: 0 16px 40px rgba(8, 127, 130, 0.12);
+  --landing-shadow-lg: 0 24px 56px rgba(8, 79, 82, 0.1);
+  --landing-shadow-hover: 0 20px 44px rgba(8, 127, 130, 0.16);
+  --landing-shadow-submit: 0 12px 28px rgba(8, 127, 130, 0.22);
+  --landing-shadow-badge: 0 4px 12px rgba(8, 127, 130, 0.22);
+
+  // Layout / typography (unchanged)
   --landing-radius: 24px;
   --landing-radius-sm: 16px;
   --landing-max: 1120px;

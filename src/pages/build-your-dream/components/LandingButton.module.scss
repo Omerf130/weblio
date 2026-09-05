@@ -29,7 +29,7 @@
   }
 
   &:focus-visible {
-    outline: 3px solid rgba(234, 88, 12, 0.35);
+    outline: 3px solid var(--landing-focus-ring);
     outline-offset: 2px;
   }
 }
@@ -47,11 +47,11 @@
 .secondary {
   background: transparent;
   color: var(--landing-primary-dark);
-  border: 2px solid rgba(234, 88, 12, 0.35);
+  border: 2px solid var(--landing-border-strong);
   box-shadow: none;
 
   &:not(:disabled):hover {
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--landing-aqua-soft);
     box-shadow: var(--landing-shadow-sm);
   }
 }
@@ -75,10 +75,10 @@
 .onBanner {
   background: #fff;
   color: var(--landing-primary-dark);
-  box-shadow: 0 12px 32px rgba(28, 25, 23, 0.2);
+  box-shadow: 0 12px 32px rgba(8, 79, 82, 0.18);
 
   &:not(:disabled):hover {
-    box-shadow: 0 16px 36px rgba(28, 25, 23, 0.24);
+    box-shadow: 0 16px 36px rgba(8, 79, 82, 0.22);
   }
 }
 

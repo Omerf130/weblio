@@ -15,15 +15,15 @@
 }
 
 .item {
-  background: #fff;
+  background: var(--landing-surface);
   border-radius: var(--landing-radius-sm);
   box-shadow: var(--landing-shadow-sm);
   overflow: hidden;
-  border: 1px solid rgba(234, 88, 12, 0.08);
+  border: 1px solid var(--landing-border);
   transition: border-color var(--landing-transition), box-shadow var(--landing-transition);
 
   &:has(.question[aria-expanded="true"]) {
-    border-color: rgba(234, 88, 12, 0.28);
+    border-color: var(--landing-border-strong);
     box-shadow: var(--landing-shadow-sm);
     border-right: 3px solid var(--landing-primary);
   }
@@ -64,7 +64,7 @@
 
   &[aria-expanded="true"]::after {
     content: "−";
-    background: rgba(234, 88, 12, 0.12);
+    background: color-mix(in srgb, var(--landing-turquoise) 12%, white);
   }
 }
 

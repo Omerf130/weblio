@@ -29,11 +29,11 @@
 
 .step {
   position: relative;
-  background: #fff;
+  background: var(--landing-surface);
   border-radius: var(--landing-radius-sm);
   padding: 1.35rem 1.15rem;
   box-shadow: var(--landing-shadow-sm);
-  border: 1px solid rgba(234, 88, 12, 0.1);
+  border: 1px solid var(--landing-border);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -53,7 +53,7 @@
     left: -0.45rem;
     width: 0.85rem;
     height: 2px;
-    background: rgba(234, 88, 12, 0.25);
+    background: color-mix(in srgb, var(--landing-turquoise-dark) 25%, transparent);
     display: none;
   }
 }
@@ -68,7 +68,7 @@
   background: var(--landing-gradient);
   color: #fff;
   font-weight: 800;
-  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+  box-shadow: var(--landing-shadow-badge);
 }
 
 .stepTitle {

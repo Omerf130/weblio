@@ -28,11 +28,11 @@
 }
 
 .card {
-  background: #fff;
+  background: var(--landing-surface);
   border-radius: var(--landing-radius-sm);
   padding: 1.5rem 1.35rem;
   box-shadow: var(--landing-shadow-sm);
-  border: 1px solid rgba(234, 88, 12, 0.1);
+  border: 1px solid var(--landing-border);
   transition:
     transform var(--landing-transition),
     box-shadow var(--landing-transition),
@@ -41,12 +41,13 @@
   &:hover {
     transform: translateY(-3px);
     box-shadow: var(--landing-shadow);
-    border-color: rgba(234, 88, 12, 0.22);
+    border-color: var(--landing-border-strong);
   }
 
   &:first-child {
-    border-color: rgba(234, 88, 12, 0.18);
-    box-shadow: var(--landing-shadow-sm), inset 0 0 0 1px rgba(245, 158, 11, 0.08);
+    border-color: color-mix(in srgb, var(--landing-turquoise-dark) 18%, transparent);
+    box-shadow: var(--landing-shadow-sm),
+      inset 0 0 0 1px color-mix(in srgb, var(--landing-turquoise-light) 8%, transparent);
   }
 }
 
@@ -57,7 +58,7 @@
   width: 3.25rem;
   height: 3.25rem;
   border-radius: 14px;
-  background: linear-gradient(145deg, rgba(234, 88, 12, 0.14), rgba(245, 158, 11, 0.1));
+  background: var(--landing-gradient-icon);
   color: var(--landing-primary-dark);
   font-size: 1.35rem;
   margin-bottom: 1rem;

@@ -2,14 +2,18 @@
   position: relative;
   overflow: hidden;
   border-radius: var(--landing-radius);
-  background: #fff;
+  background: var(--landing-surface);
   box-shadow: var(--landing-shadow-lg);
 }
 
 .hero {
   padding: 0.65rem;
   border-radius: 28px;
-  background: linear-gradient(145deg, rgba(234, 88, 12, 0.18), rgba(245, 158, 11, 0.12));
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--landing-turquoise) 18%, white),
+    color-mix(in srgb, var(--landing-turquoise-light) 12%, white)
+  );
   box-shadow: var(--landing-shadow);
 
   &::before {
@@ -25,7 +29,7 @@
 
 .editorial {
   padding: 0.5rem;
-  border: 1px solid rgba(234, 88, 12, 0.12);
+  border: 1px solid var(--landing-border);
   box-shadow: var(--landing-shadow-sm);
 }
 

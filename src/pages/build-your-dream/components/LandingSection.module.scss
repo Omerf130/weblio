@@ -50,7 +50,11 @@
 
 .glow {
   background:
-    radial-gradient(circle at 50% 0%, rgba(251, 146, 60, 0.12), transparent 55%),
+    radial-gradient(
+      circle at 50% 0%,
+      color-mix(in srgb, var(--landing-turquoise-light) 12%, transparent),
+      transparent 55%
+    ),
     var(--landing-bg);
 }
 
