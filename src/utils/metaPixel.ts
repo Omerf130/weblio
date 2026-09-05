@@ -4,6 +4,7 @@ type Fbq = ((...args: unknown[]) => void) & {
   loaded: boolean;
   version: string;
   push: (...args: unknown[]) => void;
+  disablePushState?: boolean;
 };
 
 declare global {
@@ -30,6 +31,7 @@ export function initMetaPixel(): void {
   n.loaded = true;
   n.version = "2.0";
   n.queue = [];
+  n.disablePushState = true;
 
   window.fbq = n;
   if (!window._fbq) window._fbq = n;
