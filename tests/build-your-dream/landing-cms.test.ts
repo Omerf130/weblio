@@ -107,6 +107,7 @@ describe("build your dream landing cms validation", () => {
   it("accepts static content shape", () => {
     const parsed = safeParseBuildYourDreamContent(STATIC_BUILD_YOUR_DREAM_CONTENT);
     assert.equal(parsed.success, true);
+    assert.match(STATIC_BUILD_YOUR_DREAM_CONTENT.hero.title, /5 טעויות/);
   });
 
   it("normalizes process step numbers by order", () => {

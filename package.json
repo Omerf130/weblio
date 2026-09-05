@@ -15,6 +15,7 @@
     "preview": "vite preview",
     "seed:admin": "tsx --env-file=.env.local scripts/seed-admin.ts",
     "seed:projects": "tsx --env-file=.env.local scripts/seed-projects.ts",
+    "migrate:landing-copy": "tsx --env-file=.env.local scripts/migrate-landing-guide-copy.ts",
     "test:auth": "tsx --test tests/auth/**/*.test.ts",
     "test:projects": "tsx --test tests/projects/**/*.test.ts",
     "test:leads": "tsx --test tests/leads/**/*.test.ts",
