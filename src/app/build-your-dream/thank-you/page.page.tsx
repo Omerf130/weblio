@@ -4,7 +4,7 @@ import {
   getLeadIdFromCompletionCookie,
   saveLeadQualificationAction,
 } from "@/lib/leads/actions";
-import ThankYouPage from "../../../pages/build-your-dream/ThankYouPage";
+import ThankYouPage from "../../../views/build-your-dream/ThankYouPage";
 
 export default async function BuildYourDreamThankYouRoute() {
   const leadId = await getLeadIdFromCompletionCookie();

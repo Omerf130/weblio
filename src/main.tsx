@@ -9,9 +9,9 @@ import {
 import App from "./App.tsx";
 import "./index.scss";
 import "./assets/styles/main.scss";
-import Projects from "./pages/projects/Projects.tsx";
-import AboutPage from "./pages/about/About.tsx";
-import ServicesPage from "./pages/services/ServicesPage.tsx";
+import Projects from "./views/projects/Projects.tsx";
+import AboutPage from "./views/about/About.tsx";
+import ServicesPage from "./views/services/ServicesPage.tsx";
 import ReactGA from "react-ga4";
 import GATracker from "./components/GATracker/GATracker.tsx";
 import MetaPixelTracker from "./components/MetaPixelTracker/MetaPixelTracker.tsx";
