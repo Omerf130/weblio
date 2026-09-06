@@ -19,13 +19,10 @@
     "test:landing-cms": "tsx --test tests/build-your-dream/**/*.test.ts"
   },
   "dependencies": {
-    "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
-    "@splinetool/react-spline": "^4.0.0",
     "@vercel/blob": "^2.8.0",
     "bcryptjs": "^3.0.3",
     "framer-motion": "^12.40.0",
-    "install": "^0.13.0",
     "mongoose": "^9.9.3",
     "next": "^15.3.9",
     "react": "^19.1.0",
