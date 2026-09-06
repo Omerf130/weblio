@@ -1,11 +1,8 @@
 import type { IconType } from "react-icons";
 import {
-  MdArticle,
   MdCampaign,
   MdDashboard,
-  MdDesignServices,
   MdInbox,
-  MdSettings,
   MdWork,
 } from "react-icons/md";
 
@@ -22,13 +19,13 @@ export type AdminNavItemConfig = {
 export const ADMIN_NAV_ITEMS: AdminNavItemConfig[] = [
   {
     id: "dashboard",
-    label: "לוח בקרה",
+    label: "ראשי",
     href: "/admin",
     icon: MdDashboard,
   },
   {
     id: "leads",
-    label: "פניות",
+    label: "לידים",
     href: "/admin/leads",
     icon: MdInbox,
   },
@@ -44,25 +41,6 @@ export const ADMIN_NAV_ITEMS: AdminNavItemConfig[] = [
     href: "/admin/landing-page",
     icon: MdCampaign,
   },
-  {
-    id: "services",
-    label: "שירותים",
-    disabled: true,
-    icon: MdDesignServices,
-  },
-  {
-    id: "content",
-    label: "תוכן האתר",
-    disabled: true,
-    comingSoon: true,
-    icon: MdArticle,
-  },
-  {
-    id: "settings",
-    label: "הגדרות",
-    disabled: true,
-    icon: MdSettings,
-  },
 ];
 
 export function getAdminPageTitle(pathname: string): string {
@@ -71,7 +49,7 @@ export function getAdminPageTitle(pathname: string): string {
   );
 
   if (matchedItems.length === 0) {
-    return "לוח בקרה";
+    return "ראשי";
   }
 
   const bestMatch = matchedItems.reduce((longest, item) =>

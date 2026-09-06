@@ -1,33 +1,80 @@
 @use "../../assets/styles/variables" as *;
 
 .sidebar {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 1.5rem 1.1rem;
-  background: rgba(15, 23, 42, 0.96);
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(10, 16, 30, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
   border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebarBackdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sidebarGrid {
+  position: absolute;
+  inset: 18% -20% -10%;
+  background-image:
+    linear-gradient(rgba(243, 243, 224, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(243, 243, 224, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.35) 35%, rgba(0, 0, 0, 0.9) 100%);
+  opacity: 0.75;
+}
+
+.sidebarGlow {
+  position: absolute;
+  inset: 35% -30% -20%;
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 50% 70%,
+      rgba(96, 139, 193, 0.28),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 45% 35% at 20% 85%,
+      rgba(147, 181, 218, 0.12),
+      transparent 70%
+    );
+  filter: blur(2px);
+}
+
+.sidebarContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+  padding: 1.5rem 1.1rem 1.25rem;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 2rem;
+  gap: 0.8rem;
+  margin-bottom: 2.25rem;
 }
 
 .brandMark {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   background: linear-gradient(135deg, $third-color, lighten($third-color, 22%));
-  box-shadow: 0 0 14px rgba(96, 139, 193, 0.35);
+  box-shadow: 0 0 18px rgba(96, 139, 193, 0.35);
 }
 
 .brandText {
-  font-size: 1.2rem;
+  font-size: 1.28rem;
   font-weight: $weight-bold;
   color: #fff;
+  letter-spacing: 0.01em;
 
   em {
     font-style: normal;
@@ -38,6 +85,84 @@
 .nav {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.45rem;
   flex: 1;
+}
+
+.footer {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tagline {
+  margin-bottom: 1rem;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: rgba(243, 243, 224, 0.42);
+
+  span {
+    display: block;
+  }
+}
+
+.footerActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.footerLink,
+.logoutButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.72rem 0.85rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+
+  &:focus-visible {
+    outline: 2px solid rgba(96, 139, 193, 0.85);
+    outline-offset: 2px;
+  }
+}
+
+.footerLink {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(243, 243, 224, 0.86);
+
+  &:hover {
+    background: rgba(96, 139, 193, 0.12);
+    border-color: rgba(96, 139, 193, 0.28);
+  }
+}
+
+.logoutForm {
+  width: 100%;
+}
+
+.logoutButton {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(55, 84, 119, 0.35);
+  color: $primary-color;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(55, 84, 119, 0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footerLink,
+  .logoutButton {
+    transition: none;
+  }
 }

@@ -16,7 +16,8 @@
     "test:auth": "tsx --test tests/auth/**/*.test.ts",
     "test:projects": "tsx --test tests/projects/**/*.test.ts",
     "test:leads": "tsx --test tests/leads/**/*.test.ts",
-    "test:landing-cms": "tsx --test tests/build-your-dream/**/*.test.ts"
+    "test:landing-cms": "tsx --test tests/build-your-dream/**/*.test.ts",
+    "test:dashboard": "tsx --test tests/admin/**/*.test.ts"
   },
   "dependencies": {
     "@react-three/fiber": "^9.6.1",
@@ -29,6 +30,7 @@
     "react-dom": "^19.1.0",
     "react-ga4": "^2.1.0",
     "react-icons": "^5.5.0",
+    "recharts": "2.15.4",
     "sass": "^1.89.2",
     "three": "^0.185.1",
     "zod": "^4.4.3"
