@@ -1,3 +1,5 @@
-import { lazy } from "react";
+﻿"use client";
 
-export default lazy(() => import("./Hero3DScene"));
+import dynamic from "next/dynamic";
+
+export default dynamic(() => import("./Hero3DScene"), { ssr: false });
