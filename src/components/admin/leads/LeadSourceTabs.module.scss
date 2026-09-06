@@ -1,5 +1,12 @@
 @use "../../../assets/styles/variables" as *;
 
+$leads-text-secondary: #475569;
+$leads-text-muted: #64748b;
+$leads-surface: #ffffff;
+$leads-surface-muted: #f8fafc;
+$leads-border: rgba(15, 23, 42, 0.08);
+$leads-link: #4a7ab5;
+
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -13,19 +20,36 @@
   justify-content: center;
   padding: 0.55rem 0.9rem;
   border-radius: 999px;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid $leads-border;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
 }
 
 .tab {
-  color: rgba(243, 243, 224, 0.78);
-  background: rgba(15, 23, 42, 0.35);
+  color: $leads-text-secondary;
+  background: $leads-surface-muted;
+
+  &:hover {
+    border-color: rgba(79, 127, 185, 0.28);
+    color: $leads-link;
+    background: $leads-surface;
+  }
 }
 
 .tabActive {
-  color: $primary-color;
-  background: rgba(96, 139, 193, 0.18);
-  border-color: rgba(96, 139, 193, 0.45);
+  color: $leads-link;
+  background: rgba(79, 127, 185, 0.12);
+  border-color: rgba(79, 127, 185, 0.32);
   font-weight: $weight-bold;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab,
+  .tabActive {
+    transition: none;
+  }
 }

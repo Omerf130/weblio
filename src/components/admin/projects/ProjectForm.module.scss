@@ -1,17 +1,23 @@
 @use "../../../assets/styles/variables" as *;
+@use "../admin-light-theme" as admin;
 
 .formSection {
   max-width: 760px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.1rem;
+  color: admin.$admin-text;
+
+  :where(a, span, p, label, input, button, textarea) {
+    color: inherit;
+  }
 }
 
 .title {
   margin: 0;
   font-size: 1.2rem;
   font-weight: $weight-bold;
-  color: $primary-color;
+  color: admin.$admin-text;
 }
 
 .form {
@@ -20,8 +26,9 @@
   gap: 1rem;
   padding: 1.1rem;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  box-shadow: admin.$admin-shadow;
 }
 
 .grid {
@@ -45,23 +52,34 @@
 
 .label {
   font-size: 0.9rem;
-  color: rgba(243, 243, 224, 0.85);
+  font-weight: 600;
+  color: admin.$admin-text-secondary;
 }
 
 .hint {
   font-size: 0.8rem;
-  color: rgba(243, 243, 224, 0.55);
+  color: admin.$admin-text-muted;
 }
 
 .input,
 .textarea {
   width: 100%;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(15, 23, 42, 0.85);
-  color: $primary-color;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  color: admin.$admin-text;
   padding: 0.65rem 0.75rem;
   font: inherit;
+
+  &::placeholder {
+    color: #94a3b8;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: admin.$admin-focus-border;
+    box-shadow: admin.$admin-focus-ring;
+  }
 }
 
 .textarea {
@@ -79,7 +97,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  color: rgba(243, 243, 224, 0.88);
+  color: admin.$admin-text;
   font-size: 0.92rem;
 }
 
@@ -87,15 +105,15 @@
   margin: 0;
   padding: 0.75rem 0.9rem;
   border-radius: 10px;
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  color: #fecaca;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  color: #b91c1c;
 }
 
 .fieldError {
   margin: 0;
   font-size: 0.85rem;
-  color: #fecaca;
+  color: #b91c1c;
 }
 
 .imagePreview {
@@ -105,12 +123,12 @@
   max-height: 200px;
   object-fit: cover;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid admin.$admin-border;
 }
 
 .fileInput {
   width: 100%;
-  color: rgba(243, 243, 224, 0.88);
+  color: admin.$admin-text-secondary;
   font: inherit;
 }
 
@@ -125,25 +143,54 @@
   border-radius: 10px;
   padding: 0.65rem 1rem;
   font-weight: $weight-bold;
+  font-family: $font-family-base;
+  font-size: 0.88rem;
   text-decoration: none;
-  border: none;
   cursor: pointer;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    opacity 0.16s ease;
 }
 
 .submitButton {
-  background: linear-gradient(135deg, $third-color, lighten($third-color, 22%));
-  color: $primary-color;
+  border: none;
+  background: linear-gradient(135deg, $third-color, lighten($third-color, 10%));
+  color: #ffffff;
+
+  &:hover {
+    opacity: 0.92;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(79, 127, 185, 0.85);
+    outline-offset: 2px;
+  }
 }
 
 .cancelLink {
   display: inline-flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.08);
-  color: $primary-color;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface-muted;
+  color: admin.$admin-text;
+
+  &:hover {
+    border-color: rgba(79, 127, 185, 0.32);
+    background: rgba(79, 127, 185, 0.08);
+    color: admin.$admin-link;
+  }
 }
 
 @media (max-width: 768px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .submitButton,
+  .cancelLink {
+    transition: none;
   }
 }

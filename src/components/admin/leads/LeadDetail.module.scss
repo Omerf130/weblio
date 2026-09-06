@@ -1,10 +1,41 @@
 @use "../../../assets/styles/variables" as *;
+@use "../admin-light-theme" as admin;
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.1rem;
   max-width: 900px;
+  color: admin.$admin-text;
+
+  :where(a, span, p, strong, li, label, dd, dt, input, button, select, textarea) {
+    color: inherit;
+  }
+
+  [class*="badge_new"] {
+    background: rgba(59, 130, 246, 0.14);
+    color: #1d4ed8;
+  }
+
+  [class*="badge_contacted"] {
+    background: rgba(34, 197, 94, 0.14);
+    color: #15803d;
+  }
+
+  [class*="badge_inProgress"] {
+    background: rgba(234, 179, 8, 0.16);
+    color: #a16207;
+  }
+
+  [class*="badge_closed"] {
+    background: rgba(100, 116, 139, 0.14);
+    color: #475569;
+  }
+
+  [class*="badge_archived"] {
+    background: rgba(148, 163, 184, 0.18);
+    color: #64748b;
+  }
 }
 
 .header {
@@ -18,34 +49,39 @@
 .backLink {
   display: inline-block;
   margin-bottom: 0.35rem;
-  color: rgba(243, 243, 224, 0.72);
+  color: admin.$admin-link;
   text-decoration: none;
   font-size: 0.88rem;
+  font-weight: 600;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .title {
   margin: 0;
   font-size: 1.35rem;
   font-weight: $weight-bold;
-  color: $primary-color;
+  color: admin.$admin-text;
 }
 
 .alert {
   margin: 0;
   padding: 0.75rem 1rem;
   border-radius: 10px;
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  color: #fecaca;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  color: #b91c1c;
 }
 
 .success {
   margin: 0;
   padding: 0.65rem 0.9rem;
   border-radius: 10px;
-  background: rgba(34, 197, 94, 0.12);
-  border: 1px solid rgba(34, 197, 94, 0.35);
-  color: #86efac;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  color: #15803d;
 }
 
 .grid {
@@ -56,15 +92,16 @@
 
 .panel {
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  box-shadow: admin.$admin-shadow;
   padding: 1rem;
 }
 
 .panelTitle {
   margin: 0 0 0.85rem;
   font-size: 1rem;
-  color: $primary-color;
+  color: admin.$admin-text;
   font-weight: $weight-bold;
 }
 
@@ -82,12 +119,12 @@
 
   dt {
     font-size: 0.78rem;
-    color: rgba(243, 243, 224, 0.62);
+    color: admin.$admin-text-muted;
   }
 
   dd {
     margin: 0;
-    color: rgba(243, 243, 224, 0.92);
+    color: admin.$admin-text;
     white-space: pre-wrap;
     word-break: break-word;
   }
@@ -101,7 +138,8 @@
 
   label {
     font-size: 0.85rem;
-    color: rgba(243, 243, 224, 0.72);
+    font-weight: 600;
+    color: admin.$admin-text-muted;
   }
 
   select,
@@ -109,10 +147,16 @@
     width: 100%;
     padding: 0.65rem 0.85rem;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(15, 23, 42, 0.75);
-    color: rgba(243, 243, 224, 0.92);
+    border: 1px solid admin.$admin-border;
+    background: admin.$admin-surface;
+    color: admin.$admin-text;
     font: inherit;
+
+    &:focus {
+      outline: none;
+      border-color: admin.$admin-focus-border;
+      box-shadow: admin.$admin-focus-ring;
+    }
   }
 }
 
@@ -121,19 +165,41 @@
   align-self: flex-start;
   padding: 0.65rem 1rem;
   border-radius: 10px;
-  border: none;
   cursor: pointer;
   font-weight: $weight-bold;
+  font-family: $font-family-base;
+  font-size: 0.88rem;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    opacity 0.16s ease;
 }
 
 .primaryButton {
-  background: linear-gradient(135deg, $third-color, lighten($third-color, 22%));
-  color: $primary-color;
+  border: none;
+  background: linear-gradient(135deg, $third-color, lighten($third-color, 10%));
+  color: #ffffff;
+
+  &:hover {
+    opacity: 0.92;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(79, 127, 185, 0.85);
+    outline-offset: 2px;
+  }
 }
 
 .secondaryButton {
-  background: rgba(255, 255, 255, 0.08);
-  color: $primary-color;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface-muted;
+  color: admin.$admin-text;
+
+  &:hover {
+    border-color: rgba(79, 127, 185, 0.32);
+    background: rgba(79, 127, 185, 0.08);
+    color: admin.$admin-link;
+  }
 }
 
 .qualificationList {
@@ -148,12 +214,12 @@
 .question {
   margin: 0 0 0.25rem;
   font-size: 0.85rem;
-  color: rgba(243, 243, 224, 0.68);
+  color: admin.$admin-text-muted;
 }
 
 .answer {
   margin: 0;
-  color: rgba(243, 243, 224, 0.92);
+  color: admin.$admin-text;
 }
 
 .footerActions {
@@ -166,5 +232,12 @@
 @media (max-width: 768px) {
   .fieldList {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryButton,
+  .secondaryButton {
+    transition: none;
   }
 }
