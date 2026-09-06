@@ -17,6 +17,41 @@
   overflow: hidden;
 }
 
+.sidebarAtmosphere {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(10, 16, 30, 1) 0%,
+      rgba(10, 16, 30, 0.92) 16%,
+      rgba(10, 16, 30, 0.4) 38%,
+      rgba(15, 23, 42, 0.26) 62%,
+      rgba(15, 23, 42, 0.7) 88%,
+      rgba(15, 23, 42, 0.93) 100%
+    ),
+    url("/pics/ChatGPT%20Image%20Sep%206,%202026,%2002_14_29%20PM.png");
+  background-size: cover;
+  background-position: center 68%;
+  background-repeat: no-repeat;
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.35) 14%,
+    black 30%,
+    black 78%,
+    rgba(0, 0, 0, 0.55) 92%,
+    transparent 100%
+  );
+}
+
+@media (min-width: 1024px) {
+  .sidebarAtmosphere {
+    display: block;
+  }
+}
+
 .sidebarGrid {
   position: absolute;
   inset: 18% -20% -10%;

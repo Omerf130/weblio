@@ -26,6 +26,7 @@ export default function AdminSidebar({
   return (
     <aside id={id} className={`${styles.sidebar} ${className ?? ""}`.trim()}>
       <div className={styles.sidebarBackdrop} aria-hidden>
+        <div className={styles.sidebarAtmosphere} />
         <div className={styles.sidebarGrid} />
         <div className={styles.sidebarGlow} />
       </div>
