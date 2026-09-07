@@ -324,9 +324,17 @@ export default function FeaturedProjectsShowcase({
             </div>
 
             <div className="featured-projects__mobile">
-              <span className="featured-projects__header-eyebrow featured-projects__header-eyebrow--mobile">
-                OUR WORK
-              </span>
+              <header className="featured-projects__header featured-projects__header--mobile">
+                <span className="featured-projects__header-eyebrow featured-projects__header-eyebrow--mobile">
+                  OUR WORK
+                </span>
+                <h2 className="featured-projects__heading featured-projects__heading--mobile">
+                  פרוייקטים
+                </h2>
+                <p className="featured-projects__header-sub featured-projects__header-sub--mobile">
+                  אתרים שמייצרים תוצאות אמיתיות לעסקים אמיתיים
+                </p>
+              </header>
 
               <div className="featured-projects__visual featured-projects__visual--mobile">
                 <ProjectVisualStack
@@ -334,21 +342,29 @@ export default function FeaturedProjectsShowcase({
                   activeIndex={activeIndex}
                   isTransitioning={isTransitioning}
                   reducedMotion={!!reducedMotion}
+                  transitionDirection={transitionDirection}
                   mobile
                 />
               </div>
 
-              <span className="featured-projects__progress featured-projects__progress--mobile" dir="ltr" aria-live="polite">
-                <span className="featured-projects__progress-current">
-                  {formatProgressIndex(displayIndex + 1)}
+              <div className="featured-projects__progress-row featured-projects__progress-row--mobile">
+                <span
+                  className="featured-projects__progress-line featured-projects__progress-line--lead"
+                  aria-hidden
+                />
+                <span className="featured-projects__progress" dir="ltr" aria-live="polite">
+                  <span className="featured-projects__progress-current">
+                    {formatProgressIndex(displayIndex + 1)}
+                  </span>
+                  <span className="featured-projects__progress-sep" aria-hidden>
+                    {" / "}
+                  </span>
+                  <span className="featured-projects__progress-total">
+                    {formatProgressIndex(count)}
+                  </span>
                 </span>
-                <span className="featured-projects__progress-sep" aria-hidden>
-                  {" / "}
-                </span>
-                <span className="featured-projects__progress-total">
-                  {formatProgressIndex(count)}
-                </span>
-              </span>
+                <span className="featured-projects__progress-line" aria-hidden />
+              </div>
 
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
@@ -381,21 +397,36 @@ export default function FeaturedProjectsShowcase({
               </AnimatePresence>
 
               {canNavigate && nextProject ? (
-                <button
-                  type="button"
-                  className="featured-projects__next-pill featured-projects__next-pill--mobile"
-                  onClick={goToNext}
-                  disabled={isTransitioning}
-                  aria-label={`לפרויקט הבא: ${nextProject.title}`}
-                >
-                  <span className="featured-projects__next-body">
-                    <span className="featured-projects__next-label">לפרויקט הבא</span>
-                    <span className="featured-projects__next-title">{nextProject.title}</span>
-                  </span>
-                  <span className="featured-projects__next-circle featured-projects__next-circle--trail" aria-hidden>
-                    <MdArrowBack />
-                  </span>
-                </button>
+                <div className="featured-projects__nav featured-projects__nav--mobile">
+                  <div
+                    className="featured-projects__carousel featured-projects__carousel--mobile"
+                    role="group"
+                    aria-label="ניווט בין פרויקטים"
+                  >
+                    <button
+                      type="button"
+                      className="featured-projects__carousel-arrow featured-projects__carousel-arrow--prev"
+                      onClick={goToPrevious}
+                      disabled={isTransitioning}
+                      aria-label="הפרויקט הקודם"
+                    >
+                      <MdArrowBack aria-hidden />
+                    </button>
+                    <div className="featured-projects__carousel-center">
+                      <span className="featured-projects__next-label">לפרויקט הבא</span>
+                      <span className="featured-projects__next-title">{nextProject.title}</span>
+                    </div>
+                    <button
+                      type="button"
+                      className="featured-projects__carousel-arrow featured-projects__carousel-arrow--next"
+                      onClick={goToNext}
+                      disabled={isTransitioning}
+                      aria-label={`הפרויקט הבא: ${nextProject.title}`}
+                    >
+                      <MdArrowForward aria-hidden />
+                    </button>
+                  </div>
+                </div>
               ) : null}
             </div>
           </>

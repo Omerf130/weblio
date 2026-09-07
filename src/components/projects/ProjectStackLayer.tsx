@@ -45,9 +45,9 @@ function poseToMotion(pose: StackPose, mobile: boolean): MotionPose {
   if (mobile) {
     return {
       left: "50%",
-      bottom: "0",
+      top: "0",
       x: "-50%",
-      y: 0,
+      y: pose.y,
       rotate: pose.rotate,
       scale: pose.scale,
       opacity: pose.opacity,

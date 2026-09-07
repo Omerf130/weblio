@@ -132,7 +132,7 @@ export const MOBILE_STACK_POSES: StackPose[] = [
     top: 0,
     bottom: 0,
     x: 0,
-    y: 0,
+    y: 10,
     rotate: -2.2,
     rotateX: 0,
     rotateY: 0,
