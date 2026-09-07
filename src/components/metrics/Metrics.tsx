@@ -1,89 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  animate,
-  motion,
-  useInView,
-  useReducedMotion,
-} from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { CONSTS } from "../../consts";
 import { staggerItem, staggerParent } from "../motion/Reveal";
+import MetricCounter from "./MetricCounter";
 import "./Metrics.scss";
-
-const COUNT_DURATION = 1.8;
-const COUNT_EASE = [0.16, 1, 0.3, 1] as const;
-
-type CounterProps = {
-  target: number | null;
-  suffix: string;
-  display: string | null;
-};
-
-const MetricCounter = ({ target, suffix, display }: CounterProps) => {
-  const numberRef = useRef<HTMLSpanElement>(null);
-  const viewRef = useRef<HTMLSpanElement>(null);
-  const inView = useInView(viewRef, { once: true, margin: "-15%" });
-  const reduceMotion = useReducedMotion();
-  const isNumeric = target != null;
-
-  useEffect(() => {
-    if (!isNumeric || !inView || !numberRef.current) return;
-    if (reduceMotion) {
-      numberRef.current.textContent = String(target);
-      return;
-    }
-    const controls = animate(0, target as number, {
-      duration: COUNT_DURATION,
-      ease: COUNT_EASE,
-      onUpdate: (v) => {
-        if (numberRef.current) {
-          numberRef.current.textContent = Math.round(v).toString();
-        }
-      },
-    });
-    return () => controls.stop();
-  }, [isNumeric, inView, target, reduceMotion]);
-
-  // Safety net: in some older WebViews (notably the Facebook / Instagram
-  // in-app browser) IntersectionObserver can fail to fire for elements that
-  // start in view. If we never observed an intersection after a short window,
-  // force the final value so the user never sees a stuck "0".
-  useEffect(() => {
-    if (!isNumeric || inView) return;
-    const t = window.setTimeout(() => {
-      if (numberRef.current) {
-        numberRef.current.textContent = String(target);
-      }
-    }, 2500);
-    return () => window.clearTimeout(t);
-  }, [isNumeric, inView, target]);
-
-  if (!isNumeric) {
-    return (
-      <span
-        ref={viewRef}
-        className="metrics__value-text"
-        aria-label={display ?? undefined}
-      >
-        <span className="metrics__value-number">{display}</span>
-      </span>
-    );
-  }
-
-  return (
-    <span
-      ref={viewRef}
-      className="metrics__value-text"
-      aria-label={`${target}${suffix}`}
-    >
-      <span ref={numberRef} className="metrics__value-number">
-        0
-      </span>
-      <span className="metrics__suffix" aria-hidden>
-        {suffix}
-      </span>
-    </span>
-  );
-};
 
 const FLOAT_CONFIG = [
   { duration: 6, delay: 0 },

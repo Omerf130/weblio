@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Caveat:wght@300;400&display=swap");
 
 //Gradients
 $main: linear-gradient(
@@ -16,6 +16,7 @@ $fifth-color: #375477dd;
 
 // Fonts
 $font-family-base: "Inter", sans-serif;
+$font-family-editorial: "Caveat", cursive;
 $font-size-base: 20px;
 $font-sm: 12px;
 $font-md: 24px;

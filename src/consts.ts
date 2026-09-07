@@ -140,13 +140,6 @@ export const CONSTS = {
         label: "מותאם למובייל",
         display: null,
       },
-      {
-        id: "support",
-        target: null,
-        suffix: "",
-        label: "ליווי ותמיכה",
-        display: "24/7",
-      },
     ],
   },
   TESTIMONIALS: {

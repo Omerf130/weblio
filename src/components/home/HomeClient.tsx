@@ -7,12 +7,11 @@ import Contacts from "../contact/Contacts";
 import Footer from "../footer/Footer";
 import Hero from "../hero/Hero";
 import Loader from "../loader/Loader";
-import Metrics from "../metrics/Metrics";
 import Nav from "../nav/Nav";
 import Projects from "../projects/Projects";
 import Services from "../services/Services";
 import Testimonials from "../testimonials/Testimonials";
-import WhyMe from "../whyMe/WhyMe";
+import WhyWeblioSection from "../whyWeblio/WhyWeblioSection";
 import type { WebsiteLeadFormAction } from "../contact/contact-form-types";
 import type { PublicProjectDto } from "../../types/project";
 import { useHomePageEffects } from "../../hooks/useHomePageEffects";
@@ -47,10 +46,9 @@ export default function HomeClient({
       ) : (
         <>
           <Hero />
-          <Metrics />
           <About />
           <Services />
-          <WhyMe />
+          <WhyWeblioSection />
           <Projects projects={homeProjects} />
           <Testimonials />
           <Contacts leadFormAction={leadFormAction} />
