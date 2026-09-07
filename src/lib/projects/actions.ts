@@ -64,6 +64,7 @@ function mapFieldsToDocument(
   return {
     title: input.title,
     subtitle: input.subtitle,
+    description: input.description,
     homeTitle: input.homeTitle,
     homeSubtitle: input.homeSubtitle,
     image: {

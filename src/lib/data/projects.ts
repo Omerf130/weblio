@@ -14,10 +14,12 @@ type LeanProject = Omit<ProjectDocument, keyof mongoose.Document> & {
 };
 
 function toAdminProjectDto(project: LeanProject): AdminProjectDto {
+  const description = project.description?.trim();
   return {
     id: project._id.toString(),
     title: project.title,
     subtitle: project.subtitle,
+    description: description || undefined,
     homeTitle: project.homeTitle ?? undefined,
     homeSubtitle: project.homeSubtitle ?? undefined,
     imageUrl: project.image.url,
@@ -37,10 +39,12 @@ function toAdminProjectDto(project: LeanProject): AdminProjectDto {
 }
 
 function toHomeSource(project: LeanProject): HomeProjectSource {
+  const description = project.description?.trim();
   return {
     _id: project._id.toString(),
     title: project.title,
     subtitle: project.subtitle,
+    description: description || undefined,
     homeTitle: project.homeTitle ?? undefined,
     homeSubtitle: project.homeSubtitle ?? undefined,
     image: {
@@ -49,6 +53,7 @@ function toHomeSource(project: LeanProject): HomeProjectSource {
     },
     projectUrl: project.projectUrl,
     ctaLabel: project.ctaLabel,
+    technologies: project.technologies ?? [],
   };
 }
 

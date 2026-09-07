@@ -52,6 +52,7 @@ const technologiesSchema = z
 export const projectFieldsSchema = z.object({
   title: plainText(120).min(1, "Title is required"),
   subtitle: plainText(200).optional().default(""),
+  description: optionalPlainText(300),
   homeTitle: optionalPlainText(120),
   homeSubtitle: optionalPlainText(200),
   imageAlt: optionalPlainText(200),
@@ -90,9 +91,10 @@ export function projectFieldsFromFormData(formData: FormData): unknown {
   return {
     title: formData.get("title"),
     subtitle: formData.get("subtitle") ?? "",
+    description: formData.get("description") ?? undefined,
     homeTitle: formData.get("homeTitle") ?? undefined,
     homeSubtitle: formData.get("homeSubtitle") ?? undefined,
-    imageAlt: formData.get("imageAlt"),
+    imageAlt: formData.get("imageAlt") ?? undefined,
     projectUrl: formData.get("projectUrl"),
     ctaLabel: formData.get("ctaLabel") ?? "Take me",
     isPublished: formData.get("isPublished") === "on" || formData.get("isPublished") === "true",

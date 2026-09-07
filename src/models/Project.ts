@@ -33,6 +33,11 @@ const projectSchema = new Schema(
       default: "",
       trim: true,
     },
+    description: {
+      type: String,
+      required: false,
+      trim: true,
+    },
     homeTitle: {
       type: String,
       required: false,

@@ -11,7 +11,7 @@ import {
   mapToHomePublicProjectDto,
   wouldExceedHomeFeaturedLimit,
 } from "../../src/lib/projects/rules";
-import { safeParseProjectFields } from "../../src/lib/validations/project";
+import { safeParseProjectFields, projectFieldsFromFormData } from "../../src/lib/validations/project";
 
 describe("project validation", () => {
   it("accepts a valid project input", () => {
@@ -43,6 +43,77 @@ describe("project validation", () => {
     });
 
     assert.equal(parsed.success, false);
+  });
+
+  it("accepts an optional trimmed description", () => {
+    const parsed = safeParseProjectFields({
+      title: "פרויקט",
+      subtitle: "תת-כותרת",
+      description: "  תיאור קצר לתצוגה  ",
+      projectUrl: "https://example.com",
+      ctaLabel: "Take me",
+    });
+
+    assert.equal(parsed.success, true);
+    if (parsed.success) {
+      assert.equal(parsed.data.description, "תיאור קצר לתצוגה");
+    }
+  });
+
+  it("normalizes empty description to undefined", () => {
+    const parsed = safeParseProjectFields({
+      title: "פרויקט",
+      subtitle: "תת-כותרת",
+      description: "   ",
+      projectUrl: "https://example.com",
+      ctaLabel: "Take me",
+    });
+
+    assert.equal(parsed.success, true);
+    if (parsed.success) {
+      assert.equal(parsed.data.description, undefined);
+    }
+  });
+
+  it("accepts projects without description", () => {
+    const parsed = safeParseProjectFields({
+      title: "פרויקט",
+      subtitle: "תת-כותרת",
+      projectUrl: "https://example.com",
+      ctaLabel: "Take me",
+    });
+
+    assert.equal(parsed.success, true);
+    if (parsed.success) {
+      assert.equal(parsed.data.description, undefined);
+    }
+  });
+
+  it("rejects descriptions longer than 300 characters", () => {
+    const parsed = safeParseProjectFields({
+      title: "פרויקט",
+      projectUrl: "https://example.com",
+      ctaLabel: "Take me",
+      description: "א".repeat(301),
+    });
+
+    assert.equal(parsed.success, false);
+  });
+
+  it("reads description from FormData for create/update flow", () => {
+    const formData = new FormData();
+    formData.set("title", "פרויקט");
+    formData.set("subtitle", "תת-כותרת");
+    formData.set("description", "תיאור מהטופס");
+    formData.set("projectUrl", "https://example.com");
+    formData.set("ctaLabel", "Take me");
+
+    const parsed = safeParseProjectFields(projectFieldsFromFormData(formData));
+
+    assert.equal(parsed.success, true);
+    if (parsed.success) {
+      assert.equal(parsed.data.description, "תיאור מהטופס");
+    }
   });
 });
 
@@ -100,15 +171,33 @@ describe("public filtering and ordering", () => {
       _id: "1",
       title: "שיפוטי",
       subtitle: "בלוג משפטי למשרד עורכי דין",
+      description: "תיאור קצר לדף הבית",
       homeTitle: "בלוג משפטי",
       image: { url: "/pics/shiputi.jpeg", alt: "" },
       projectUrl: "https://shiputi.co.il/",
       ctaLabel: "Take me",
+      technologies: ["Next.js", "TypeScript"],
     });
 
     assert.equal(dto.title, "בלוג משפטי");
     assert.equal(dto.subtitle, "בלוג משפטי למשרד עורכי דין");
+    assert.equal(dto.description, "תיאור קצר לדף הבית");
     assert.equal(dto.imageAlt, "שיפוטי");
+    assert.deepEqual(dto.technologies, ["Next.js", "TypeScript"]);
+  });
+
+  it("omits description on public DTO when source has none", () => {
+    const dto = mapToHomePublicProjectDto({
+      _id: "2",
+      title: "פרויקט",
+      subtitle: "תת-כותרת",
+      image: { url: "/pics/example.jpeg", alt: "פרויקט" },
+      projectUrl: "https://example.com/",
+      ctaLabel: "Take me",
+      technologies: [],
+    });
+
+    assert.equal(dto.description, undefined);
   });
 
   it("derives stable seed keys", () => {

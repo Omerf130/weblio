@@ -78,6 +78,21 @@ export default function ProjectForm({ project }: ProjectFormProps) {
             />
           </div>
 
+          <div className={styles.fieldFull}>
+            <label className={styles.label} htmlFor="description">
+              תיאור קצר
+            </label>
+            <p className={styles.hint}>תיאור קצר שיופיע בתצוגת הפרויקט באתר</p>
+            <textarea
+              id="description"
+              name="description"
+              className={styles.textarea}
+              rows={3}
+              defaultValue={project?.description ?? ""}
+              disabled={isPending}
+            />
+          </div>
+
           <div className={styles.field}>
             <label className={styles.label} htmlFor="homeTitle">
               כותרת לדף הבית (אופציונלי)

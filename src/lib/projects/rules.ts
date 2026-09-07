@@ -68,11 +68,13 @@ export type HomeProjectSource = {
   _id: string;
   title: string;
   subtitle: string;
+  description?: string;
   homeTitle?: string;
   homeSubtitle?: string;
   image: { url: string; alt: string };
   projectUrl: string;
   ctaLabel: string;
+  technologies?: string[];
 };
 
 export function mapToPublicProjectDto(source: HomeProjectSource): PublicProjectDto {
@@ -80,10 +82,12 @@ export function mapToPublicProjectDto(source: HomeProjectSource): PublicProjectD
     id: source._id,
     title: source.title,
     subtitle: source.subtitle,
+    description: source.description,
     imageUrl: source.image.url,
     imageAlt: resolveProjectImageAlt(source.image.alt, source.title),
     projectUrl: source.projectUrl,
     ctaLabel: source.ctaLabel,
+    technologies: source.technologies ?? [],
   };
 }
 
@@ -92,10 +96,12 @@ export function mapToHomePublicProjectDto(source: HomeProjectSource): PublicProj
     id: source._id,
     title: source.homeTitle?.trim() || source.title,
     subtitle: source.homeSubtitle?.trim() || source.subtitle,
+    description: source.description,
     imageUrl: source.image.url,
     imageAlt: resolveProjectImageAlt(source.image.alt, source.title),
     projectUrl: source.projectUrl,
     ctaLabel: source.ctaLabel,
+    technologies: source.technologies ?? [],
   };
 }
 
