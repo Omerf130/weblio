@@ -14,25 +14,44 @@ export const CONSTS = {
     CTA_SECONDARY: "לצפייה בפרויקטים",
   },
   HOMEPAGE_SERVICES: {
-    TITLE: "השירותים שלנו",
-    SUBTITLE:
-      "פתרונות דיגיטליים מותאמים לעסקים שרוצים לבלוט אונליין",
+    EYEBROW: "OUR SERVICES",
+    TITLE: "מה אפשר לבנות ביחד?",
+    SUBTITLE: "פתרונות דיגיטליים שמקדמים עסקים אמיתיים",
+    CLOSING_TEXT: "זה רק חלק ממה שאפשר לבנות.",
     CTA_VIEW_ALL: "לכל השירותים",
     PREVIEW_ITEMS: [
       {
         id: "showcase",
+        number: "01",
+        bgWord: "WEBSITES",
         title: "אתרי תדמית",
-        line: "נוכחות דיגיטלית נקייה שמציגה את העסק בצורה מקצועית ומכבדת.",
+        description: [
+          "נוכחות דיגיטלית שנבנית להיראות מעולה",
+          "ולעבוד נכון עבור העסק שלך.",
+        ],
+        tags: ["DESIGN", "DEVELOPMENT", "CMS"],
       },
       {
         id: "landing",
+        number: "02",
+        bgWord: "LANDING",
         title: "דפי נחיתה",
-        line: "מסר חד וברור שמוביל את המשתמש בדיוק לפעולה שתרצו.",
+        description: [
+          "עמודים ממוקדים שנבנים סביב מטרה אחת —",
+          "לגרום למשתמש לפעול.",
+        ],
+        tags: ["CONVERSION", "PERFORMANCE", "SEO"],
       },
       {
         id: "ecommerce",
+        number: "03",
+        bgWord: "COMMERCE",
         title: "חנויות אונליין",
-        line: "מכירה מקוונת עם חוויית קנייה חלקה - גם מהנייד.",
+        description: [
+          "חוויית קנייה מהירה, ברורה ומותאמת",
+          "לעסק וללקוחות שלו.",
+        ],
+        tags: ["ECOMMERCE", "PAYMENTS", "MANAGEMENT"],
       },
     ],
   },
