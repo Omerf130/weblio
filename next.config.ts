@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "6mb",
     },
   },
+  outputFileTracingIncludes: {
+    "/build-your-dream": ["./public/guides/5.pdf"],
+  },
 };
 
 export default nextConfig;

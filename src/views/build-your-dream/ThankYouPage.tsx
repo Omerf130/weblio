@@ -35,6 +35,14 @@ export default function ThankYouPage({ data, saveAction }: ThankYouPageProps) {
         <Reveal className={styles.card}>
           <p className={styles.step}>{data.stepLabel}</p>
 
+          <a
+            href="/guides/5.pdf"
+            download="weblio-5-website-mistakes-guide.pdf"
+            className={styles.downloadButton}
+          >
+            הורדת המדריך
+          </a>
+
           {isCompleted ? (
             <div role="status">
               <h1 className={styles.title}>{data.completedTitle}</h1>

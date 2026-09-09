@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getBuildYourDreamContent } from "@/lib/content/build-your-dream/get-build-your-dream-content";
+import { sendLandingLeadEmails } from "@/lib/email/lead-emails";
 import {
   createLandingPageLead,
   createWebsiteLead,
@@ -107,6 +108,13 @@ export async function createLandingPageLeadAction(
   try {
     const lead = await createLandingPageLead(parsed.data);
     await setLeadCompletionCookie(lead.id);
+
+    try {
+      await sendLandingLeadEmails(lead);
+    } catch (emailError) {
+      console.error("[lead-emails] Unexpected error in sendLandingLeadEmails:", emailError);
+    }
+
     redirect("/build-your-dream/thank-you");
   } catch (error) {
     if (error instanceof Error && error.message === "NEXT_REDIRECT") {

@@ -15,6 +15,17 @@
     border-radius: 12px;
     border: 1px solid rgba(28, 25, 23, 0.12);
     font: inherit;
+    color: var(--landing-ink);
+    background: var(--landing-surface);
+
+    &::placeholder {
+      color: var(--landing-ink-muted);
+      opacity: 0.55;
+    }
+
+    &:-webkit-autofill {
+      -webkit-text-fill-color: var(--landing-ink);
+    }
 
     &:focus-visible {
       outline: 3px solid var(--landing-focus-ring);

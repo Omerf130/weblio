@@ -18,7 +18,8 @@
     "test:leads": "tsx --test tests/leads/**/*.test.ts",
     "test:landing-cms": "tsx --test tests/build-your-dream/**/*.test.ts",
     "test:dashboard": "tsx --test tests/admin/**/*.test.ts",
-    "test:ga4": "tsx --test tests/admin/ga4-traffic.test.ts"
+    "test:ga4": "tsx --test tests/admin/ga4-traffic.test.ts",
+    "test:email": "tsx --test tests/email/**/*.test.ts"
   },
   "dependencies": {
     "@google-analytics/data": "7.0.0",
@@ -33,6 +34,7 @@
     "react-ga4": "^2.1.0",
     "react-icons": "^5.5.0",
     "recharts": "2.15.4",
+    "resend": "^6.26.0",
     "sass": "^1.89.2",
     "three": "^0.185.1",
     "zod": "^4.4.3"
