@@ -1,228 +1,639 @@
 @use "../../assets/styles/variables" as *;
 
-$ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$about-navy: rgba(15, 23, 42, 1);
+$about-navy-light: rgba(30, 41, 59, 1);
+$about-blue: $third-color;
+$about-cream: $primary-color;
+$about-cream-muted: rgba(243, 243, 224, 0.6);
+$about-border: rgba(255, 255, 255, 0.08);
+$about-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-.about-container {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 1120px;
-  margin-inline: auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: clamp(1.75rem, 4vw, 3rem);
-  padding: clamp(3rem, 8vw, 5rem) clamp(1.25rem, 4vw, 2.5rem);
+// ─── Section ──────────────────────────────────────────────
+.about {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(3.5rem, 7vw, 5.5rem) clamp(1.25rem, 4vw, 2.5rem);
+  background:
+    radial-gradient(
+      ellipse 70% 50% at 20% 40%,
+      rgba(96, 139, 193, 0.06) 0%,
+      transparent 70%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 59px,
+      rgba(255, 255, 255, 0.015) 59px,
+      rgba(255, 255, 255, 0.015) 60px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 59px,
+      rgba(255, 255, 255, 0.015) 59px,
+      rgba(255, 255, 255, 0.015) 60px
+    ),
+    linear-gradient(170deg, $about-navy 0%, $about-navy-light 100%);
+}
+
+// ─── Giant background text ────────────────────────────────
+.about__bg-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(8rem, 18vw, 16rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.025);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+// ─── Inner container ──────────────────────────────────────
+.about__inner {
   position: relative;
   z-index: 1;
-  isolation: isolate;
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(3rem, 5.5vw, 5rem);
+  max-width: 1120px;
+  margin: 0 auto;
+}
 
-  .about-content {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.25rem, 3vw, 1.75rem);
-    flex: 1 1 0;
-    min-width: 0;
-    direction: rtl;
-    position: relative;
-    z-index: 1;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+// ═══════════════════════════════════════════════════════════
+// PORTRAIT COMPOSITION
+// ═══════════════════════════════════════════════════════════
 
-    h1 {
-      margin: 0;
-      font-size: clamp(2rem, 4.5vw, $hero-title);
-      font-weight: $weight-bold;
-      letter-spacing: 0.05em;
-      line-height: 1.2;
-      font-style: normal;
-      text-align: right;
-      background: linear-gradient(
-        135deg,
-        rgba(243, 243, 224, 0.98) 25%,
-        rgba(96, 139, 193, 0.95) 100%
-      );
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      position: relative;
-      z-index: 1;
-    }
+.about__portrait {
+  flex: 0 0 auto;
+  width: clamp(280px, 28vw, 380px);
+  position: relative;
+  align-self: flex-start;
+  margin-top: 3.5rem;
+  padding: 16px 24px 38px 28px;
+}
 
-    h3 {
-      margin: 0;
-      font-size: clamp(1rem, 2vw, $font-size-base);
-      font-weight: $weight-normal;
-      text-align: right;
-      line-height: 1.65;
-      color: rgba(243, 243, 224, 0.72);
-      position: relative;
-      z-index: 1;
-    }
+// Atmospheric blue glow — behind everything, asymmetric
+.about__portrait-glow {
+  position: absolute;
+  top: 15%;
+  left: -15%;
+  width: 90%;
+  height: 70%;
+  background: radial-gradient(
+    ellipse at 40% 50%,
+    rgba(96, 139, 193, 0.18) 0%,
+    rgba(96, 139, 193, 0.06) 40%,
+    transparent 70%
+  );
+  filter: blur(32px);
+  pointer-events: none;
+  z-index: 0;
+}
 
-    .about-greeting {
-      margin: 0;
-      font-size: clamp(1.05rem, 2.2vw, $font-md);
-      font-weight: $weight-bold;
-      text-align: right;
-      line-height: 1.4;
-      color: $primary-color;
-    }
+// Frame layers — intentionally different offsets
+.about__portrait-frame {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 14px;
 
-    .about-paragraph {
-      margin: 0;
-      font-size: clamp(0.95rem, 2vw, $font-size-base);
-      font-weight: $weight-normal;
-      text-align: right;
-      line-height: 1.65;
-      color: rgba(243, 243, 224, 0.72);
-    }
-
-    .about-btn {
-      align-self: flex-start;
-      margin-top: 0.35rem;
-      padding: 0.65rem 1.65rem;
-      font-family: $font-family-base;
-      font-size: 0.9rem;
-      font-weight: $weight-bold;
-      letter-spacing: 0.04em;
-      color: #fff;
-      background: linear-gradient(135deg, $third-color, $fifth-color);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 999px;
-      box-shadow:
-        0 4px 16px rgba(96, 139, 193, 0.35),
-        0 2px 6px rgba(0, 0, 0, 0.15);
-      cursor: pointer;
-      transition:
-        transform 0.32s $ease-out-soft,
-        box-shadow 0.32s $ease-out-soft,
-        filter 0.32s $ease-out-soft,
-        border-color 0.32s $ease-out-soft;
-
-      &:hover {
-        transform: translateY(-2px);
-        border-color: rgba(255, 255, 255, 0.28);
-        box-shadow:
-          0 10px 28px rgba(96, 139, 193, 0.4),
-          0 4px 12px rgba(0, 0, 0, 0.2);
-        filter: brightness(1.05);
-      }
-
-      &:focus-visible {
-        outline: 2px solid rgba(243, 243, 224, 0.85);
-        outline-offset: 4px;
-      }
-    }
-  }
-
-  .about-img {
-    flex: 1 1 0;
-    max-width: min(100%, 380px);
-    position: relative;
-    z-index: 1;
-    border-radius: 22px;
-    overflow: visible;
-    opacity: 0;
-    transform: translateY(18px);
-    transition:
-      opacity 0.65s $ease-out-soft,
-      transform 0.65s $ease-out-soft;
-
-    &--visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  &--far {
+    top: 0;
+    left: 0;
+    right: 28px;
+    bottom: 24px;
+    border: 1px solid rgba(96, 139, 193, 0.1);
 
     &::before {
       content: "";
       position: absolute;
-      inset: -12%;
-      z-index: 0;
-      border-radius: 50%;
-      background: radial-gradient(
-        circle,
-        rgba(96, 139, 193, 0.42) 0%,
-        rgba(96, 139, 193, 0.08) 55%,
-        transparent 72%
-      );
-      filter: blur(18px);
-      pointer-events: none;
+      bottom: 0;
+      left: 0;
+      width: 40%;
+      height: 1px;
+      background: linear-gradient(to right, rgba(96, 139, 193, 0.35), transparent);
     }
+  }
 
-    img {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      height: auto;
-      display: block;
-      aspect-ratio: 4 / 5;
-      object-fit: cover;
-      object-position: center top;
-      border-radius: 22px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(255, 255, 255, 0.04);
-      box-shadow:
-        0 24px 56px rgba(0, 0, 0, 0.35),
-        0 0 0 1px rgba(96, 139, 193, 0.08);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+  &--near {
+    top: 10px;
+    left: 16px;
+    right: 12px;
+    bottom: 10px;
+    border: 1px solid rgba(96, 139, 193, 0.2);
+    border-radius: 12px;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: -1px;
+      right: 0;
+      width: 30%;
+      height: 1px;
+      background: linear-gradient(to left, rgba(96, 139, 193, 0.5), transparent);
     }
   }
 }
 
-@media screen and (max-width: 1024px) {
-  .about-container {
-    gap: 2rem;
+// The photo itself
+.about__portrait-img {
+  position: relative;
+  z-index: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 
-    .about-img {
-      max-width: min(100%, 380px);
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center top;
+  }
+}
+
+// Founder label — overlaps bottom frame edge
+.about__founder-label {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  position: absolute;
+  bottom: 14px;
+  left: 32px;
+  z-index: 3;
+  padding: 0 8px;
+  background: $about-navy;
+  font-family: $font-family-base;
+
+  strong {
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    color: $about-cream;
+    line-height: 1.4;
+  }
+
+  span {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: rgba(96, 139, 193, 0.7);
+    line-height: 1.4;
+  }
+}
+
+// ─── Editorial details ────────────────────────────────────
+
+// Coordinate label — top-right area
+.about__detail-coord {
+  position: absolute;
+  top: 4px;
+  right: 0;
+  font-family: $font-family-base;
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: rgba(96, 139, 193, 0.35);
+  pointer-events: none;
+  user-select: none;
+}
+
+// Handwritten annotation — Caveat
+.about__detail-note {
+  position: absolute;
+  bottom: 50px;
+  left: -6px;
+  font-family: $font-family-editorial;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: rgba(96, 139, 193, 0.3);
+  transform: rotate(-90deg);
+  transform-origin: bottom left;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+// Small blue dot — anchors the far frame
+.about__detail-dot {
+  position: absolute;
+  bottom: 24px;
+  right: 28px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(96, 139, 193, 0.45);
+  pointer-events: none;
+}
+
+// Vertical technical line — left side
+.about__portrait::after {
+  content: "";
+  position: absolute;
+  top: 10%;
+  left: -8px;
+  width: 1px;
+  height: 55%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(96, 139, 193, 0.22) 30%,
+    rgba(96, 139, 193, 0.22) 70%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONTENT COLUMN
+// ═══════════════════════════════════════════════════════════
+
+.about__content {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.2rem, 2.5vw, 1.6rem);
+  padding-top: 0;
+}
+
+// ─── Eyebrow ──────────────────────────────────────────────
+.about__eyebrow {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: $about-blue;
+  font-family: $font-family-base;
+}
+
+// ─── Heading ──────────────────────────────────────────────
+.about__heading {
+  margin: 0;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: $about-cream;
+}
+
+.about__heading-accent {
+  display: inline-block;
+  font-size: 1.15em;
+  font-weight: 900;
+  background: linear-gradient(
+    135deg,
+    $about-blue 20%,
+    rgba(96, 139, 193, 0.7) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.01em;
+}
+
+// ─── Story paragraphs ────────────────────────────────────
+.about__story {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  p {
+    margin: 0;
+    font-size: clamp(0.92rem, 1.5vw, 1.02rem);
+    line-height: 1.8;
+    color: $about-cream-muted;
+  }
+}
+
+// ─── Featured statement ───────────────────────────────────
+.about__statement {
+  position: relative;
+  padding: 1.1rem 1.25rem 1.1rem 0;
+  margin-top: 0;
+  border-right: 2px solid rgba(96, 139, 193, 0.4);
+
+  blockquote {
+    margin: 0;
+    font-size: clamp(1.1rem, 2.2vw, 1.3rem);
+    font-weight: 700;
+    line-height: 1.65;
+    color: $about-cream;
+  }
+}
+
+.about__statement-mark {
+  position: absolute;
+  top: 0.4rem;
+  right: -0.55rem;
+  font-size: 3.2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: rgba(96, 139, 193, 0.2);
+  pointer-events: none;
+}
+
+// ─── Identity pillars ────────────────────────────────────
+.about__pillars {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid $about-border;
+  padding-top: 0.9rem;
+}
+
+.about__pillar {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0 1.25rem 0 0;
+  border-right: 1px solid $about-border;
+  transition: opacity 0.25s $about-ease;
+
+  &:first-child {
+    border-right: none;
+    padding-right: 0;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.about__pillar-index {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: rgba(96, 139, 193, 0.4);
+  font-family: $font-family-base;
+}
+
+.about__pillar-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: $about-blue;
+  font-family: $font-family-base;
+}
+
+.about__pillar-text {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: $about-cream-muted;
+}
+
+// ─── CTA ──────────────────────────────────────────────────
+.about__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  align-self: flex-start;
+  margin-top: 0;
+  padding: 0.75rem 1.75rem;
+  font-family: $font-family-base;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(135deg, $third-color, $fifth-color);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(96, 139, 193, 0.3);
+  cursor: pointer;
+  transition:
+    transform 0.3s $about-ease,
+    box-shadow 0.3s $about-ease,
+    border-color 0.3s $about-ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 8px 28px rgba(96, 139, 193, 0.38);
+
+    .about__cta-arrow {
+      transform: translateX(-4px);
     }
   }
-}
 
-@media screen and (max-width: 900px) {
-  .about-container .about-content h1 {
-    font-size: clamp(1.75rem, 5vw, $font-lg) !important;
+  &:focus-visible {
+    outline: 2px solid rgba(243, 243, 224, 0.8);
+    outline-offset: 4px;
   }
 }
 
-@media screen and (max-width: 640px) {
-  .about-container {
+.about__cta-arrow {
+  display: inline-block;
+  transition: transform 0.3s $about-ease;
+  font-size: 1.05rem;
+}
+
+// ─── Atmospheric microcopy ────────────────────────────────
+.about__micro {
+  position: absolute;
+  bottom: clamp(1.5rem, 3vw, 2.5rem);
+  right: clamp(1.25rem, 3vw, 2.5rem);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+  user-select: none;
+}
+
+// ═══════════════════════════════════════════════════════════
+// RESPONSIVE
+// ═══════════════════════════════════════════════════════════
+
+@media (max-width: 900px) {
+  .about__inner {
     flex-direction: column;
-    align-items: stretch;
-    padding: clamp(2.5rem, 10vw, 3.5rem) 1.25rem;
-    margin-bottom: clamp(2rem, 8vw, 3rem);
+    align-items: center;
+    gap: 28px;
+  }
 
-    .about-content {
-      // Force natural content height in column flex. Without this, the
-      // base `flex: 1 1 0` collapses the item to height 0 in older
-      // WebViews (Facebook / Instagram in-app browser), hiding the
-      // title, greeting, paragraphs, and CTA.
-      flex: 0 0 auto;
-      align-items: center;
-      width: 100%;
+  .about__portrait {
+    width: min(65vw, 300px);
+    order: -1;
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    align-self: center;
+    padding: 16px 20px 28px 20px;
+  }
 
-      h1,
-      h3,
-      .about-greeting,
-      .about-paragraph {
-        text-align: center;
-      }
+  .about__portrait-glow {
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 115%;
+    height: 90%;
+    border-radius: 50%;
+    background: rgba(96, 139, 193, 0.3);
+    filter: blur(48px);
+    opacity: 1;
+  }
 
-      h3 {
-        font-size: 1rem !important;
-      }
+  .about__founder-label {
+    bottom: 0;
+  }
 
-      .about-btn {
-        align-self: center;
-      }
+  .about__portrait::after {
+    display: none;
+  }
+
+  .about__detail-note {
+    display: none;
+  }
+
+  .about__content {
+    align-items: center;
+    text-align: center;
+    gap: clamp(1rem, 2.5vw, 1.4rem);
+  }
+
+  .about__heading {
+    text-align: center;
+  }
+
+  .about__story p {
+    text-align: center;
+  }
+
+  .about__statement {
+    border-right: none;
+    padding: 1rem 0 0;
+    border-top: 2px solid rgba(96, 139, 193, 0.4);
+    text-align: center;
+
+    blockquote {
+      text-align: center;
+    }
+  }
+
+  .about__statement-mark {
+    top: -0.4rem;
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  .about__cta {
+    align-self: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .about {
+    padding: clamp(2.5rem, 6vw, 3.5rem) 1.25rem;
+  }
+
+  .about__inner {
+    gap: 28px;
+  }
+
+  .about__bg-text {
+    font-size: clamp(4rem, 20vw, 7rem);
+  }
+
+  .about__portrait {
+    width: min(60vw, 250px);
+    padding: 12px 16px 24px 16px;
+    margin-left: auto;
+    margin-right: auto;
+    align-self: center;
+  }
+
+  .about__portrait-glow {
+    position: absolute;
+    width: 270px;
+    height: 270px;
+    left: 50%;
+    top: 48%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: #168cff;
+    filter: blur(38px);
+    opacity: 0.55;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .about__portrait-frame--far {
+    display: none;
+  }
+
+  .about__detail-coord {
+    display: none;
+  }
+
+  .about__detail-dot {
+    display: none;
+  }
+
+  .about__founder-label {
+    bottom: 0;
+    left: 18px;
+
+    strong {
+      font-size: 0.72rem;
     }
 
-    .about-img {
-      flex: 0 0 auto;
-      width: 100%;
-      max-width: 100%;
-      margin-inline: auto;
+    span {
+      font-size: 0.55rem;
     }
+  }
+
+  .about__content {
+    gap: clamp(0.9rem, 2vw, 1.15rem);
+  }
+
+  .about__statement {
+    padding: 0.85rem 0 0;
+  }
+
+  .about__pillars {
+    flex-direction: column;
+    gap: 0;
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .about__pillar {
+    border-right: none;
+    border-bottom: 1px solid $about-border;
+    padding: 0.7rem 0;
+    text-align: center;
+    align-items: center;
+
+    &:first-child {
+      padding-right: 0;
+      border-top: 1px solid $about-border;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .about__micro {
+    display: none;
+  }
+}
+
+// ─── Reduced motion ──────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .about__cta-arrow {
+    transition: none;
+  }
+
+  .about__cta {
+    transition: none;
+  }
+
+  .about__pillar {
+    transition: none;
   }
 }
