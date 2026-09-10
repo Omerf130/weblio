@@ -29,7 +29,7 @@ export const STATIC_BUILD_YOUR_DREAM_CONTENT: BuildYourDreamContent = {
   },
   benefits: {
     title: "כמה דקות קריאה שיכולות לחסוך לכם הרבה כאב ראש",
-    subtitle: "כל מה שצריך לדעת לפני שמתחילים — במדריך קצר אחד.",
+    subtitle: "כל מה שצריך לדעת לפני שמתחילים - במדריך קצר אחד.",
     items: [
       {
         id: "choose-right",
@@ -66,7 +66,7 @@ export const STATIC_BUILD_YOUR_DREAM_CONTENT: BuildYourDreamContent = {
   },
   process: {
     title: "איך זה עובד?",
-    subtitle: "ארבעה צעדים פשוטים — מהטופס ועד המדריך.",
+    subtitle: "ארבעה צעדים פשוטים - מהטופס ועד המדריך",
     steps: [
       {
         id: "s1",
@@ -170,7 +170,7 @@ export const STATIC_BUILD_YOUR_DREAM_CONTENT: BuildYourDreamContent = {
     qualification: {
       title: "עוד 3 שאלות קצרות",
       subtitle: "זה יעזור לנו להגיע מוכנים לשיחה — ולחסוך לכם זמן.",
-      submitLabel: "סיימתי — שלח",
+      submitLabel: "סיימתי - שלח",
       submittingLabel: "שומר...",
       questions: [
         {
