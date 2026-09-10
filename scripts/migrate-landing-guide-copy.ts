@@ -18,6 +18,15 @@ function mergeGuideCopyWithExisting(
       ...newCopy.meta,
       ...(existing.meta.ogImage ? { ogImage: existing.meta.ogImage } : {}),
     },
+    benefits: {
+      ...newCopy.benefits,
+      subtitle: existing.benefits.subtitle,
+      cta: existing.benefits.cta,
+    },
+    process: {
+      ...newCopy.process,
+      subtitle: existing.process.subtitle,
+    },
     thankYou: existing.thankYou,
     leadForm: {
       ...newCopy.leadForm,
@@ -53,7 +62,9 @@ async function migrateLandingGuideCopy(): Promise<void> {
   console.log(
     `Landing guide copy migration complete: updated existing singleton in "${databaseName}" at ${savedAt.toISOString()}.`
   );
-  console.log("Preserved: images, ogImage (if set), thankYou, leadForm fields/submittingLabel/errorMessage.");
+  console.log(
+    "Preserved: images, ogImage (if set), benefits subtitle/CTA, process subtitle, thankYou, leadForm fields/submittingLabel/errorMessage."
+  );
 
   await disconnectDB();
   process.exit(0);

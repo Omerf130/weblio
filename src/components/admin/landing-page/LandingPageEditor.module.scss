@@ -143,6 +143,15 @@
   color: admin.$admin-text-secondary;
 }
 
+.subsectionTitle {
+  margin: 0.35rem 0 0;
+  padding-top: 0.35rem;
+  font-size: 0.95rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+  border-top: 1px solid admin.$admin-border;
+}
+
 .hint {
   font-size: 0.8rem;
   color: admin.$admin-text-muted;

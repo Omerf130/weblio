@@ -32,6 +32,15 @@ const SECTIONS = [
 
 const BENEFIT_ICONS = ["sparkles", "zap", "rocket", "heart", "star"] as const;
 
+const LEAD_FORM_FIELD_KEYS = ["name", "phone", "email", "message"] as const;
+
+const LEAD_FORM_FIELD_LABELS: Record<(typeof LEAD_FORM_FIELD_KEYS)[number], string> = {
+  name: "שם מלא",
+  phone: "טלפון",
+  email: "מייל",
+  message: "הודעה (אופציונלי)",
+};
+
 const initialActionState: BuildYourDreamLandingActionState = {};
 
 function formatSavedAt(iso: string | null): string {
@@ -307,6 +316,18 @@ export default function LandingPageEditor({
               }
             />
           </div>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="benefits-subtitle">תת-כותרת</label>
+            <textarea
+              id="benefits-subtitle"
+              className={styles.textarea}
+              value={content.benefits.subtitle}
+              disabled={isPending}
+              onChange={(e) =>
+                updateField("benefits", { ...content.benefits, subtitle: e.target.value })
+              }
+            />
+          </div>
           {content.benefits.items.map((item, index) => (
             <div key={item.id} className={styles.listItem}>
               <div className={styles.field}>
@@ -414,6 +435,21 @@ export default function LandingPageEditor({
           >
             + הוסף כרטיס
           </button>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="benefits-cta">כפתור CTA בתחתית</label>
+            <input
+              id="benefits-cta"
+              className={styles.input}
+              value={content.benefits.cta.label}
+              disabled={isPending}
+              onChange={(e) =>
+                updateField("benefits", {
+                  ...content.benefits,
+                  cta: { ...content.benefits.cta, label: e.target.value },
+                })
+              }
+            />
+          </div>
         </AccordionSection>
 
         <AccordionSection
@@ -482,6 +518,18 @@ export default function LandingPageEditor({
               disabled={isPending}
               onChange={(e) =>
                 updateField("process", { ...content.process, title: e.target.value })
+              }
+            />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="process-subtitle">תת-כותרת</label>
+            <textarea
+              id="process-subtitle"
+              className={styles.textarea}
+              value={content.process.subtitle}
+              disabled={isPending}
+              onChange={(e) =>
+                updateField("process", { ...content.process, subtitle: e.target.value })
               }
             />
           </div>
@@ -778,6 +826,76 @@ export default function LandingPageEditor({
               }
             />
           </div>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="lead-form-submitting-label">
+              טקסט בזמן שליחה
+            </label>
+            <input
+              id="lead-form-submitting-label"
+              className={styles.input}
+              value={content.leadForm.submittingLabel}
+              disabled={isPending}
+              onChange={(e) =>
+                updateField("leadForm", {
+                  ...content.leadForm,
+                  submittingLabel: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          <p className={styles.subsectionTitle}>שדות הטופס</p>
+          {LEAD_FORM_FIELD_KEYS.map((fieldKey) => (
+            <div key={fieldKey} className={styles.listItem}>
+              <p className={styles.label}>{LEAD_FORM_FIELD_LABELS[fieldKey]}</p>
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor={`lead-form-${fieldKey}-label`}>
+                  תווית
+                </label>
+                <input
+                  id={`lead-form-${fieldKey}-label`}
+                  className={styles.input}
+                  value={content.leadForm.fields[fieldKey].label}
+                  disabled={isPending}
+                  onChange={(e) =>
+                    updateField("leadForm", {
+                      ...content.leadForm,
+                      fields: {
+                        ...content.leadForm.fields,
+                        [fieldKey]: {
+                          ...content.leadForm.fields[fieldKey],
+                          label: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor={`lead-form-${fieldKey}-placeholder`}>
+                  Placeholder
+                </label>
+                <input
+                  id={`lead-form-${fieldKey}-placeholder`}
+                  className={styles.input}
+                  value={content.leadForm.fields[fieldKey].placeholder}
+                  disabled={isPending}
+                  onChange={(e) =>
+                    updateField("leadForm", {
+                      ...content.leadForm,
+                      fields: {
+                        ...content.leadForm.fields,
+                        [fieldKey]: {
+                          ...content.leadForm.fields[fieldKey],
+                          placeholder: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                />
+              </div>
+            </div>
+          ))}
         </AccordionSection>
 
         <AccordionSection
@@ -830,6 +948,18 @@ export default function LandingPageEditor({
           open={Boolean(openSections.thankyou)}
           onToggle={() => toggleSection("thankyou")}
         >
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="thankyou-step-label">תווית שלב</label>
+            <input
+              id="thankyou-step-label"
+              className={styles.input}
+              value={content.thankYou.stepLabel}
+              disabled={isPending}
+              onChange={(e) =>
+                updateField("thankYou", { ...content.thankYou, stepLabel: e.target.value })
+              }
+            />
+          </div>
           <div className={styles.field}>
             <label className={styles.label}>כותרת</label>
             <input
@@ -971,6 +1101,46 @@ export default function LandingPageEditor({
               }
             />
           </div>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="thankyou-qualification-submit">
+              טקסט כפתור שליחת שאלון
+            </label>
+            <input
+              id="thankyou-qualification-submit"
+              className={styles.input}
+              value={content.thankYou.qualification.submitLabel}
+              disabled={isPending}
+              onChange={(e) =>
+                updateField("thankYou", {
+                  ...content.thankYou,
+                  qualification: {
+                    ...content.thankYou.qualification,
+                    submitLabel: e.target.value,
+                  },
+                })
+              }
+            />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="thankyou-qualification-submitting">
+              טקסט בזמן שליחת שאלון
+            </label>
+            <input
+              id="thankyou-qualification-submitting"
+              className={styles.input}
+              value={content.thankYou.qualification.submittingLabel}
+              disabled={isPending}
+              onChange={(e) =>
+                updateField("thankYou", {
+                  ...content.thankYou,
+                  qualification: {
+                    ...content.thankYou.qualification,
+                    submittingLabel: e.target.value,
+                  },
+                })
+              }
+            />
+          </div>
 
           {content.thankYou.qualification.questions.map((question, index) => (
             <div key={question.id} className={styles.listItem}>
@@ -1105,6 +1275,42 @@ export default function LandingPageEditor({
           >
             + הוסף שאלת סינון
           </button>
+
+          <p className={styles.subsectionTitle}>מסך השלמה</p>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="thankyou-completed-title">
+              כותרת השלמה
+            </label>
+            <input
+              id="thankyou-completed-title"
+              className={styles.input}
+              value={content.thankYou.completedTitle}
+              disabled={isPending}
+              onChange={(e) =>
+                updateField("thankYou", {
+                  ...content.thankYou,
+                  completedTitle: e.target.value,
+                })
+              }
+            />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="thankyou-completed-text">
+              טקסט השלמה
+            </label>
+            <textarea
+              id="thankyou-completed-text"
+              className={styles.textarea}
+              value={content.thankYou.completedText}
+              disabled={isPending}
+              onChange={(e) =>
+                updateField("thankYou", {
+                  ...content.thankYou,
+                  completedText: e.target.value,
+                })
+              }
+            />
+          </div>
         </AccordionSection>
 
         <div className={styles.saveBar}>

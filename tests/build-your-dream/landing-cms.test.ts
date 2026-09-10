@@ -118,20 +118,77 @@ describe("build your dream landing cms validation", () => {
     assert.equal(normalized.process.steps[3]?.stepNumber, 4);
   });
 
-  it("preserves hidden lead form fields on merge", () => {
+  it("persists newly editable marketing fields from admin on merge", () => {
+    const base = structuredClone(STATIC_BUILD_YOUR_DREAM_CONTENT);
     const editor = structuredClone(STATIC_BUILD_YOUR_DREAM_CONTENT);
-    editor.leadForm.title = "Editor title";
-    editor.leadForm.fields.name.label = "Changed";
-    const merged = mergeWithPreservedFields(editor, STATIC_BUILD_YOUR_DREAM_CONTENT);
-    assert.equal(merged.leadForm.title, "Editor title");
-    assert.equal(merged.leadForm.fields.name.label, "שם מלא");
+
+    editor.benefits.subtitle = "תת-כותרת מעודכנת";
+    editor.benefits.cta.label = "CTA מעודכן";
+    editor.process.subtitle = "תהליך מעודכן";
+    editor.leadForm.fields.name.label = "שם מעודכן";
+    editor.leadForm.fields.phone.placeholder = "050-000-0000";
+    editor.leadForm.submittingLabel = "שולח עכשיו...";
+    editor.thankYou.stepLabel = "שלב 2";
+    editor.thankYou.completedTitle = "סיימתם";
+    editor.thankYou.completedText = "תודה רבה";
+    editor.thankYou.qualification.submitLabel = "שליחת תשובות";
+    editor.thankYou.qualification.submittingLabel = "שומר תשובות...";
+
+    const merged = mergeWithPreservedFields(editor, base);
+
+    assert.equal(merged.benefits.subtitle, "תת-כותרת מעודכנת");
+    assert.equal(merged.benefits.cta.label, "CTA מעודכן");
+    assert.equal(merged.process.subtitle, "תהליך מעודכן");
+    assert.equal(merged.leadForm.fields.name.label, "שם מעודכן");
+    assert.equal(merged.leadForm.fields.phone.placeholder, "050-000-0000");
+    assert.equal(merged.leadForm.submittingLabel, "שולח עכשיו...");
+    assert.equal(merged.thankYou.stepLabel, "שלב 2");
+    assert.equal(merged.thankYou.completedTitle, "סיימתם");
+    assert.equal(merged.thankYou.completedText, "תודה רבה");
+    assert.equal(merged.thankYou.qualification.submitLabel, "שליחת תשובות");
+    assert.equal(merged.thankYou.qualification.submittingLabel, "שומר תשובות...");
+  });
+
+  it("preserves system error messages from base content on merge", () => {
+    const base = structuredClone(STATIC_BUILD_YOUR_DREAM_CONTENT);
+    const editor = structuredClone(STATIC_BUILD_YOUR_DREAM_CONTENT);
+
+    base.leadForm.errorMessage = "שגיאת בסיס לטופס";
+    base.thankYou.errorMessage = "שגיאת בסיס לתודה";
+    editor.leadForm.errorMessage = "שגיאה מהעורך";
+    editor.thankYou.errorMessage = "שגיאה מהעורך";
+
+    const merged = mergeWithPreservedFields(editor, base);
+
+    assert.equal(merged.leadForm.errorMessage, "שגיאת בסיס לטופס");
+    assert.equal(merged.thankYou.errorMessage, "שגיאת בסיס לתודה");
+  });
+
+  it("does not replace editor marketing copy with static defaults on merge", () => {
+    const staticBase = structuredClone(STATIC_BUILD_YOUR_DREAM_CONTENT);
+    const savedDb = structuredClone(STATIC_BUILD_YOUR_DREAM_CONTENT);
+    savedDb.benefits.subtitle = "ערך שמור במסד הנתונים";
+    savedDb.process.subtitle = "תהליך שמור במסד הנתונים";
+
+    const editor = structuredClone(savedDb);
+    editor.benefits.subtitle = "ערך חדש מהעורך";
+    editor.process.subtitle = "תהליך חדש מהעורך";
+
+    const merged = mergeWithPreservedFields(editor, savedDb);
+
+    assert.notEqual(merged.benefits.subtitle, staticBase.benefits.subtitle);
+    assert.equal(merged.benefits.subtitle, "ערך חדש מהעורך");
+    assert.equal(merged.process.subtitle, "תהליך חדש מהעורך");
   });
 
   it("enforces scroll-to-form actions on marketing CTAs", () => {
     const content = structuredClone(STATIC_BUILD_YOUR_DREAM_CONTENT);
     content.hero.ctaPrimary.action = "submit";
+    content.benefits.cta.action = "submit";
     const enforced = enforceLandingCtaActions(content);
     assert.equal(enforced.hero.ctaPrimary.action, "scroll-to-form");
+    assert.equal(enforced.benefits.cta.action, "scroll-to-form");
+    assert.equal(enforced.benefits.cta.label, content.benefits.cta.label);
   });
 });
 

@@ -220,30 +220,11 @@ export function mergeWithPreservedFields(
     ...editorContent,
     leadForm: {
       ...editorContent.leadForm,
-      submittingLabel: baseContent.leadForm.submittingLabel,
       errorMessage: baseContent.leadForm.errorMessage,
-      fields: baseContent.leadForm.fields,
     },
     thankYou: {
       ...editorContent.thankYou,
-      stepLabel: baseContent.thankYou.stepLabel,
-      completedTitle: baseContent.thankYou.completedTitle,
-      completedText: baseContent.thankYou.completedText,
       errorMessage: baseContent.thankYou.errorMessage,
-      qualification: {
-        ...editorContent.thankYou.qualification,
-        submitLabel: baseContent.thankYou.qualification.submitLabel,
-        submittingLabel: baseContent.thankYou.qualification.submittingLabel,
-      },
-    },
-    benefits: {
-      ...editorContent.benefits,
-      subtitle: baseContent.benefits.subtitle,
-      cta: baseContent.benefits.cta,
-    },
-    process: {
-      ...editorContent.process,
-      subtitle: baseContent.process.subtitle,
     },
   };
 }
