@@ -32,12 +32,10 @@ const followUpSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Lead",
       required: false,
-      sparse: true,
     },
     opportunityId: {
       type: Schema.Types.ObjectId,
       required: false,
-      sparse: true,
     },
   },
   {
@@ -47,8 +45,8 @@ const followUpSchema = new Schema(
 );
 
 followUpSchema.index({ status: 1, dueAt: 1 });
-followUpSchema.index({ leadId: 1 });
-followUpSchema.index({ opportunityId: 1 });
+followUpSchema.index({ leadId: 1 }, { sparse: true });
+followUpSchema.index({ opportunityId: 1 }, { sparse: true });
 followUpSchema.index({ createdAt: -1 });
 
 export type FollowUpDocument = InferSchemaType<typeof followUpSchema> & {

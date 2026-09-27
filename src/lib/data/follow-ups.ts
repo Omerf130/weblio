@@ -110,10 +110,9 @@ export async function updateFollowUpStatus(
 
   if (status === "completed") {
     update.completedAt = new Date();
-  } else if (status === "pending") {
+  } else {
     update.completedAt = null;
   }
-  // cancelled: leave completedAt as-is (should be null for pending→cancelled)
 
   const doc = await FollowUp.findByIdAndUpdate(
     id,

@@ -14,7 +14,7 @@ describe("follow-up status transition logic", () => {
 
     if (newStatus === "completed") {
       update.completedAt = new Date();
-    } else if (newStatus === "pending") {
+    } else {
       update.completedAt = null;
     }
 
@@ -51,11 +51,18 @@ describe("follow-up status transition logic", () => {
     assert.equal(result.completedAt, null);
   });
 
-  it("does not alter completedAt when cancelling from completed", () => {
+  it("clears completedAt when cancelling from completed", () => {
     const completedAt = new Date("2026-09-01T10:00:00.000Z");
     const result = applyStatusTransition("completed", "cancelled", completedAt);
 
     assert.equal(result.status, "cancelled");
-    assert.equal(result.completedAt, completedAt);
+    assert.equal(result.completedAt, null);
+  });
+
+  it("clears completedAt when reopening cancelled to pending", () => {
+    const result = applyStatusTransition("cancelled", "pending", null);
+
+    assert.equal(result.status, "pending");
+    assert.equal(result.completedAt, null);
   });
 });

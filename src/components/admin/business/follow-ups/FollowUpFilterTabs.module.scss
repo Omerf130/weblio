@@ -1,0 +1,49 @@
+@use "../../../../assets/styles/variables" as *;
+@use "../../_admin-light-theme" as admin;
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tab,
+.tabActive {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  text-decoration: none;
+  border: 1px solid admin.$admin-border;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.tab {
+  color: admin.$admin-text-secondary;
+  background: admin.$admin-surface-muted;
+
+  &:hover {
+    border-color: rgba(79, 127, 185, 0.28);
+    color: admin.$admin-link;
+    background: admin.$admin-surface;
+  }
+}
+
+.tabActive {
+  color: admin.$admin-link;
+  background: rgba(79, 127, 185, 0.12);
+  border-color: rgba(79, 127, 185, 0.32);
+  font-weight: $weight-bold;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab,
+  .tabActive {
+    transition: none;
+  }
+}

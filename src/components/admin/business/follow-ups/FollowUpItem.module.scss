@@ -1,0 +1,154 @@
+@use "../../../../assets/styles/variables" as *;
+@use "../../_admin-light-theme" as admin;
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  box-shadow: admin.$admin-shadow;
+  transition: border-color 0.16s ease;
+}
+
+.itemOverdue {
+  border-color: rgba(239, 68, 68, 0.28);
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.03) 0%, admin.$admin-surface 100%);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.topRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+}
+
+.note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: admin.$admin-text-secondary;
+  line-height: 1.45;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 1rem;
+}
+
+.date {
+  font-size: 0.82rem;
+  color: admin.$admin-text-muted;
+}
+
+.dateOverdue {
+  font-size: 0.82rem;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.leadLink {
+  font-size: 0.82rem;
+  color: admin.$admin-link;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.actionButton,
+.actionButtonMuted,
+.dangerButton {
+  border-radius: 8px;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: $font-family-base;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.actionButton {
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface-muted;
+  color: admin.$admin-text;
+
+  &:hover {
+    border-color: rgba(79, 127, 185, 0.32);
+    background: rgba(79, 127, 185, 0.08);
+    color: admin.$admin-link;
+  }
+}
+
+.actionButtonMuted {
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface-muted;
+  color: admin.$admin-text-muted;
+
+  &:hover {
+    border-color: rgba(100, 116, 139, 0.3);
+    color: admin.$admin-text-secondary;
+  }
+}
+
+.dangerButton {
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.16);
+    border-color: rgba(239, 68, 68, 0.32);
+  }
+}
+
+.confirmDelete {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.confirmText {
+  font-size: 0.82rem;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .actionButton,
+  .actionButtonMuted,
+  .dangerButton {
+    transition: none;
+  }
+}

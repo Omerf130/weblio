@@ -268,6 +268,55 @@ export async function updateLeadNotes(
   return lead ? toAdminLeadDetailDto(lead) : null;
 }
 
+// ── Lead summaries (for follow-up display) ──────────────────
+
+export type LeadSummary = { id: string; leadNumber: number; name: string };
+
+export async function getLeadSummaries(
+  ids: string[]
+): Promise<Map<string, LeadSummary>> {
+  const validIds = ids.filter((id) => mongoose.Types.ObjectId.isValid(id));
+  if (validIds.length === 0) {
+    return new Map();
+  }
+
+  await connectDB();
+
+  const docs = await Lead.find({
+    _id: { $in: validIds.map((id) => new mongoose.Types.ObjectId(id)) },
+  })
+    .select("leadNumber name")
+    .lean<(LeanLead & { leadNumber: number; name: string })[]>();
+
+  const map = new Map<string, LeadSummary>();
+  for (const doc of docs) {
+    map.set(doc._id.toString(), {
+      id: doc._id.toString(),
+      leadNumber: doc.leadNumber,
+      name: doc.name,
+    });
+  }
+  return map;
+}
+
+export async function getRecentLeadOptions(
+  limit = 50
+): Promise<LeadSummary[]> {
+  await connectDB();
+
+  const docs = await Lead.find()
+    .select("leadNumber name")
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .lean<(LeanLead & { leadNumber: number; name: string })[]>();
+
+  return docs.map((doc) => ({
+    id: doc._id.toString(),
+    leadNumber: doc.leadNumber,
+    name: doc.name,
+  }));
+}
+
 export async function deleteLead(id: string): Promise<boolean> {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return false;

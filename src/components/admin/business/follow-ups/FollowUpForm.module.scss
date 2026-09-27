@@ -1,0 +1,158 @@
+@use "../../../../assets/styles/variables" as *;
+@use "../../_admin-light-theme" as admin;
+
+.formWrapper {
+  border-radius: 14px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  box-shadow: admin.$admin-shadow;
+  padding: 1.25rem;
+}
+
+.formTitle {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: admin.$admin-text-muted;
+}
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  color: admin.$admin-text;
+  font-family: $font-family-base;
+  font-size: 0.88rem;
+
+  &:focus {
+    outline: none;
+    border-color: admin.$admin-focus-border;
+    box-shadow: admin.$admin-focus-ring;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 0.75rem center;
+  padding-left: 2rem;
+
+  option {
+    color: admin.$admin-text;
+    background: admin.$admin-surface;
+  }
+}
+
+.dateTimeRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.error {
+  margin: 0;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.primaryButton,
+.secondaryButton {
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: $weight-bold;
+  font-family: $font-family-base;
+  font-size: 0.88rem;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    opacity 0.16s ease;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.primaryButton {
+  border: none;
+  background: linear-gradient(135deg, $third-color, lighten($third-color, 10%));
+  color: #ffffff;
+
+  &:hover:not(:disabled) {
+    opacity: 0.92;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(79, 127, 185, 0.85);
+    outline-offset: 2px;
+  }
+}
+
+.secondaryButton {
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface-muted;
+  color: admin.$admin-text;
+
+  &:hover:not(:disabled) {
+    border-color: rgba(79, 127, 185, 0.32);
+    background: rgba(79, 127, 185, 0.08);
+    color: admin.$admin-link;
+  }
+}
+
+@media (max-width: 480px) {
+  .dateTimeRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryButton,
+  .secondaryButton {
+    transition: none;
+  }
+}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import type { AdminLeadDetailDto } from "@/types/lead";
+import type { AdminFollowUpDto } from "@/types/follow-up";
 import {
   formatLeadNumber,
   hasUtmData,
@@ -18,10 +19,12 @@ import {
 import { LEAD_STATUSES } from "@/lib/validations/lead";
 import DeleteLeadButton from "./DeleteLeadButton";
 import LeadStatusBadge from "./LeadStatusBadge";
+import FollowUpStatusBadge from "@/components/admin/business/follow-ups/FollowUpStatusBadge";
 import styles from "./LeadDetail.module.scss";
 
 type LeadDetailProps = {
   lead: AdminLeadDetailDto;
+  followUps?: AdminFollowUpDto[];
   errorMessage?: string;
 };
 
@@ -34,7 +37,17 @@ function formatDate(value: string): string {
   }).format(new Date(value));
 }
 
-export default function LeadDetail({ lead, errorMessage }: LeadDetailProps) {
+function formatFollowUpDate(iso: string): string {
+  return new Intl.DateTimeFormat("he-IL", {
+    timeZone: "Asia/Jerusalem",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(iso));
+}
+
+export default function LeadDetail({ lead, followUps = [], errorMessage }: LeadDetailProps) {
   const [notesState, notesAction, notesPending] = useActionState(
     saveLeadNotesAction,
     notesInitialState
@@ -205,6 +218,33 @@ export default function LeadDetail({ lead, errorMessage }: LeadDetailProps) {
           </section>
         ) : null}
       </div>
+
+      <section className={styles.panel}>
+          <div className={styles.panelHeader}>
+            <h2 className={styles.panelTitle}>מעקבים</h2>
+            <a
+              href={`/admin/business/follow-ups?new=1&leadId=${lead.id}`}
+              className={styles.addFollowUpLink}
+            >
+              הוסף מעקב
+            </a>
+          </div>
+          {followUps.length === 0 ? (
+            <p className={styles.emptyNote}>אין מעקבים לפנייה זו</p>
+          ) : (
+            <ul className={styles.followUpList}>
+              {followUps.map((fu) => (
+                <li key={fu.id} className={styles.followUpItem}>
+                  <span className={styles.followUpTitle}>{fu.title}</span>
+                  <span className={styles.followUpDate}>
+                    {formatFollowUpDate(fu.dueAt)}
+                  </span>
+                  <FollowUpStatusBadge status={fu.status} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
 
       <div className={styles.footerActions}>
         <form action={markLeadUnreadAction}>

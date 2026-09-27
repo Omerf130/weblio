@@ -1,21 +1,29 @@
+@use "../../../../assets/styles/variables" as *;
+@use "../../../../components/admin/admin-light-theme" as admin;
+
 .page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   max-width: 960px;
+  color: admin.$admin-text;
 }
 
 .header {
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .heading {
   font-size: 1.55rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 0.25rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+  margin: 0 0 0.25rem;
 }
 
 .subtitle {
+  margin: 0;
   font-size: 0.92rem;
-  color: #64748b;
+  color: admin.$admin-text-muted;
 }
 
 .grid {
@@ -29,19 +37,183 @@
   flex-direction: column;
   gap: 0.25rem;
   padding: 1.25rem 1rem;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: admin.$admin-surface;
+  border: 1px solid admin.$admin-border;
   border-radius: 12px;
+  text-decoration: none;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+
+  &:hover {
+    border-color: rgba(79, 127, 185, 0.28);
+    box-shadow: admin.$admin-shadow;
+  }
+}
+
+.cardAlert {
+  border-color: rgba(239, 68, 68, 0.28);
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.04) 0%, admin.$admin-surface 100%);
 }
 
 .cardValue {
   font-size: 1.75rem;
-  font-weight: 700;
-  color: #0f172a;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
   line-height: 1;
 }
 
 .cardLabel {
   font-size: 0.82rem;
-  color: #64748b;
+  color: admin.$admin-text-muted;
+}
+
+.attentionSection,
+.upcomingSection {
+  border-radius: 14px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  box-shadow: admin.$admin-shadow;
+  padding: 1.25rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.sectionTitle {
+  margin: 0 0 0.85rem;
+  font-size: 1.05rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+
+  .sectionHeader & {
+    margin-bottom: 0;
+  }
+}
+
+.emptyState {
+  margin: 0;
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.95rem;
+  color: admin.$admin-text-muted;
+}
+
+.attentionList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.attentionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.groupTitle {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: admin.$admin-text-secondary;
+}
+
+.attentionNote {
+  margin: 0;
+  font-size: 0.88rem;
+  color: admin.$admin-text-secondary;
+}
+
+.followUpList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.followUpRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface-muted;
+}
+
+.followUpRowOverdue {
+  border-color: rgba(239, 68, 68, 0.22);
+  background: rgba(239, 68, 68, 0.03);
+}
+
+.followUpInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.followUpTitle {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: admin.$admin-text;
+}
+
+.followUpDate {
+  font-size: 0.8rem;
+  color: admin.$admin-text-muted;
+  white-space: nowrap;
+}
+
+.followUpDateOverdue {
+  font-size: 0.8rem;
+  color: #b91c1c;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.followUpMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.leadLink {
+  font-size: 0.8rem;
+  color: admin.$admin-link;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.link {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: admin.$admin-link;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
 }

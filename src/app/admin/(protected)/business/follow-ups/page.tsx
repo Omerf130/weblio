@@ -1,78 +1,114 @@
 import {
+  getFollowUpList,
   getPendingFollowUpsDueToday,
   getOverdueFollowUps,
   getUpcomingFollowUps,
 } from "@/lib/data/follow-ups";
-import styles from "./follow-ups.module.scss";
+import { getRecentLeadOptions, getLeadSummaries } from "@/lib/data/leads";
+import type { AdminFollowUpDto } from "@/types/follow-up";
+import type { FollowUpFilter } from "@/components/admin/business/follow-ups/FollowUpFilterTabs";
+import FollowUpsManager from "@/components/admin/business/follow-ups/FollowUpsManager";
 
-export default async function FollowUpsPage() {
-  const [dueToday, overdue, upcoming] = await Promise.all([
-    getPendingFollowUpsDueToday(),
-    getOverdueFollowUps(),
-    getUpcomingFollowUps(7),
+type FollowUpsPageProps = {
+  searchParams: Promise<{
+    filter?: string;
+    page?: string;
+    new?: string;
+    leadId?: string;
+  }>;
+};
+
+const VALID_FILTERS = new Set<FollowUpFilter>([
+  "all",
+  "today",
+  "overdue",
+  "upcoming",
+  "completed",
+  "cancelled",
+]);
+
+function parseFilter(value?: string): FollowUpFilter {
+  if (value && VALID_FILTERS.has(value as FollowUpFilter)) {
+    return value as FollowUpFilter;
+  }
+  return "all";
+}
+
+export default async function FollowUpsPage({ searchParams }: FollowUpsPageProps) {
+  const query = await searchParams;
+  const filter = parseFilter(query.filter);
+  const page = Math.max(1, Number(query.page) || 1);
+  const autoOpenNew = query.new === "1";
+  const preselectedLeadId = query.leadId;
+
+  let followUps: AdminFollowUpDto[] = [];
+  let pagination: { page: number; totalPages: number; total: number } | undefined;
+
+  switch (filter) {
+    case "today":
+      followUps = await getPendingFollowUpsDueToday();
+      break;
+    case "overdue":
+      followUps = await getOverdueFollowUps();
+      break;
+    case "upcoming":
+      followUps = await getUpcomingFollowUps(7);
+      break;
+    case "completed": {
+      const result = await getFollowUpList({
+        page,
+        status: "completed",
+        sort: "-createdAt",
+      });
+      followUps = result.items;
+      pagination = { page: result.page, totalPages: result.totalPages, total: result.total };
+      break;
+    }
+    case "cancelled": {
+      const result = await getFollowUpList({
+        page,
+        status: "cancelled",
+        sort: "-createdAt",
+      });
+      followUps = result.items;
+      pagination = { page: result.page, totalPages: result.totalPages, total: result.total };
+      break;
+    }
+    default: {
+      const result = await getFollowUpList({
+        page,
+        status: "pending",
+        sort: "dueAt",
+      });
+      followUps = result.items;
+      pagination = { page: result.page, totalPages: result.totalPages, total: result.total };
+      break;
+    }
+  }
+
+  const leadIds = followUps
+    .map((fu) => fu.leadId)
+    .filter((id): id is string => !!id);
+
+  const [leadOptions, leadSummariesMap] = await Promise.all([
+    getRecentLeadOptions(50),
+    leadIds.length > 0 ? getLeadSummaries(leadIds) : Promise.resolve(new Map()),
   ]);
 
-  const totalPending = dueToday.length + overdue.length + upcoming.length;
+  const leadSummaries: Record<string, { id: string; leadNumber: number; name: string }> = {};
+  for (const [key, value] of leadSummariesMap) {
+    leadSummaries[key] = value;
+  }
 
   return (
-    <div className={styles.page} dir="rtl">
-      <header className={styles.header}>
-        <h1 className={styles.heading}>מעקבים</h1>
-        <p className={styles.subtitle}>
-          {totalPending === 0
-            ? "אין מעקבים פתוחים"
-            : `${totalPending} מעקבים פתוחים`}
-        </p>
-      </header>
-
-      {overdue.length > 0 && (
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>באיחור ({overdue.length})</h2>
-          <ul className={styles.list}>
-            {overdue.map((fu) => (
-              <li key={fu.id} className={styles.item}>
-                <span className={styles.itemTitle}>{fu.title}</span>
-                <span className={styles.itemDate}>
-                  {new Date(fu.dueAt).toLocaleDateString("he-IL")}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {dueToday.length > 0 && (
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>להיום ({dueToday.length})</h2>
-          <ul className={styles.list}>
-            {dueToday.map((fu) => (
-              <li key={fu.id} className={styles.item}>
-                <span className={styles.itemTitle}>{fu.title}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {upcoming.length > 0 && (
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>קרובים ({upcoming.length})</h2>
-          <ul className={styles.list}>
-            {upcoming.map((fu) => (
-              <li key={fu.id} className={styles.item}>
-                <span className={styles.itemTitle}>{fu.title}</span>
-                <span className={styles.itemDate}>
-                  {new Date(fu.dueAt).toLocaleDateString("he-IL")}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {totalPending === 0 && (
-        <p className={styles.empty}>כל המעקבים הושלמו או שאין מעקבים פתוחים כרגע.</p>
-      )}
-    </div>
+    <FollowUpsManager
+      followUps={followUps}
+      leadSummaries={leadSummaries}
+      leadOptions={leadOptions}
+      activeFilter={filter}
+      pagination={pagination}
+      autoOpenNew={autoOpenNew}
+      preselectedLeadId={preselectedLeadId}
+    />
   );
 }

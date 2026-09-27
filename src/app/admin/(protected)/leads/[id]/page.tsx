@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import LeadDetail from "@/components/admin/leads/LeadDetail";
 import { getLeadById, markLeadRead } from "@/lib/data/leads";
+import { getFollowUpsForLead } from "@/lib/data/follow-ups";
 
 type LeadDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -21,9 +22,12 @@ export default async function LeadDetailPage({
     notFound();
   }
 
+  const followUps = await getFollowUpsForLead(id);
+
   return (
     <LeadDetail
       lead={lead}
+      followUps={followUps}
       errorMessage={query.error ? decodeURIComponent(query.error) : undefined}
     />
   );
