@@ -19,7 +19,8 @@
     "test:landing-cms": "tsx --test tests/build-your-dream/**/*.test.ts",
     "test:dashboard": "tsx --test tests/admin/**/*.test.ts",
     "test:ga4": "tsx --test tests/admin/ga4-traffic.test.ts",
-    "test:email": "tsx --test tests/email/**/*.test.ts"
+    "test:email": "tsx --test tests/email/**/*.test.ts",
+    "test:business": "tsx --test tests/business/**/*.test.ts"
   },
   "dependencies": {
     "@google-analytics/data": "7.0.0",

@@ -124,6 +124,29 @@
   flex: 1;
 }
 
+.navGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.navGroup + .navGroup {
+  margin-top: 0.7rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.navGroupLabel {
+  display: block;
+  padding: 0 0.85rem;
+  margin-bottom: 0.1rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(243, 243, 224, 0.35);
+}
+
 .footer {
   margin-top: auto;
   padding-top: 1.5rem;

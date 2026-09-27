@@ -1,7 +1,7 @@
 import { MdOpenInNew } from "react-icons/md";
 import { logoutAction } from "@/lib/auth/actions";
 import {
-  ADMIN_NAV_ITEMS,
+  ADMIN_NAV_GROUPS,
   isAdminNavItemActive,
   type AdminNavItemConfig,
 } from "@/lib/admin/nav-config";
@@ -40,17 +40,24 @@ export default function AdminSidebar({
         </div>
 
         <nav className={styles.nav} aria-label="ניווט פאנל ניהול">
-          {ADMIN_NAV_ITEMS.map((item: AdminNavItemConfig) => (
-            <AdminNavItem
-              key={item.id}
-              item={
-                item.id === "leads"
-                  ? { ...item, badgeCount: unreadLeadCount }
-                  : item
-              }
-              isActive={isAdminNavItemActive(pathname, item)}
-              onNavigate={onNavigate}
-            />
+          {ADMIN_NAV_GROUPS.map((group) => (
+            <div key={group.id} className={styles.navGroup} role="group">
+              {group.label ? (
+                <span className={styles.navGroupLabel}>{group.label}</span>
+              ) : null}
+              {group.items.map((item: AdminNavItemConfig) => (
+                <AdminNavItem
+                  key={item.id}
+                  item={
+                    item.id === "leads"
+                      ? { ...item, badgeCount: unreadLeadCount }
+                      : item
+                  }
+                  isActive={isAdminNavItemActive(pathname, item)}
+                  onNavigate={onNavigate}
+                />
+              ))}
+            </div>
           ))}
         </nav>
 

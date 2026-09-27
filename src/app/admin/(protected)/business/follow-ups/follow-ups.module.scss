@@ -1,0 +1,65 @@
+.page {
+  max-width: 720px;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.heading {
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.92rem;
+  color: #64748b;
+}
+
+.section {
+  margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.6rem;
+}
+
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.itemTitle {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.itemDate {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.empty {
+  padding: 2rem 0;
+  text-align: center;
+  font-size: 0.92rem;
+  color: #94a3b8;
+}
