@@ -67,6 +67,8 @@ function formatSourceLabel(source: string): string {
       return "דף נחיתה";
     case "website":
       return "אתר";
+    case "opportunity":
+      return "הזדמנות";
     default:
       return source;
   }

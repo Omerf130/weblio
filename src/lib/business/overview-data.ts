@@ -5,6 +5,10 @@ import {
   getUpcomingFollowUps,
 } from "@/lib/data/follow-ups";
 import { getIsraelDaysAgo } from "@/lib/admin/dashboard-time";
+import {
+  countActiveOpportunities,
+  countNewOpportunities,
+} from "@/lib/data/opportunity-conversion";
 import { connectDB } from "@/lib/db/mongoose";
 import { Lead } from "@/models/Lead";
 import type { BusinessOverviewData } from "@/types/business";
@@ -17,12 +21,16 @@ export async function getBusinessOverviewData(): Promise<BusinessOverviewData> {
   const [
     unreadLeadCount,
     newLeadsLast7Days,
+    newOpportunitiesCount,
+    activeOpportunitiesCount,
     followUpsDueToday,
     overdueFollowUps,
     upcomingFollowUps,
   ] = await Promise.all([
     getUnreadLeadCount(),
     Lead.countDocuments({ createdAt: { $gte: sevenDaysAgo } }),
+    countNewOpportunities(),
+    countActiveOpportunities(),
     getPendingFollowUpsDueToday(),
     getOverdueFollowUps(),
     getUpcomingFollowUps(7),
@@ -31,6 +39,8 @@ export async function getBusinessOverviewData(): Promise<BusinessOverviewData> {
   return {
     unreadLeadCount,
     newLeadsLast7Days,
+    newOpportunitiesCount,
+    activeOpportunitiesCount,
     followUpsDueToday,
     overdueFollowUps,
     upcomingFollowUps,

@@ -49,6 +49,32 @@ describe("follow-up create validation", () => {
     }
   });
 
+  it("accepts follow-up linked to an opportunity", () => {
+    const opportunityId = "507f1f77bcf86cd799439012";
+    const result = safeParseCreateFollowUp({
+      title: "מעקב להזדמנות",
+      dueAt: "2026-10-05T08:00:00.000Z",
+      opportunityId,
+    });
+
+    assert.equal(result.success, true);
+    if (result.success) {
+      assert.equal(result.data.opportunityId, opportunityId);
+      assert.equal(result.data.leadId, undefined);
+    }
+  });
+
+  it("rejects follow-up linked to both lead and opportunity", () => {
+    const result = safeParseCreateFollowUp({
+      title: "בדיקה",
+      dueAt: "2026-10-01T10:00:00.000Z",
+      leadId: "507f1f77bcf86cd799439011",
+      opportunityId: "507f1f77bcf86cd799439012",
+    });
+
+    assert.equal(result.success, false);
+  });
+
   it("strips empty note to undefined", () => {
     const result = safeParseCreateFollowUp({
       title: "בדיקה",

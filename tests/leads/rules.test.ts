@@ -14,6 +14,7 @@ describe("lead rules", () => {
     assert.equal(parseLeadSourceFilter(undefined), "all");
     assert.equal(parseLeadSourceFilter("website"), "website");
     assert.equal(parseLeadSourceFilter("landingPage"), "landingPage");
+    assert.equal(parseLeadSourceFilter("opportunity"), "opportunity");
     assert.equal(parseLeadSourceFilter("invalid"), "all");
   });
 

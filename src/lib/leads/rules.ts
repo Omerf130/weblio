@@ -18,12 +18,17 @@ export const LEAD_STATUS_LABELS: Record<LeadStatus, string> = {
 export const LEAD_SOURCE_LABELS: Record<LeadSource, string> = {
   website: "אתר",
   landingPage: "דף נחיתה",
+  opportunity: "הזדמנות",
 };
 
 export function parseLeadSourceFilter(
   searchParam: string | undefined
 ): LeadSourceFilter {
-  if (searchParam === "website" || searchParam === "landingPage") {
+  if (
+    searchParam === "website" ||
+    searchParam === "landingPage" ||
+    searchParam === "opportunity"
+  ) {
     return searchParam;
   }
 
@@ -47,15 +52,15 @@ export function matchesLeadSearch(
 
   if (
     lead.name.toLowerCase().includes(normalized) ||
-    lead.phone.toLowerCase().includes(normalized) ||
-    lead.email.toLowerCase().includes(normalized)
+    (lead.phone && lead.phone.toLowerCase().includes(normalized)) ||
+    (lead.email && lead.email.toLowerCase().includes(normalized))
   ) {
     return true;
   }
 
   const digitsOnly = trimmed.replace(/\D/g, "");
   if (digitsOnly.length > 0) {
-    if (lead.phone.replace(/\D/g, "").includes(digitsOnly)) {
+    if (lead.phone && lead.phone.replace(/\D/g, "").includes(digitsOnly)) {
       return true;
     }
 
@@ -73,6 +78,8 @@ export function getLeadEmptyStateMessage(sourceFilter: LeadSourceFilter): string
       return "עדיין לא התקבלו פניות מהאתר.";
     case "landingPage":
       return "עדיין לא התקבלו פניות מדפי נחיתה.";
+    case "opportunity":
+      return "עדיין לא התקבלו לידים מהמרת הזדמנויות.";
     default:
       return "עדיין לא התקבלו פניות.";
   }

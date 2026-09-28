@@ -154,6 +154,24 @@ export async function getFollowUpsForLead(
   return docs.map(toAdminFollowUpDto);
 }
 
+export async function getFollowUpsForOpportunity(
+  opportunityId: string
+): Promise<AdminFollowUpDto[]> {
+  if (!mongoose.Types.ObjectId.isValid(opportunityId)) {
+    return [];
+  }
+
+  await connectDB();
+
+  const docs = await FollowUp.find({
+    opportunityId: new mongoose.Types.ObjectId(opportunityId),
+  })
+    .sort({ dueAt: 1 })
+    .lean<LeanFollowUp[]>();
+
+  return docs.map(toAdminFollowUpDto);
+}
+
 // ── Time-based queries ──────────────────────────────────────
 
 export async function getPendingFollowUpsDueToday(
@@ -229,6 +247,7 @@ export type FollowUpListOptions = {
   pageSize?: number;
   status?: FollowUpStatus;
   leadId?: string;
+  opportunityId?: string;
   sort?: "dueAt" | "-dueAt" | "createdAt" | "-createdAt";
 };
 
@@ -251,6 +270,13 @@ export async function getFollowUpList(
 
   if (options.leadId && mongoose.Types.ObjectId.isValid(options.leadId)) {
     query.leadId = new mongoose.Types.ObjectId(options.leadId);
+  }
+
+  if (
+    options.opportunityId &&
+    mongoose.Types.ObjectId.isValid(options.opportunityId)
+  ) {
+    query.opportunityId = new mongoose.Types.ObjectId(options.opportunityId);
   }
 
   const sortField = options.sort ?? "dueAt";

@@ -1,4 +1,6 @@
-export type LeadSource = "website" | "landingPage";
+export const LEAD_SOURCES = ["website", "landingPage", "opportunity"] as const;
+
+export type LeadSource = (typeof LEAD_SOURCES)[number];
 
 export type LeadStatus =
   | "new"

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import LeadDetail from "@/components/admin/leads/LeadDetail";
 import { getLeadById, markLeadRead } from "@/lib/data/leads";
 import { getFollowUpsForLead } from "@/lib/data/follow-ups";
+import { getOpportunitySummaryByLeadId } from "@/lib/data/opportunity-conversion";
 
 type LeadDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -22,12 +23,18 @@ export default async function LeadDetailPage({
     notFound();
   }
 
-  const followUps = await getFollowUpsForLead(id);
+  const [followUps, sourceOpportunity] = await Promise.all([
+    getFollowUpsForLead(id),
+    lead.source === "opportunity"
+      ? getOpportunitySummaryByLeadId(id)
+      : Promise.resolve(null),
+  ]);
 
   return (
     <LeadDetail
       lead={lead}
       followUps={followUps}
+      sourceOpportunity={sourceOpportunity ?? undefined}
       errorMessage={query.error ? decodeURIComponent(query.error) : undefined}
     />
   );

@@ -3,6 +3,8 @@
 import { useActionState, useEffect } from "react";
 import type { AdminFollowUpDto } from "@/types/follow-up";
 import type { LeadSummary } from "@/lib/data/leads";
+import type { OpportunitySummary } from "@/types/opportunity";
+import Link from "next/link";
 import type { FollowUpActionState } from "@/lib/business/follow-ups/action-states";
 import {
   createFollowUpAction,
@@ -13,7 +15,10 @@ import styles from "./FollowUpForm.module.scss";
 type FollowUpFormProps = {
   editingFollowUp?: AdminFollowUpDto;
   leadOptions: LeadSummary[];
+  opportunityOptions?: OpportunitySummary[];
   preselectedLeadId?: string;
+  preselectedOpportunityId?: string;
+  preselectedOpportunity?: OpportunitySummary;
   onClose: () => void;
 };
 
@@ -39,10 +44,16 @@ function toTimeValue(iso: string): string {
 export default function FollowUpForm({
   editingFollowUp,
   leadOptions,
+  opportunityOptions = [],
   preselectedLeadId,
+  preselectedOpportunityId,
+  preselectedOpportunity,
   onClose,
 }: FollowUpFormProps) {
   const isEdit = !!editingFollowUp;
+  const lockLead = !!preselectedLeadId && !isEdit;
+  const lockOpportunity =
+    (!!preselectedOpportunityId || !!preselectedOpportunity) && !isEdit;
   const action = isEdit ? editFollowUpAction : createFollowUpAction;
   const [state, formAction, pending] = useActionState(action, initialState);
 
@@ -147,26 +158,92 @@ export default function FollowUpForm({
           </div>
         </div>
 
-        {!isEdit && (
-          <div className={styles.field}>
-            <label htmlFor="fu-lead" className={styles.label}>
-              ליד (אופציונלי)
-            </label>
-            <select
-              id="fu-lead"
-              name="leadId"
-              defaultValue={preselectedLeadId ?? ""}
-              className={styles.select}
-              disabled={pending}
-            >
-              <option value="">ללא</option>
-              {leadOptions.map((lead) => (
-                <option key={lead.id} value={lead.id}>
-                  #{lead.leadNumber} — {lead.name}
-                </option>
-              ))}
-            </select>
-          </div>
+        {!isEdit && lockOpportunity && (preselectedOpportunityId ?? preselectedOpportunity?.id) && (
+          <>
+            <input
+              type="hidden"
+              name="opportunityId"
+              value={preselectedOpportunityId ?? preselectedOpportunity!.id}
+            />
+            <div className={styles.field}>
+              <span className={styles.label}>הזדמנות</span>
+              <p className={styles.preselectedRelation}>
+                {preselectedOpportunity?.title ?? "הזדמנות מקושרת"}
+                {preselectedOpportunity?.businessName
+                  ? ` · ${preselectedOpportunity.businessName}`
+                  : ""}
+                {" · "}
+                <Link
+                  href={`/admin/business/opportunities/${preselectedOpportunityId ?? preselectedOpportunity!.id}`}
+                  className={styles.relationLink}
+                >
+                  צפייה
+                </Link>
+              </p>
+            </div>
+          </>
+        )}
+
+        {!isEdit && !lockOpportunity && !lockLead && (
+          <>
+            <div className={styles.field}>
+              <label htmlFor="fu-lead" className={styles.label}>
+                ליד (אופציונלי)
+              </label>
+              <select
+                id="fu-lead"
+                name="leadId"
+                defaultValue={preselectedLeadId ?? ""}
+                className={styles.select}
+                disabled={pending}
+              >
+                <option value="">ללא</option>
+                {leadOptions.map((lead) => (
+                  <option key={lead.id} value={lead.id}>
+                    #{lead.leadNumber} — {lead.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.field}>
+              <label htmlFor="fu-opportunity" className={styles.label}>
+                הזדמנות (אופציונלי)
+              </label>
+              <select
+                id="fu-opportunity"
+                name="opportunityId"
+                defaultValue=""
+                className={styles.select}
+                disabled={pending}
+              >
+                <option value="">ללא</option>
+                {opportunityOptions.map((opp) => (
+                  <option key={opp.id} value={opp.id}>
+                    {opp.title}
+                    {opp.businessName ? ` · ${opp.businessName}` : ""}
+                  </option>
+                ))}
+              </select>
+              <span className={styles.fieldHint}>
+                ניתן לקשר לליד או להזדמנות — לא לשניהם יחד.
+              </span>
+            </div>
+          </>
+        )}
+
+        {!isEdit && lockLead && preselectedLeadId && (
+          <>
+            <input type="hidden" name="leadId" value={preselectedLeadId} />
+            <div className={styles.field}>
+              <span className={styles.label}>ליד</span>
+              <p className={styles.preselectedRelation}>
+                ליד נבחר מראש ·{" "}
+                <Link href={`/admin/leads/${preselectedLeadId}`} className={styles.relationLink}>
+                  צפייה
+                </Link>
+              </p>
+            </div>
+          </>
         )}
 
         {state.error && (

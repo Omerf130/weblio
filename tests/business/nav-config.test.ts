@@ -22,13 +22,14 @@ describe("admin navigation groups", () => {
     assert.equal(business!.label, "עסקי");
   });
 
-  it("business group contains overview and follow-ups", () => {
+  it("business group contains overview, follow-ups, and opportunities", () => {
     const business = ADMIN_NAV_GROUPS.find((g) => g.id === "business");
     assert.ok(business);
 
     const ids = business!.items.map((i) => i.id);
     assert.ok(ids.includes("business-overview"));
     assert.ok(ids.includes("follow-ups"));
+    assert.ok(ids.includes("opportunities"));
   });
 
   it("business group does NOT contain future items", () => {
@@ -36,7 +37,6 @@ describe("admin navigation groups", () => {
     assert.ok(business);
 
     const ids = business!.items.map((i) => i.id);
-    assert.ok(!ids.includes("opportunities"));
     assert.ok(!ids.includes("intent"));
     assert.ok(!ids.includes("intent-monitor"));
     assert.ok(!ids.includes("marketing"));
@@ -113,6 +113,19 @@ describe("business route matching", () => {
 
   it("getAdminPageTitle returns follow-ups title", () => {
     assert.equal(getAdminPageTitle("/admin/business/follow-ups"), "מעקבים");
+  });
+
+  it("opportunities is active on /admin/business/opportunities", () => {
+    const opportunities = ADMIN_NAV_ITEMS.find((i) => i.id === "opportunities");
+    assert.ok(opportunities);
+    assert.equal(
+      isAdminNavItemActive("/admin/business/opportunities", opportunities!),
+      true
+    );
+  });
+
+  it("getAdminPageTitle returns opportunities title", () => {
+    assert.equal(getAdminPageTitle("/admin/business/opportunities"), "הזדמנויות");
   });
 
   it("dashboard is NOT active on /admin/business", () => {

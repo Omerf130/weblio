@@ -49,12 +49,12 @@ const leadSchema = new Schema(
     },
     phone: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
     },
     email: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
       lowercase: true,
     },
@@ -65,7 +65,7 @@ const leadSchema = new Schema(
     },
     source: {
       type: String,
-      enum: ["website", "landingPage"],
+      enum: ["website", "landingPage", "opportunity"],
       required: true,
     },
     sourcePage: {

@@ -13,6 +13,7 @@ import styles from "../DashboardContent.module.scss";
 const SOURCE_COLORS: Record<string, string> = {
   website: "#4f7fb9",
   landingPage: "#20a4a8",
+  opportunity: "#6366f1",
 };
 
 const FALLBACK_COLORS = ["#4f7fb9", "#20a4a8", "#608bc1", "#2d6a9f"];

@@ -34,6 +34,28 @@
   color: admin.$admin-text-muted;
 }
 
+.fieldHint {
+  font-size: 0.75rem;
+  color: admin.$admin-text-muted;
+}
+
+.preselectedRelation {
+  margin: 0;
+  font-size: 0.88rem;
+  color: admin.$admin-text-secondary;
+}
+
+.relationLink {
+  color: admin.$admin-link;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid rgba(79, 127, 185, 0.85);
+    outline-offset: 2px;
+  }
+}
+
 .input,
 .textarea,
 .select {

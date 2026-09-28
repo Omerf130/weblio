@@ -17,11 +17,17 @@ import {
 } from "@/lib/validations/follow-up";
 import type { FollowUpActionState } from "./action-states";
 
-function revalidateFollowUpPaths(leadId?: string): void {
+function revalidateFollowUpPaths(options?: {
+  leadId?: string;
+  opportunityId?: string;
+}): void {
   revalidatePath("/admin/business");
   revalidatePath("/admin/business/follow-ups");
-  if (leadId) {
-    revalidatePath(`/admin/leads/${leadId}`);
+  if (options?.leadId) {
+    revalidatePath(`/admin/leads/${options.leadId}`);
+  }
+  if (options?.opportunityId) {
+    revalidatePath(`/admin/business/opportunities/${options.opportunityId}`);
   }
 }
 
@@ -47,7 +53,10 @@ export async function createFollowUpAction(
 
   try {
     const created = await createFollowUp(parsed.data);
-    revalidateFollowUpPaths(created.leadId);
+    revalidateFollowUpPaths({
+      leadId: created.leadId,
+      opportunityId: created.opportunityId,
+    });
     return { success: true };
   } catch {
     return { error: "לא ניתן ליצור מעקב כרגע." };
@@ -82,7 +91,10 @@ export async function editFollowUpAction(
     if (!updated) {
       return { error: "מעקב לא נמצא." };
     }
-    revalidateFollowUpPaths(updated.leadId);
+    revalidateFollowUpPaths({
+      leadId: updated.leadId,
+      opportunityId: updated.opportunityId,
+    });
     return { success: true };
   } catch {
     return { error: "לא ניתן לעדכן את המעקב כרגע." };
@@ -99,7 +111,10 @@ export async function completeFollowUpAction(formData: FormData): Promise<void> 
 
   const existing = await getFollowUpById(id);
   await updateFollowUpStatus(id, "completed");
-  revalidateFollowUpPaths(existing?.leadId);
+  revalidateFollowUpPaths({
+    leadId: existing?.leadId,
+    opportunityId: existing?.opportunityId,
+  });
   redirect("/admin/business/follow-ups");
 }
 
@@ -113,7 +128,10 @@ export async function cancelFollowUpAction(formData: FormData): Promise<void> {
 
   const existing = await getFollowUpById(id);
   await updateFollowUpStatus(id, "cancelled");
-  revalidateFollowUpPaths(existing?.leadId);
+  revalidateFollowUpPaths({
+    leadId: existing?.leadId,
+    opportunityId: existing?.opportunityId,
+  });
   redirect("/admin/business/follow-ups");
 }
 
@@ -127,7 +145,10 @@ export async function reopenFollowUpAction(formData: FormData): Promise<void> {
 
   const existing = await getFollowUpById(id);
   await updateFollowUpStatus(id, "pending");
-  revalidateFollowUpPaths(existing?.leadId);
+  revalidateFollowUpPaths({
+    leadId: existing?.leadId,
+    opportunityId: existing?.opportunityId,
+  });
   redirect("/admin/business/follow-ups");
 }
 
@@ -148,7 +169,10 @@ export async function updateFollowUpStatusAction(formData: FormData): Promise<vo
 
   const existing = await getFollowUpById(id);
   await updateFollowUpStatus(id, parsed.data);
-  revalidateFollowUpPaths(existing?.leadId);
+  revalidateFollowUpPaths({
+    leadId: existing?.leadId,
+    opportunityId: existing?.opportunityId,
+  });
   redirect("/admin/business/follow-ups");
 }
 
@@ -162,6 +186,9 @@ export async function deleteFollowUpAction(formData: FormData): Promise<void> {
 
   const existing = await getFollowUpById(id);
   await deleteFollowUp(id);
-  revalidateFollowUpPaths(existing?.leadId);
+  revalidateFollowUpPaths({
+    leadId: existing?.leadId,
+    opportunityId: existing?.opportunityId,
+  });
   redirect("/admin/business/follow-ups");
 }

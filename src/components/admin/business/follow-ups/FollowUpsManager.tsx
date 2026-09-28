@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import type { AdminFollowUpDto } from "@/types/follow-up";
 import type { LeadSummary } from "@/lib/data/leads";
+import type { OpportunitySummary } from "@/types/opportunity";
 import FollowUpFilterTabs, { type FollowUpFilter } from "./FollowUpFilterTabs";
 import FollowUpItem from "./FollowUpItem";
 import FollowUpForm from "./FollowUpForm";
@@ -12,7 +13,9 @@ import styles from "./FollowUpsManager.module.scss";
 type FollowUpsManagerProps = {
   followUps: AdminFollowUpDto[];
   leadSummaries: Record<string, LeadSummary>;
+  opportunitySummaries: Record<string, OpportunitySummary>;
   leadOptions: LeadSummary[];
+  opportunityOptions: OpportunitySummary[];
   activeFilter: FollowUpFilter;
   pagination?: {
     page: number;
@@ -21,16 +24,22 @@ type FollowUpsManagerProps = {
   };
   autoOpenNew?: boolean;
   preselectedLeadId?: string;
+  preselectedOpportunityId?: string;
+  preselectedOpportunity?: OpportunitySummary;
 };
 
 export default function FollowUpsManager({
   followUps,
   leadSummaries,
+  opportunitySummaries,
   leadOptions,
+  opportunityOptions,
   activeFilter,
   pagination,
   autoOpenNew,
   preselectedLeadId,
+  preselectedOpportunityId,
+  preselectedOpportunity,
 }: FollowUpsManagerProps) {
   const [showForm, setShowForm] = useState(false);
   const [editingFollowUp, setEditingFollowUp] = useState<AdminFollowUpDto | undefined>();
@@ -82,7 +91,10 @@ export default function FollowUpsManager({
         <FollowUpForm
           editingFollowUp={editingFollowUp}
           leadOptions={leadOptions}
+          opportunityOptions={opportunityOptions}
           preselectedLeadId={preselectedLeadId}
+          preselectedOpportunityId={preselectedOpportunityId}
+          preselectedOpportunity={preselectedOpportunity}
           onClose={handleCloseForm}
         />
       )}
@@ -105,6 +117,9 @@ export default function FollowUpsManager({
               key={fu.id}
               followUp={fu}
               leadSummary={fu.leadId ? leadSummaries[fu.leadId] : undefined}
+              opportunitySummary={
+                fu.opportunityId ? opportunitySummaries[fu.opportunityId] : undefined
+              }
               onEdit={handleEdit}
             />
           ))}

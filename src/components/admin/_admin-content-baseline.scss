@@ -1,0 +1,33 @@
+@use "admin-light-theme" as admin;
+
+/// Default readable text inside the Admin main content column (light background).
+/// Counteracts globals.scss `* { color: #fff }` without affecting sidebar/dark UI.
+/// Intentional colors on classes (links, badges, primary buttons) must use explicit rules.
+@mixin admin-light-content-text {
+  color: admin.$admin-text;
+
+  :where(
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    li,
+    label,
+    dd,
+    dt,
+    td,
+    th,
+    small,
+    strong,
+    em,
+    blockquote,
+    input,
+    textarea,
+    select
+  ) {
+    color: inherit;
+  }
+}

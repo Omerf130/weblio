@@ -25,6 +25,7 @@ import styles from "./LeadDetail.module.scss";
 type LeadDetailProps = {
   lead: AdminLeadDetailDto;
   followUps?: AdminFollowUpDto[];
+  sourceOpportunity?: { id: string; title: string };
   errorMessage?: string;
 };
 
@@ -47,7 +48,12 @@ function formatFollowUpDate(iso: string): string {
   }).format(new Date(iso));
 }
 
-export default function LeadDetail({ lead, followUps = [], errorMessage }: LeadDetailProps) {
+export default function LeadDetail({
+  lead,
+  followUps = [],
+  sourceOpportunity,
+  errorMessage,
+}: LeadDetailProps) {
   const [notesState, notesAction, notesPending] = useActionState(
     saveLeadNotesAction,
     notesInitialState
@@ -79,14 +85,18 @@ export default function LeadDetail({ lead, followUps = [], errorMessage }: LeadD
               <dt>שם</dt>
               <dd>{lead.name}</dd>
             </div>
-            <div>
-              <dt>טלפון</dt>
-              <dd>{lead.phone}</dd>
-            </div>
-            <div>
-              <dt>מייל</dt>
-              <dd>{lead.email}</dd>
-            </div>
+            {lead.phone ? (
+              <div>
+                <dt>טלפון</dt>
+                <dd>{lead.phone}</dd>
+              </div>
+            ) : null}
+            {lead.email ? (
+              <div>
+                <dt>מייל</dt>
+                <dd>{lead.email}</dd>
+              </div>
+            ) : null}
             {lead.message ? (
               <div>
                 <dt>הודעה</dt>
@@ -97,16 +107,31 @@ export default function LeadDetail({ lead, followUps = [], errorMessage }: LeadD
               <dt>מקור</dt>
               <dd>{LEAD_SOURCE_LABELS[lead.source]}</dd>
             </div>
+            {sourceOpportunity ? (
+              <div>
+                <dt>הזדמנות מקור</dt>
+                <dd>
+                  <Link
+                    href={`/admin/business/opportunities/${sourceOpportunity.id}`}
+                    className={styles.backLink}
+                  >
+                    {sourceOpportunity.title} — צפייה בהזדמנות המקורית
+                  </Link>
+                </dd>
+              </div>
+            ) : null}
             <div>
               <dt>סטטוס שאלון</dt>
               <dd>
                 {lead.qualificationStatus === "completed" ? "הושלם" : "ממתין"}
               </dd>
             </div>
-            <div>
-              <dt>עמוד מקור</dt>
-              <dd>{lead.sourcePage}</dd>
-            </div>
+            {lead.source !== "opportunity" ? (
+              <div>
+                <dt>עמוד מקור</dt>
+                <dd>{lead.sourcePage}</dd>
+              </div>
+            ) : null}
             {lead.campaign ? (
               <div>
                 <dt>קמפיין</dt>

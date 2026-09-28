@@ -24,8 +24,8 @@ function toAdminLeadDto(lead: LeanLead): AdminLeadDto {
     id: lead._id.toString(),
     leadNumber: lead.leadNumber,
     name: lead.name,
-    phone: lead.phone,
-    email: lead.email,
+    phone: lead.phone ?? "",
+    email: lead.email ?? "",
     source: lead.source as LeadSource,
     status: lead.status as LeadStatus,
     isRead: lead.isRead,
@@ -60,13 +60,15 @@ function toAdminLeadDetailDto(lead: LeanLead): AdminLeadDetailDto {
   };
 }
 
-export async function getNextLeadNumber(): Promise<number> {
+export async function getNextLeadNumber(
+  session?: mongoose.ClientSession
+): Promise<number> {
   await connectDB();
 
   const counter = await LeadCounter.findByIdAndUpdate(
     LEAD_NUMBER_COUNTER_ID,
     { $inc: { seq: 1 } },
-    { new: true, upsert: true, setDefaultsOnInsert: true }
+    { new: true, upsert: true, setDefaultsOnInsert: true, session }
   ).lean<{ seq: number }>();
 
   return counter?.seq ?? 1001;

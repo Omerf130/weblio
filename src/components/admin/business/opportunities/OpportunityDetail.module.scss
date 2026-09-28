@@ -1,0 +1,251 @@
+@use "../../../../assets/styles/variables" as *;
+@use "../../_admin-light-theme" as admin;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 800px;
+  color: admin.$admin-text;
+}
+
+.backLink {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: admin.$admin-link;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid rgba(79, 127, 185, 0.85);
+    outline-offset: 2px;
+  }
+}
+
+.errorBanner {
+  margin: 0;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+
+.convertedBanner {
+  margin: 0;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.22);
+  font-size: 0.85rem;
+  color: admin.$admin-text-secondary;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.convertedBannerText {
+  margin: 0;
+}
+
+.convertedLeadLink {
+  font-weight: 600;
+  color: admin.$admin-link;
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+.primaryConvertButton {
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, $third-color, lighten($third-color, 10%));
+  color: #ffffff;
+  font-family: $font-family-base;
+  font-size: 0.88rem;
+  font-weight: $weight-bold;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.sourceMeta {
+  font-size: 0.8rem;
+  color: admin.$admin-text-muted;
+}
+
+.section {
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  box-shadow: admin.$admin-shadow;
+  color: admin.$admin-text;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+}
+
+.dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 1rem;
+  margin: 0;
+  font-size: 0.9rem;
+
+  dt {
+    margin: 0;
+    font-weight: 600;
+    color: admin.$admin-text-muted;
+  }
+
+  dd {
+    margin: 0;
+    color: admin.$admin-text;
+  }
+
+  a {
+    color: admin.$admin-link;
+  }
+}
+
+.bodyText {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  color: admin.$admin-text;
+}
+
+.externalLink {
+  display: inline-flex;
+  margin-top: 0.35rem;
+  font-weight: 600;
+  color: admin.$admin-link;
+
+  &:focus-visible {
+    outline: 2px solid rgba(79, 127, 185, 0.85);
+    outline-offset: 2px;
+  }
+}
+
+.timestamps {
+  margin: 0;
+  font-size: 0.78rem;
+  color: admin.$admin-text-muted;
+}
+
+.addLink {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: admin.$admin-link;
+  text-decoration: none;
+}
+
+.emptyNote {
+  margin: 0;
+  font-size: 0.88rem;
+  color: admin.$admin-text-muted;
+}
+
+.followUpList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.actionsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding-top: 0.5rem;
+  color: admin.$admin-text;
+}
+
+.statusActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.statusActionsLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: admin.$admin-text-muted;
+}
+
+.statusButton,
+.secondaryButton,
+.dangerButton {
+  padding: 0.55rem 0.85rem;
+  border-radius: 10px;
+  font-family: $font-family-base;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.statusButton {
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface-muted;
+  color: admin.$admin-text;
+}
+
+.secondaryButton {
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface-muted;
+  color: admin.$admin-text;
+  align-self: flex-start;
+}
+
+.dangerButton {
+  border: none;
+  background: rgba(239, 68, 68, 0.12);
+  color: #b91c1c;
+  align-self: flex-start;
+}
+
+.confirmDelete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+  color: admin.$admin-text;
+}

@@ -1,4 +1,5 @@
 @use "../../assets/styles/variables" as *;
+@use "admin-content-baseline" as baseline;
 
 $sidebar-width: 280px;
 
@@ -35,6 +36,7 @@ $sidebar-width: 280px;
   flex: 1;
   padding: 1.25rem;
   min-width: 0;
+  @include baseline.admin-light-content-text;
 }
 
 .backdrop {

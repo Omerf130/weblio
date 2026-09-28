@@ -1,0 +1,97 @@
+@use "../../../../assets/styles/variables" as *;
+@use "../../_admin-light-theme" as admin;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  max-width: 800px;
+  color: admin.$admin-text;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.heading {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+}
+
+.subtitle {
+  margin: 0.15rem 0 0;
+  font-size: 0.92rem;
+  color: admin.$admin-text-muted;
+}
+
+.newButton {
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, $third-color, lighten($third-color, 10%));
+  color: #ffffff;
+  font-weight: $weight-bold;
+  font-family: $font-family-base;
+  font-size: 0.88rem;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid rgba(79, 127, 185, 0.85);
+    outline-offset: 2px;
+  }
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.empty {
+  padding: 2.5rem 1rem;
+  border-radius: 14px;
+  border: 1px dashed admin.$admin-border;
+  background: admin.$admin-surface;
+  text-align: center;
+  color: admin.$admin-text-muted;
+  font-size: 0.92rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.pageLink {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: admin.$admin-link;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid rgba(79, 127, 185, 0.85);
+    outline-offset: 2px;
+  }
+}
+
+.pageLinkDisabled {
+  font-size: 0.88rem;
+  color: admin.$admin-text-muted;
+}
+
+.pageInfo {
+  font-size: 0.85rem;
+  color: admin.$admin-text-muted;
+}

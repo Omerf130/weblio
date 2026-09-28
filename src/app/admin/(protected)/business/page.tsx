@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getBusinessOverviewData } from "@/lib/business/overview-data";
 import { getLeadSummaries } from "@/lib/data/leads";
+import { getOpportunitySummaries } from "@/lib/data/opportunities";
+import type { OpportunitySummary } from "@/types/opportunity";
 import type { AdminFollowUpDto } from "@/types/follow-up";
 import FollowUpStatusBadge from "@/components/admin/business/follow-ups/FollowUpStatusBadge";
 import styles from "./business.module.scss";
@@ -26,16 +28,24 @@ export default async function BusinessOverviewPage() {
   const leadIds = allFollowUps
     .map((fu) => fu.leadId)
     .filter((id): id is string => !!id);
+  const opportunityIds = allFollowUps
+    .map((fu) => fu.opportunityId)
+    .filter((id): id is string => !!id);
 
-  const leadSummariesMap =
+  const [leadSummariesMap, opportunitySummariesMap] = await Promise.all([
     leadIds.length > 0
-      ? await getLeadSummaries([...new Set(leadIds)])
-      : new Map();
+      ? getLeadSummaries([...new Set(leadIds)])
+      : Promise.resolve(new Map()),
+    opportunityIds.length > 0
+      ? getOpportunitySummaries([...new Set(opportunityIds)])
+      : Promise.resolve(new Map()),
+  ]);
 
   const hasAttention =
     data.overdueFollowUps.length > 0 ||
     data.followUpsDueToday.length > 0 ||
-    data.unreadLeadCount > 0;
+    data.unreadLeadCount > 0 ||
+    data.newOpportunitiesCount > 0;
 
   return (
     <div className={styles.page} dir="rtl">
@@ -74,6 +84,17 @@ export default async function BusinessOverviewPage() {
           <span className={styles.cardValue}>{data.newLeadsLast7Days}</span>
           <span className={styles.cardLabel}>לידים חדשים (7 ימים)</span>
         </Link>
+        <Link
+          href="/admin/business/opportunities?status=new"
+          className={`${styles.card} ${data.newOpportunitiesCount > 0 ? styles.cardHighlight : ""}`}
+        >
+          <span className={styles.cardValue}>{data.newOpportunitiesCount}</span>
+          <span className={styles.cardLabel}>הזדמנויות חדשות</span>
+        </Link>
+        <Link href="/admin/business/opportunities" className={styles.card}>
+          <span className={styles.cardValue}>{data.activeOpportunitiesCount}</span>
+          <span className={styles.cardLabel}>הזדמנויות פעילות</span>
+        </Link>
       </div>
 
       <section className={styles.attentionSection}>
@@ -98,6 +119,11 @@ export default async function BusinessOverviewPage() {
                           ? leadSummariesMap.get(fu.leadId)
                           : undefined
                       }
+                      opportunitySummary={
+                        fu.opportunityId
+                          ? opportunitySummariesMap.get(fu.opportunityId)
+                          : undefined
+                      }
                       isOverdue
                     />
                   ))}
@@ -118,6 +144,11 @@ export default async function BusinessOverviewPage() {
                       leadName={
                         fu.leadId
                           ? leadSummariesMap.get(fu.leadId)
+                          : undefined
+                      }
+                      opportunitySummary={
+                        fu.opportunityId
+                          ? opportunitySummariesMap.get(fu.opportunityId)
                           : undefined
                       }
                     />
@@ -165,6 +196,11 @@ export default async function BusinessOverviewPage() {
                     ? leadSummariesMap.get(fu.leadId)
                     : undefined
                 }
+                opportunitySummary={
+                  fu.opportunityId
+                    ? opportunitySummariesMap.get(fu.opportunityId)
+                    : undefined
+                }
               />
             ))}
           </ul>
@@ -177,10 +213,12 @@ export default async function BusinessOverviewPage() {
 function FollowUpRow({
   followUp,
   leadName,
+  opportunitySummary,
   isOverdue,
 }: {
   followUp: AdminFollowUpDto;
   leadName?: { id: string; leadNumber: number; name: string };
+  opportunitySummary?: OpportunitySummary;
   isOverdue?: boolean;
 }) {
   return (
@@ -195,6 +233,14 @@ function FollowUpRow({
         {leadName && (
           <Link href={`/admin/leads/${leadName.id}`} className={styles.leadLink}>
             #{leadName.leadNumber} — {leadName.name}
+          </Link>
+        )}
+        {!leadName && opportunitySummary && (
+          <Link
+            href={`/admin/business/opportunities/${opportunitySummary.id}`}
+            className={styles.leadLink}
+          >
+            {opportunitySummary.title}
           </Link>
         )}
         <FollowUpStatusBadge status={followUp.status} />

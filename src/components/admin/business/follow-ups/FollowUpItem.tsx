@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import type { AdminFollowUpDto } from "@/types/follow-up";
 import type { LeadSummary } from "@/lib/data/leads";
+import type { OpportunitySummary } from "@/types/opportunity";
 import {
   completeFollowUpAction,
   cancelFollowUpAction,
@@ -16,6 +17,8 @@ import styles from "./FollowUpItem.module.scss";
 type FollowUpItemProps = {
   followUp: AdminFollowUpDto;
   leadSummary?: LeadSummary;
+  opportunitySummary?: OpportunitySummary;
+  showRelations?: boolean;
   onEdit: (followUp: AdminFollowUpDto) => void;
 };
 
@@ -34,7 +37,13 @@ function isOverdue(followUp: AdminFollowUpDto): boolean {
   return followUp.status === "pending" && new Date(followUp.dueAt) < new Date();
 }
 
-export default function FollowUpItem({ followUp, leadSummary, onEdit }: FollowUpItemProps) {
+export default function FollowUpItem({
+  followUp,
+  leadSummary,
+  opportunitySummary,
+  showRelations = true,
+  onEdit,
+}: FollowUpItemProps) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const overdue = isOverdue(followUp);
 
@@ -60,12 +69,23 @@ export default function FollowUpItem({ followUp, leadSummary, onEdit }: FollowUp
             {overdue && " — באיחור"}
           </span>
 
-          {leadSummary && (
+          {showRelations && leadSummary && (
             <Link
               href={`/admin/leads/${leadSummary.id}`}
               className={styles.leadLink}
             >
               #{leadSummary.leadNumber} — {leadSummary.name}
+            </Link>
+          )}
+          {showRelations && !leadSummary && opportunitySummary && (
+            <Link
+              href={`/admin/business/opportunities/${opportunitySummary.id}`}
+              className={styles.leadLink}
+            >
+              {opportunitySummary.title}
+              {opportunitySummary.businessName
+                ? ` · ${opportunitySummary.businessName}`
+                : ""}
             </Link>
           )}
         </div>

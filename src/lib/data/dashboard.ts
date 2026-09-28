@@ -41,7 +41,7 @@ function toDashboardLeadSummary(lead: LeanLead): DashboardLeadSummary {
     id: lead._id.toString(),
     leadNumber: lead.leadNumber,
     name: lead.name,
-    phone: lead.phone,
+    phone: lead.phone ?? "",
     source: lead.source as LeadSource,
     status: lead.status as LeadStatus,
     createdAt: lead.createdAt.toISOString(),

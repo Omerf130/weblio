@@ -56,6 +56,11 @@
   background: linear-gradient(180deg, rgba(239, 68, 68, 0.04) 0%, admin.$admin-surface 100%);
 }
 
+.cardHighlight {
+  border-color: rgba(79, 127, 185, 0.32);
+  background: linear-gradient(180deg, rgba(79, 127, 185, 0.06) 0%, admin.$admin-surface 100%);
+}
+
 .cardValue {
   font-size: 1.75rem;
   font-weight: $weight-bold;
