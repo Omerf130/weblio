@@ -11,7 +11,6 @@ import {
   getIsraelPreviousMonthSamePeriodEnd,
   getIsraelPreviousMonthStart,
 } from "@/lib/admin/dashboard-time";
-import { getGa4TrafficSummary } from "@/lib/analytics/ga4-traffic";
 import { connectDB } from "@/lib/db/mongoose";
 import { STATIC_BUILD_YOUR_DREAM_CONTENT } from "@/lib/content/build-your-dream/static-content";
 import {
@@ -167,10 +166,6 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 }
 
 export async function getDashboardPageData(): Promise<DashboardPageData> {
-  const [stats, traffic] = await Promise.all([
-    getDashboardStats(),
-    getGa4TrafficSummary(),
-  ]);
-
-  return { stats, traffic };
+  const stats = await getDashboardStats();
+  return { stats };
 }

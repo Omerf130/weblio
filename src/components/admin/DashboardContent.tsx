@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useAdminUser } from "@/components/admin/AdminUserContext";
 import DashboardHeader from "@/components/admin/dashboard/DashboardHeader";
 import DashboardKpiCards from "@/components/admin/dashboard/DashboardKpiCards";
@@ -9,36 +10,36 @@ import DashboardLeadsChart from "@/components/admin/dashboard/DashboardLeadsChar
 import DashboardQuickActions from "@/components/admin/dashboard/DashboardQuickActions";
 import DashboardRecentLeads from "@/components/admin/dashboard/DashboardRecentLeads";
 import DashboardRecentProjects from "@/components/admin/dashboard/DashboardRecentProjects";
-import DashboardTrafficWidget from "@/components/admin/dashboard/DashboardTrafficWidget";
-import type { DashboardPageData } from "@/types/dashboard";
+import type { DashboardStats } from "@/types/dashboard";
 import styles from "./DashboardContent.module.scss";
 
 type DashboardContentProps = {
-  data: DashboardPageData;
+  stats: DashboardStats;
+  traffic: ReactNode;
 };
 
-export default function DashboardContent({ data }: DashboardContentProps) {
+export default function DashboardContent({ stats, traffic }: DashboardContentProps) {
   const admin = useAdminUser();
 
   return (
     <div className={styles.dashboard}>
       <DashboardHeader adminName={admin.name} />
-      <DashboardKpiCards stats={data.stats} />
+      <DashboardKpiCards stats={stats} />
 
       <div className={styles.analyticsRow}>
-        <DashboardLeadsChart data={data.stats.dailyLeads} />
-        <DashboardTrafficWidget traffic={data.traffic} />
+        <DashboardLeadsChart data={stats.dailyLeads} />
+        {traffic}
       </div>
 
-      <DashboardRecentLeads leads={data.stats.recentLeads} />
+      <DashboardRecentLeads leads={stats.recentLeads} />
 
       <div className={styles.secondaryRow}>
-        <DashboardLeadSources sources={data.stats.sourceBreakdown} />
-        <DashboardRecentProjects projects={data.stats.recentProjects} />
+        <DashboardLeadSources sources={stats.sourceBreakdown} />
+        <DashboardRecentProjects projects={stats.recentProjects} />
       </div>
 
       <div className={styles.bottomRow}>
-        <DashboardLandingWidget landing={data.stats.landing} />
+        <DashboardLandingWidget landing={stats.landing} />
         <DashboardQuickActions />
       </div>
     </div>

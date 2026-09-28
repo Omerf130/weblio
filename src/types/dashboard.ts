@@ -68,5 +68,4 @@ export type Ga4TrafficSummary = {
 
 export type DashboardPageData = {
   stats: DashboardStats;
-  traffic: Ga4TrafficSummary;
 };

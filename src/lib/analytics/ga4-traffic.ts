@@ -1,5 +1,10 @@
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
+import { unstable_cache } from "next/cache";
 import type { Ga4TrafficSummary } from "@/types/dashboard";
+
+const GA4_TRAFFIC_CACHE_TAG = "weblio-ga4-traffic-summary";
+/** Server-only cache window for dashboard GA4 metrics (not live analytics). */
+export const GA4_TRAFFIC_REVALIDATE_SECONDS = 600;
 
 const UNAVAILABLE_SUMMARY: Ga4TrafficSummary = {
   status: "unavailable",
@@ -155,6 +160,17 @@ export async function getGa4TrafficSummary(): Promise<Ga4TrafficSummary> {
     }
     return UNAVAILABLE_SUMMARY;
   }
+}
+
+export async function getCachedGa4TrafficSummary(): Promise<Ga4TrafficSummary> {
+  return unstable_cache(
+    () => getGa4TrafficSummary(),
+    [GA4_TRAFFIC_CACHE_TAG],
+    {
+      revalidate: GA4_TRAFFIC_REVALIDATE_SECONDS,
+      tags: [GA4_TRAFFIC_CACHE_TAG],
+    }
+  )();
 }
 
 export function getGa4SetupInstructions(): string[] {
