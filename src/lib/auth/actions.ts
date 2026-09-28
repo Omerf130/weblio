@@ -5,10 +5,7 @@ import { GENERIC_LOGIN_ERROR } from "@/lib/auth/constants";
 import { verifyAdminCredentials } from "@/lib/auth/credentials";
 import { createSession, revokeSessionByCookie } from "@/lib/auth/session";
 import { safeParseLoginInput } from "@/lib/validations/auth";
-
-export type LoginActionState = {
-  error?: string;
-};
+import type { LoginActionState } from "@/lib/auth/action-states";
 
 export async function loginAction(
   _prevState: LoginActionState,

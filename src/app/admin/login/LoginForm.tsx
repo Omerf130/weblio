@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
-import { loginAction, type LoginActionState } from "@/lib/auth/actions";
+import type { LoginActionState } from "@/lib/auth/action-states";
+import { loginAction } from "@/lib/auth/actions";
 import styles from "./login.module.scss";
 
 const initialState: LoginActionState = {};

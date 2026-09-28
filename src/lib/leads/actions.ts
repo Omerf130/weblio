@@ -36,12 +36,6 @@ import type {
   QualificationActionState,
 } from "@/lib/leads/action-states";
 
-export type {
-  LeadActionState,
-  LeadNotesActionState,
-  QualificationActionState,
-};
-
 const GENERIC_PUBLIC_ERROR = "לא ניתן לשלוח את הפנייה כרגע. נסו שוב מאוחר יותר.";
 const GENERIC_LANDING_ERROR = "לא ניתן לשלוח את הפרטים כרגע. נסו שוב מאוחר יותר.";
 

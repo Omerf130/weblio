@@ -3,10 +3,8 @@
 import { useActionState, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { BuildYourDreamContent } from "@/lib/content/build-your-dream/types";
 import { isEditorContentDirty } from "@/lib/build-your-dream-landing/resolve-landing-image-update";
-import {
-  saveBuildYourDreamLandingAction,
-  type BuildYourDreamLandingActionState,
-} from "@/lib/build-your-dream-landing/actions";
+import type { BuildYourDreamLandingActionState } from "@/lib/build-your-dream-landing/action-states";
+import { saveBuildYourDreamLandingAction } from "@/lib/build-your-dream-landing/actions";
 import LandingPageImageField from "./LandingPageImageField";
 import styles from "./LandingPageEditor.module.scss";
 

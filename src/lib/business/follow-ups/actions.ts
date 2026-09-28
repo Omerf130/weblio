@@ -17,8 +17,6 @@ import {
 } from "@/lib/validations/follow-up";
 import type { FollowUpActionState } from "./action-states";
 
-export type { FollowUpActionState };
-
 function revalidateFollowUpPaths(leadId?: string): void {
   revalidatePath("/admin/business");
   revalidatePath("/admin/business/follow-ups");

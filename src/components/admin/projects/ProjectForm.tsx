@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useActionState, useEffect, useState } from "react";
+import type { ProjectActionState } from "@/lib/projects/action-states";
 import {
   createProjectAction,
   updateProjectAction,
-  type ProjectActionState,
 } from "@/lib/projects/actions";
 import type { AdminProjectDto } from "@/types/project";
 import ProjectImageField from "./ProjectImageField";

@@ -28,10 +28,7 @@ import {
   validatePublishFields,
 } from "@/lib/validations/project";
 import { Project } from "@/models/Project";
-
-export type ProjectActionState = {
-  error?: string;
-};
+import type { ProjectActionState } from "@/lib/projects/action-states";
 
 function revalidateProjectPaths(): void {
   revalidatePath("/");

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import type { BuildYourDreamContent, LandingImageData } from "@/lib/content/build-your-dream/types";
+import type { LandingImageData } from "@/lib/content/build-your-dream/types";
 import { STATIC_BUILD_YOUR_DREAM_CONTENT } from "@/lib/content/build-your-dream/static-content";
 import {
   getBuildYourDreamLandingDocument,
@@ -27,13 +27,7 @@ import {
   resolveLandingImageUpdate,
   type ImageSlot,
 } from "@/lib/build-your-dream-landing/resolve-landing-image-update";
-
-export type BuildYourDreamLandingActionState = {
-  error?: string;
-  success?: boolean;
-  savedAt?: string;
-  content?: BuildYourDreamContent;
-};
+import type { BuildYourDreamLandingActionState } from "@/lib/build-your-dream-landing/action-states";
 
 const IMAGE_FILE_FIELDS: Record<ImageSlot, string> = {
   hero: "heroImageFile",

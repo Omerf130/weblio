@@ -3,10 +3,10 @@
 import { useActionState, useEffect } from "react";
 import type { AdminFollowUpDto } from "@/types/follow-up";
 import type { LeadSummary } from "@/lib/data/leads";
+import type { FollowUpActionState } from "@/lib/business/follow-ups/action-states";
 import {
   createFollowUpAction,
   editFollowUpAction,
-  type FollowUpActionState,
 } from "@/lib/business/follow-ups/actions";
 import styles from "./FollowUpForm.module.scss";
 

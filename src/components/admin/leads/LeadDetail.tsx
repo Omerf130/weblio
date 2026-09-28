@@ -10,11 +10,11 @@ import {
   LEAD_SOURCE_LABELS,
   LEAD_STATUS_LABELS,
 } from "@/lib/leads/rules";
+import type { LeadNotesActionState } from "@/lib/leads/action-states";
 import {
   markLeadUnreadAction,
   saveLeadNotesAction,
   updateLeadStatusAction,
-  type LeadNotesActionState,
 } from "@/lib/leads/actions";
 import { LEAD_STATUSES } from "@/lib/validations/lead";
 import DeleteLeadButton from "./DeleteLeadButton";
