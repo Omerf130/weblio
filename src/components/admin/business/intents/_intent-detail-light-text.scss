@@ -1,0 +1,23 @@
+@use "../../admin-light-theme" as admin;
+
+/// Explicit dark text on Intent Detail light surfaces.
+/// globals.scss sets `* { color: #fff }`; inherit is unreliable — set tokens on each text role.
+@mixin intent-detail-explicit-text {
+  color: admin.$admin-text;
+
+  :is(h1, h2, h3, h4, h5, h6, p, pre, legend, summary, label, strong, em, dd, textarea) {
+    color: admin.$admin-text;
+  }
+
+  label span {
+    color: admin.$admin-text;
+  }
+
+  dt {
+    color: admin.$admin-text-muted;
+  }
+
+  input:not([type="radio"]):not([type="hidden"]) {
+    color: admin.$admin-text;
+  }
+}

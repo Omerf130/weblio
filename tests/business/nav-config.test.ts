@@ -22,14 +22,19 @@ describe("admin navigation groups", () => {
     assert.equal(business!.label, "עסקי");
   });
 
-  it("business group contains overview, follow-ups, and opportunities", () => {
+  it("business group contains overview, follow-ups, intent monitor, and opportunities", () => {
     const business = ADMIN_NAV_GROUPS.find((g) => g.id === "business");
     assert.ok(business);
 
     const ids = business!.items.map((i) => i.id);
     assert.ok(ids.includes("business-overview"));
     assert.ok(ids.includes("follow-ups"));
+    assert.ok(ids.includes("intent-monitor"));
     assert.ok(ids.includes("opportunities"));
+
+    const intentIndex = ids.indexOf("intent-monitor");
+    const oppIndex = ids.indexOf("opportunities");
+    assert.ok(intentIndex >= 0 && oppIndex >= 0 && intentIndex < oppIndex);
   });
 
   it("business group does NOT contain future items", () => {
@@ -37,8 +42,6 @@ describe("admin navigation groups", () => {
     assert.ok(business);
 
     const ids = business!.items.map((i) => i.id);
-    assert.ok(!ids.includes("intent"));
-    assert.ok(!ids.includes("intent-monitor"));
     assert.ok(!ids.includes("marketing"));
     assert.ok(!ids.includes("ai-marketing"));
   });
@@ -126,6 +129,20 @@ describe("business route matching", () => {
 
   it("getAdminPageTitle returns opportunities title", () => {
     assert.equal(getAdminPageTitle("/admin/business/opportunities"), "הזדמנויות");
+  });
+
+  it("intent monitor is active on /admin/business/intent", () => {
+    const intentMonitor = ADMIN_NAV_ITEMS.find((i) => i.id === "intent-monitor");
+    assert.ok(intentMonitor);
+    assert.equal(intentMonitor!.href, "/admin/business/intent");
+    assert.equal(
+      isAdminNavItemActive("/admin/business/intent", intentMonitor!),
+      true
+    );
+  });
+
+  it("getAdminPageTitle returns intent monitor title", () => {
+    assert.equal(getAdminPageTitle("/admin/business/intent"), "ניטור כוונות");
   });
 
   it("dashboard is NOT active on /admin/business", () => {

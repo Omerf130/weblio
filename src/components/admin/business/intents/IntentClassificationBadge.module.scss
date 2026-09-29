@@ -1,0 +1,35 @@
+@use "../../_admin-light-theme" as admin;
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid rgba(79, 127, 185, 0.22);
+  background: rgba(79, 127, 185, 0.06);
+  color: admin.$admin-text-secondary;
+}
+
+.badge_unclassified {
+  border-color: rgba(120, 120, 120, 0.25);
+  background: rgba(120, 120, 120, 0.08);
+}
+
+.badge_explicitNeed {
+  border-color: rgba(46, 125, 50, 0.28);
+  background: rgba(46, 125, 50, 0.08);
+  color: #2e5a32;
+}
+
+.badge_possibleNeed {
+  border-color: rgba(79, 127, 185, 0.35);
+  background: rgba(79, 127, 185, 0.1);
+}
+
+.badge_irrelevant {
+  border-color: rgba(158, 158, 158, 0.35);
+  background: rgba(158, 158, 158, 0.1);
+  color: admin.$admin-text-muted;
+}

@@ -1,0 +1,83 @@
+[
+  {
+    "provider": "dev",
+    "externalId": "sample-001",
+    "sourceType": "post",
+    "sourcePlatform": "פורום (fixture)",
+    "sourceUrl": "https://example.dev/fixtures/intent/sample-001",
+    "title": "[DEV] צורך מפורש באתר",
+    "content": "פתחתי עסק חדש ואני צריך אתר מקצועי. מישהו מכיר בונה אתרים אמין?",
+    "authorDisplayName": "משתמש דוגמה",
+    "rawMetadata": { "fixture": true, "devLabel": "explicit-website-need" }
+  },
+  {
+    "provider": "dev",
+    "externalId": "sample-002",
+    "sourceType": "comment",
+    "sourcePlatform": "קהילה עסקית (fixture)",
+    "sourceUrl": "https://example.dev/fixtures/intent/sample-002",
+    "title": "[DEV] בקשת המלצה על בונה אתרים",
+    "content": "היי, מחפש המלצה על בונה אתרים לעסק קטן. מה השתמשתם ומה עלות סבירה?",
+    "rawMetadata": { "fixture": true, "devLabel": "builder-recommendation" }
+  },
+  {
+    "provider": "dev",
+    "externalId": "sample-003",
+    "sourceType": "post",
+    "sourcePlatform": "אתר ציבורי (fixture)",
+    "sourceUrl": "https://example.dev/fixtures/intent/sample-003",
+    "title": "[DEV] אולי צריך אתר בעתיד",
+    "content": "אני עדיין בודק אם כדאי לי אתר או שמספיק נוכחות ברשתות. מה דעתכם?",
+    "rawMetadata": { "fixture": true, "devLabel": "possible-website-need" }
+  },
+  {
+    "provider": "dev",
+    "externalId": "sample-004",
+    "sourceType": "post",
+    "sourcePlatform": "אינסטגרם (fixture)",
+    "sourceUrl": "https://example.dev/fixtures/intent/sample-004",
+    "title": "[DEV] עסק חדש רק באינסטגרם",
+    "content": "פתחתי מספרה חדשה, כרגע אני עובד רק דרך אינסטגרם. אולי בהמשך אצטרך משהו נוסף.",
+    "rawMetadata": { "fixture": true, "devLabel": "instagram-only-business" }
+  },
+  {
+    "provider": "dev",
+    "externalId": "sample-005",
+    "sourceType": "comment",
+    "sourcePlatform": "פורום (fixture)",
+    "sourceUrl": "https://example.dev/fixtures/intent/sample-005",
+    "title": "[DEV] דיון טכנולוגי לא קשור",
+    "content": "מישהו יודע איך לשדרג את React לגרסה האחרונה? יש breaking changes מעניינים?",
+    "rawMetadata": { "fixture": true, "devLabel": "irrelevant-tech-discussion" }
+  },
+  {
+    "provider": "dev",
+    "externalId": "sample-006",
+    "sourceType": "post",
+    "sourcePlatform": "קהילה מקומית (fixture)",
+    "sourceUrl": "https://example.dev/fixtures/intent/sample-006",
+    "title": "[DEV] פost מקומי לא קשור",
+    "content": "מכירים טכנאי מזגנים טוב באזור חיפה? האוויר נהיה unbearable.",
+    "rawMetadata": { "fixture": true, "devLabel": "unrelated-local-post" }
+  },
+  {
+    "provider": "dev",
+    "externalId": "sample-007",
+    "sourceType": "search_result",
+    "sourcePlatform": "אתר ציבורי (fixture)",
+    "sourceUrl": "https://example.dev/fixtures/intent/sample-007?utm_source=test",
+    "title": "[DEV] תוצאת חיפוש לדוגמה",
+    "content": "מדריך כללי לבחירת שם לעסק — לא בהכרח קשור לבניית אתרים.",
+    "rawMetadata": { "fixture": true, "devLabel": "generic-search-snippet" }
+  },
+  {
+    "provider": "dev",
+    "externalId": "sample-008",
+    "sourceType": "manual",
+    "sourcePlatform": "seed (fixture)",
+    "sourceUrl": "https://example.dev/fixtures/intent/sample-008",
+    "title": "[DEV] הזנה ידנית לדוגמה",
+    "content": "זהו נתון seed לפיתוח — לא lead אמיתי. בודקים את pipeline ה-ingest.",
+    "rawMetadata": { "fixture": true, "devLabel": "manual-dev-entry" }
+  }
+]

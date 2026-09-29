@@ -7,6 +7,7 @@ import {
   MdBusinessCenter,
   MdChecklist,
   MdLightbulbOutline,
+  MdTravelExplore,
 } from "react-icons/md";
 
 export type AdminNavItemConfig = {
@@ -70,6 +71,12 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
         label: "מעקבים",
         href: "/admin/business/follow-ups",
         icon: MdChecklist,
+      },
+      {
+        id: "intent-monitor",
+        label: "ניטור כוונות",
+        href: "/admin/business/intent",
+        icon: MdTravelExplore,
       },
       {
         id: "opportunities",

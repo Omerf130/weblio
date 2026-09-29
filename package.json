@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "seed:admin": "tsx --env-file=.env.local scripts/seed-admin.ts",
     "seed:projects": "tsx --env-file=.env.local scripts/seed-projects.ts",
+    "seed:intents": "tsx --env-file=.env.local scripts/seed-intents.ts",
     "migrate:landing-copy": "tsx --env-file=.env.local scripts/migrate-landing-guide-copy.ts",
     "test:auth": "tsx --test tests/auth/**/*.test.ts",
     "test:projects": "tsx --test tests/projects/**/*.test.ts",
@@ -30,6 +31,7 @@
     "framer-motion": "^12.40.0",
     "mongoose": "^9.9.3",
     "next": "15.5.25",
+    "openai": "^7.23.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-ga4": "^2.1.0",
@@ -37,6 +39,7 @@
     "recharts": "2.15.4",
     "resend": "^6.26.0",
     "sass": "^1.89.2",
+    "server-only": "^0.0.1",
     "three": "^0.185.1",
     "zod": "^4.4.3"
   },
