@@ -5,6 +5,7 @@ export type BusinessOverviewData = {
   newLeadsLast7Days: number;
   newOpportunitiesCount: number;
   activeOpportunitiesCount: number;
+  actionableIntentsCount: number;
   followUpsDueToday: AdminFollowUpDto[];
   overdueFollowUps: AdminFollowUpDto[];
   upcomingFollowUps: AdminFollowUpDto[];

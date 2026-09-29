@@ -1,3 +1,4 @@
+import { countActionableIntents } from "@/lib/data/intents";
 import { getUnreadLeadCount } from "@/lib/data/leads";
 import {
   getPendingFollowUpsDueToday,
@@ -23,6 +24,7 @@ export async function getBusinessOverviewData(): Promise<BusinessOverviewData> {
     newLeadsLast7Days,
     newOpportunitiesCount,
     activeOpportunitiesCount,
+    actionableIntentsCount,
     followUpsDueToday,
     overdueFollowUps,
     upcomingFollowUps,
@@ -31,6 +33,7 @@ export async function getBusinessOverviewData(): Promise<BusinessOverviewData> {
     Lead.countDocuments({ createdAt: { $gte: sevenDaysAgo } }),
     countNewOpportunities(),
     countActiveOpportunities(),
+    countActionableIntents(),
     getPendingFollowUpsDueToday(),
     getOverdueFollowUps(),
     getUpcomingFollowUps(7),
@@ -41,6 +44,7 @@ export async function getBusinessOverviewData(): Promise<BusinessOverviewData> {
     newLeadsLast7Days,
     newOpportunitiesCount,
     activeOpportunitiesCount,
+    actionableIntentsCount,
     followUpsDueToday,
     overdueFollowUps,
     upcomingFollowUps,

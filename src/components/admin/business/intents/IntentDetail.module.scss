@@ -37,6 +37,42 @@
   border: 1px solid rgba(79, 127, 185, 0.25);
   font-size: 0.88rem;
   color: admin.$admin-text-secondary;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.savedBannerText {
+  margin: 0;
+}
+
+.savedOpportunityLink {
+  font-weight: 600;
+  color: admin.$admin-link;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.saveAsOpportunityForm {
+  margin-bottom: 0.75rem;
+}
+
+.saveAsOpportunityButton {
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background: admin.$admin-link;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(0.95);
+  }
 }
 
 .header {

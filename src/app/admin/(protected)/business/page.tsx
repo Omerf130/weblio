@@ -85,6 +85,13 @@ export default async function BusinessOverviewPage() {
           <span className={styles.cardLabel}>לידים חדשים (7 ימים)</span>
         </Link>
         <Link
+          href="/admin/business/intent"
+          className={`${styles.card} ${data.actionableIntentsCount > 0 ? styles.cardHighlight : ""}`}
+        >
+          <span className={styles.cardValue}>{data.actionableIntentsCount}</span>
+          <span className={styles.cardLabel}>כוונות לסקירה</span>
+        </Link>
+        <Link
           href="/admin/business/opportunities?status=new"
           className={`${styles.card} ${data.newOpportunitiesCount > 0 ? styles.cardHighlight : ""}`}
         >

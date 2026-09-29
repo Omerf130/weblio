@@ -94,6 +94,11 @@ const opportunitySchema = new Schema(
       trim: true,
       maxlength: 256,
     },
+    intentId: {
+      type: Schema.Types.ObjectId,
+      ref: "Intent",
+      required: false,
+    },
   },
   {
     timestamps: true,
@@ -106,6 +111,7 @@ opportunitySchema.index({ classification: 1, status: 1, createdAt: -1 });
 opportunitySchema.index({ source: 1, createdAt: -1 });
 opportunitySchema.index({ leadId: 1 }, { sparse: true });
 opportunitySchema.index({ externalSourceId: 1 }, { sparse: true });
+opportunitySchema.index({ intentId: 1 }, { unique: true, sparse: true });
 
 export type OpportunityDocument = InferSchemaType<typeof opportunitySchema> & {
   _id: mongoose.Types.ObjectId;

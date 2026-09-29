@@ -48,6 +48,34 @@
   margin: 0;
 }
 
+.intentProvenanceBanner {
+  margin: 0;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  background: rgba(79, 127, 185, 0.08);
+  border: 1px solid rgba(79, 127, 185, 0.22);
+  font-size: 0.85rem;
+  color: admin.$admin-text-secondary;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.intentProvenanceText {
+  font-weight: 600;
+}
+
+.intentProvenanceLink {
+  font-weight: 600;
+  color: admin.$admin-link;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .convertedLeadLink {
   font-weight: 600;
   color: admin.$admin-link;

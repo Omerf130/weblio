@@ -56,6 +56,7 @@ function toAdminOpportunityDetailDto(doc: LeanOpportunity): AdminOpportunityDeta
     leadId: doc.leadId?.toString(),
     convertedAt: doc.convertedAt?.toISOString(),
     externalSourceId: doc.externalSourceId || undefined,
+    intentId: doc.intentId?.toString(),
   };
 }
 

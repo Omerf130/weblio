@@ -50,6 +50,7 @@ export type AdminOpportunityDetailDto = AdminOpportunityDto & {
   leadId?: string;
   convertedAt?: string;
   externalSourceId?: string;
+  intentId?: string;
 };
 
 export type OpportunitySummary = {

@@ -23,6 +23,7 @@ describe("intent server actions module", () => {
     for (const fn of [
       "updateIntentClassificationAction",
       "setIntentStatusFormAction",
+      "convertIntentToOpportunityFormAction",
     ]) {
       const fnPattern = new RegExp(
         `export async function ${fn}[\\s\\S]*?await requireAdmin\\(\\)`,

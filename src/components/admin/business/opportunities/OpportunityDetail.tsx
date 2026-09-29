@@ -86,6 +86,18 @@ export default function OpportunityDetail({
         </div>
       )}
 
+      {opportunity.source === "intent" && opportunity.intentId && (
+        <div className={styles.intentProvenanceBanner} role="status">
+          <span className={styles.intentProvenanceText}>נוצר מכוונה</span>
+          <Link
+            href={`/admin/business/intent/${opportunity.intentId}`}
+            className={styles.intentProvenanceLink}
+          >
+            צפייה בכוונה המקורית
+          </Link>
+        </div>
+      )}
+
       <header className={styles.header}>
         <h1 className={styles.title}>{opportunity.title}</h1>
         <div className={styles.badges}>

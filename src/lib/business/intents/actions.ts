@@ -3,7 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/require-admin";
+import { convertIntentToOpportunity } from "@/lib/data/intent-opportunity-conversion";
 import { setIntentStatus, updateIntentClassification } from "@/lib/data/intents";
+import { safeParseConvertIntentToOpportunity } from "@/lib/validations/intent-opportunity-conversion";
 import { MANUAL_INTENT_CLASSIFIER_VERSION } from "@/lib/business/intents/rules";
 import {
   safeParseSetIntentStatus,
@@ -16,6 +18,59 @@ function revalidateIntentPaths(intentId?: string): void {
   revalidatePath("/admin/business/intent");
   if (intentId) {
     revalidatePath(`/admin/business/intent/${intentId}`);
+  }
+}
+
+function revalidateAfterIntentConversion(intentId: string, opportunityId: string): void {
+  revalidateIntentPaths(intentId);
+  revalidatePath("/admin/business/opportunities");
+  revalidatePath(`/admin/business/opportunities/${opportunityId}`);
+  revalidatePath("/admin/business");
+}
+
+export async function convertIntentToOpportunityFormAction(
+  formData: FormData
+): Promise<void> {
+  await requireAdmin();
+
+  const intentId = formData.get("intentId");
+  const returnTo = formData.get("returnTo");
+
+  if (typeof intentId !== "string" || !intentId) {
+    redirect("/admin/business/intent");
+  }
+
+  const parsed = safeParseConvertIntentToOpportunity({ intentId });
+  if (!parsed.success) {
+    redirect(
+      `/admin/business/intent/${intentId}?error=${encodeURIComponent("מזהה Intent לא תקין.")}`
+    );
+  }
+
+  try {
+    const result = await convertIntentToOpportunity(parsed.data);
+    revalidateAfterIntentConversion(result.intent.id, result.opportunity.id);
+    redirect(`/admin/business/opportunities/${result.opportunity.id}`);
+  } catch (error) {
+    if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+      throw error;
+    }
+    const message =
+      error instanceof Error && error.message === "INTENT_ALREADY_CONVERTED"
+        ? "כוונה זו כבר נשמרה כהזדמנות."
+        : error instanceof Error && error.message === "INTENT_NOT_ELIGIBLE"
+          ? "לא ניתן לשמור כוונה זו כהזדמנות."
+          : error instanceof Error && error.message === "INTENT_NOT_FOUND"
+            ? "רשומה לא נמצאה."
+            : "לא ניתן לשמור כהזדמנות כרגע.";
+
+    if (typeof returnTo === "string" && returnTo.startsWith("/admin/business/intent")) {
+      redirect(`${returnTo.split("?")[0]}?error=${encodeURIComponent(message)}`);
+    }
+
+    redirect(
+      `/admin/business/intent/${intentId}?error=${encodeURIComponent(message)}`
+    );
   }
 }
 
@@ -80,7 +135,13 @@ export async function updateIntentClassificationAction(
     }
     revalidateIntentPaths(updated.id);
     return { success: true, intentId: updated.id };
-  } catch {
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "INTENT_CLASSIFICATION_LOCKED"
+    ) {
+      return { error: "לא ניתן לשנות סיווג לכוונה שנשמרה כהזדמנות." };
+    }
     return { error: "לא ניתן לעדכן את הסיווג כרגע." };
   }
 }

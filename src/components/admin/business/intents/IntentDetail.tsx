@@ -6,7 +6,11 @@ import {
   formatIntentProviderLabel,
   INTENT_SOURCE_TYPE_LABELS,
 } from "@/lib/business/intents/rules";
-import { setIntentStatusFormAction } from "@/lib/business/intents/actions";
+import { canIntentClassificationConvertToOpportunity } from "@/lib/business/intents/classification-rules";
+import {
+  convertIntentToOpportunityFormAction,
+  setIntentStatusFormAction,
+} from "@/lib/business/intents/actions";
 import IntentClassificationBadge from "./IntentClassificationBadge";
 import IntentStatusBadge from "./IntentStatusBadge";
 import IntentClassificationForm from "./IntentClassificationForm";
@@ -45,6 +49,10 @@ export default function IntentDetail({
   const isSaved = intent.status === "saved";
   const isDismissed = intent.status === "dismissed";
   const canChangeWorkflow = intent.status === "new" || intent.status === "dismissed";
+  const canSaveAsOpportunity =
+    intent.status === "new" &&
+    !intent.opportunityId &&
+    canIntentClassificationConvertToOpportunity(intent.classification);
 
   const rawMetadataJson =
     intent.rawMetadata && Object.keys(intent.rawMetadata).length > 0
@@ -65,8 +73,21 @@ export default function IntentDetail({
 
       {isSaved && (
         <div className={styles.savedBanner} role="status">
-          רשומה זו נשמרה כהזדמנות ואינה ניתנת לעריכת תהליך. (קישור להזדמנות יתווסף
-          בשלב המרה.)
+          <p className={styles.savedBannerText}>
+            רשומה זו נשמרה כהזדמנות
+            {intent.convertedAt
+              ? ` · ${formatDateTime(intent.convertedAt)}`
+              : ""}
+            . הצגה לצפייה בלבד.
+          </p>
+          {intent.opportunityId && (
+            <Link
+              href={`/admin/business/opportunities/${intent.opportunityId}`}
+              className={styles.savedOpportunityLink}
+            >
+              צפייה בהזדמנות
+            </Link>
+          )}
         </div>
       )}
 
@@ -104,6 +125,23 @@ export default function IntentDetail({
             currentClassification={intent.classification}
             currentReason={intent.classificationReason}
           />
+
+          {canSaveAsOpportunity && (
+            <form
+              action={convertIntentToOpportunityFormAction}
+              className={styles.saveAsOpportunityForm}
+            >
+              <input type="hidden" name="intentId" value={intent.id} />
+              <input type="hidden" name="returnTo" value={listReturnHref} />
+              <button
+                type="submit"
+                className={styles.saveAsOpportunityButton}
+                suppressHydrationWarning
+              >
+                שמור כהזדמנות
+              </button>
+            </form>
+          )}
 
           {canChangeWorkflow && (
             <div className={styles.workflowActions}>

@@ -20,6 +20,7 @@ type IntentFiltersProps = {
 const STATUS_TABS: { id: IntentStatusFilter; label: string }[] = [
   { id: "new", label: "חדשים" },
   { id: "dismissed", label: "נדחו" },
+  { id: "saved", label: "נשמרו" },
   { id: "all", label: "הכל" },
 ];
 

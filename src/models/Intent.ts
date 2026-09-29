@@ -127,7 +127,7 @@ const intentSchema = new Schema(
 intentSchema.index({ dedupeKey: 1 }, { unique: true });
 intentSchema.index({ status: 1, classification: 1, discoveredAt: -1 });
 intentSchema.index({ provider: 1, discoveredAt: -1 });
-intentSchema.index({ opportunityId: 1 }, { sparse: true });
+intentSchema.index({ opportunityId: 1 }, { unique: true, sparse: true });
 
 export type IntentDocument = InferSchemaType<typeof intentSchema> & {
   _id: mongoose.Types.ObjectId;

@@ -259,6 +259,10 @@ export async function updateIntentClassification(
     return null;
   }
 
+  if (existing.status === "saved") {
+    throw new Error("INTENT_CLASSIFICATION_LOCKED");
+  }
+
   const isUnclassified = input.classification === "unclassified";
 
   const doc = await Intent.findByIdAndUpdate(
@@ -308,6 +312,20 @@ export async function setIntentStatus(
   ).lean<LeanIntent | null>();
 
   return doc ? toAdminIntentDetailDto(doc) : null;
+}
+
+const ACTIONABLE_INBOX_CLASSIFICATIONS = [
+  "unclassified",
+  "explicitNeed",
+  "possibleNeed",
+] as const;
+
+export async function countActionableIntents(): Promise<number> {
+  await connectDB();
+  return Intent.countDocuments({
+    status: "new",
+    classification: { $in: [...ACTIONABLE_INBOX_CLASSIFICATIONS] },
+  });
 }
 
 export async function getDistinctIntentProviders(): Promise<string[]> {
