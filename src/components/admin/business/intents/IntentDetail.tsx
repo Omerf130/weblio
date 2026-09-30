@@ -107,6 +107,11 @@ export default function IntentDetail({
           תוכן
         </h2>
         <pre className={styles.content}>{intent.content}</pre>
+        {intent.contentQuality === "aggregated_social" && (
+          <p className={styles.contentQualityHint} role="note">
+            תוכן המקור כולל מספר פרסומים — נדרשת בדיקה ידנית
+          </p>
+        )}
         {intent.classificationReason && (
           <p className={styles.reason}>
             <strong>סיבת סיווג: </strong>

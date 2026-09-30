@@ -9,9 +9,11 @@ import type {
   DiscoveryRunDto,
   DiscoveryRunPolicySnapshot,
   DiscoveryRunProfileErrorSummary,
+  DiscoveryRunProfileSummaryDto,
   DiscoveryRunStatus,
   DiscoveryRunSummaryDto,
 } from "@/types/discovery-run";
+import { MAX_DISCOVERY_RUN_PROFILE_SUMMARIES } from "@/lib/discovery/discovery-profile-metrics";
 
 /** Max wall-clock time a run may stay `running` before treated as stale (30 minutes). */
 export const DISCOVERY_RUN_STALE_AFTER_MS = 30 * 60 * 1000;
@@ -25,6 +27,15 @@ function truncateMessage(message: string): string {
     return trimmed;
   }
   return `${trimmed.slice(0, MAX_PROFILE_ERROR_MESSAGE - 1)}…`;
+}
+
+function toProfileSummaries(
+  summary: TavilyDiscoveryRunSummary
+): DiscoveryRunProfileSummaryDto[] | undefined {
+  if (summary.profileSummaries.length === 0) {
+    return undefined;
+  }
+  return summary.profileSummaries.slice(0, MAX_DISCOVERY_RUN_PROFILE_SUMMARIES);
 }
 
 function toProfileErrors(
@@ -126,6 +137,9 @@ function toDiscoveryRunDto(doc: DiscoveryRunDocument): DiscoveryRunDto {
     profileErrors: doc.profileErrors?.length
       ? (doc.profileErrors as DiscoveryRunProfileErrorSummary[])
       : undefined,
+    profileSummaries: doc.profileSummaries?.length
+      ? (doc.profileSummaries as DiscoveryRunProfileSummaryDto[])
+      : undefined,
   };
 }
 
@@ -171,6 +185,7 @@ function summaryToUpdateFields(summary: TavilyDiscoveryRunSummary) {
     classificationLimitReached: summary.classificationLimitReached,
     profileErrorCount: summary.profileErrors.length,
     profileErrors: toProfileErrors(summary),
+    profileSummaries: toProfileSummaries(summary),
   };
 }
 

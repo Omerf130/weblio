@@ -22,6 +22,23 @@ export type DiscoveryRunCatalogSnapshot = {
   profileCount: number;
 };
 
+/** Per-profile discovery metrics for a single run (first-wins URL attribution). */
+export type DiscoveryRunProfileSummaryDto = {
+  profileId: string;
+  query: string;
+  raw: number;
+  afterFilter: number;
+  uniqueAttributed: number;
+  created: number;
+  rediscovered: number;
+  classified: number;
+  explicitNeed: number;
+  possibleNeed: number;
+  irrelevant: number;
+  unclassified: number;
+  errors: number;
+};
+
 export type DiscoveryRunSummaryDto = {
   profilesConfigured: number;
   profilesSearched: number;
@@ -55,6 +72,7 @@ export type DiscoveryRunDto = {
   catalog: DiscoveryRunCatalogSnapshot;
   summary?: DiscoveryRunSummaryDto;
   profileErrors?: DiscoveryRunProfileErrorSummary[];
+  profileSummaries?: DiscoveryRunProfileSummaryDto[];
 };
 
 export type RunTavilyDiscoveryBlockReason =

@@ -7,6 +7,11 @@ import {
   IngestError,
   toSafeIngestMessage,
 } from "@/lib/discovery/ingest-errors";
+import {
+  assessDiscoveryContentQuality,
+  shouldSkipAutomaticIntentClassification,
+  type DiscoveryContentQuality,
+} from "@/lib/discovery/discovery-content-quality";
 import type { NormalizedDiscoveryInput } from "@/lib/discovery/types";
 import {
   updateIntentClassification,
@@ -44,6 +49,8 @@ export type IngestDiscoveredSuccess = {
   dedupeKey: string;
   classification: IntentClassification;
   classified: boolean;
+  /** Automatic OpenAI classification was skipped (e.g. aggregated social content). */
+  autoClassificationSkipped?: boolean;
 };
 
 export type IngestDiscoveredFailure = {
@@ -87,14 +94,49 @@ export function buildClassifierInput(
   };
 }
 
+export function resolveIntentContentQuality(
+  intent: Pick<
+    AdminIntentDetailDto,
+    "content" | "title" | "sourceUrl" | "sourcePlatform" | "contentQuality" | "contentQualityReasons"
+  >
+): DiscoveryContentQuality {
+  if (intent.contentQuality) {
+    return intent.contentQuality;
+  }
+  return assessDiscoveryContentQuality({
+    content: intent.content,
+    title: intent.title,
+    sourceUrl: intent.sourceUrl,
+    sourcePlatform: intent.sourcePlatform,
+  }).quality;
+}
+
 export async function applyClassifierIfNeeded(
   intent: AdminIntentDetailDto,
   normalized: NormalizedDiscoveryInputParsed,
   classifier: IntentClassifier,
   deps: Pick<IngestPipelineDeps, "updateIntentClassification">
-): Promise<{ classified: boolean; classification: IntentClassification }> {
+): Promise<{
+  classified: boolean;
+  classification: IntentClassification;
+  autoClassificationSkipped?: boolean;
+}> {
   if (!shouldAttemptIntentClassification(intent.classification)) {
     return { classified: false, classification: intent.classification };
+  }
+
+  const quality = resolveIntentContentQuality(intent);
+  if (
+    shouldSkipAutomaticIntentClassification({
+      classification: intent.classification,
+      quality,
+    })
+  ) {
+    return {
+      classified: false,
+      classification: intent.classification,
+      autoClassificationSkipped: true,
+    };
   }
 
   let classifierOutput;
@@ -197,6 +239,9 @@ export async function ingestDiscoveredResult(
       dedupeKey: upsertResult.dedupeKey,
       classification: classificationState.classification,
       classified: classificationState.classified,
+      ...(classificationState.autoClassificationSkipped
+        ? { autoClassificationSkipped: true }
+        : {}),
     };
   } catch (error) {
     const safe = toSafeIngestMessage(error);

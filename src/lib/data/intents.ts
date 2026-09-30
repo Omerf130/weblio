@@ -21,6 +21,7 @@ import type {
   AdminIntentDetailDto,
   AdminIntentListItemDto,
   IntentClassification,
+  IntentContentQuality,
   IntentListOptions,
   IntentListResult,
   IntentSourceType,
@@ -65,6 +66,13 @@ function toAdminIntentListItemDto(doc: LeanIntent): AdminIntentListItemDto {
     status: doc.status as IntentStatus,
     opportunityId: doc.opportunityId?.toString(),
     convertedAt: doc.convertedAt?.toISOString(),
+    discoveryProfileId: doc.discoveryProfileId || undefined,
+    discoveryQuery: doc.discoveryQuery || undefined,
+    contentQuality: doc.contentQuality as IntentContentQuality | undefined,
+    contentQualityReasons:
+      doc.contentQualityReasons && doc.contentQualityReasons.length > 0
+        ? [...doc.contentQualityReasons]
+        : undefined,
     createdAt: doc.createdAt.toISOString(),
     updatedAt: doc.updatedAt.toISOString(),
   };

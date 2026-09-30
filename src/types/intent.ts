@@ -21,6 +21,10 @@ export const INTENT_STATUSES = ["new", "dismissed", "saved"] as const;
 
 export type IntentStatus = (typeof INTENT_STATUSES)[number];
 
+export const INTENT_CONTENT_QUALITY_VALUES = ["normal", "aggregated_social"] as const;
+
+export type IntentContentQuality = (typeof INTENT_CONTENT_QUALITY_VALUES)[number];
+
 /** Extensible provider slug (dev, brave, tavily, …). */
 export type IntentProvider = string;
 
@@ -45,6 +49,11 @@ export type AdminIntentListItemDto = {
   status: IntentStatus;
   opportunityId?: string;
   convertedAt?: string;
+  /** First-wins Tavily profile attribution when ingested from discovery. */
+  discoveryProfileId?: string;
+  discoveryQuery?: string;
+  contentQuality?: IntentContentQuality;
+  contentQualityReasons?: string[];
   createdAt: string;
   updatedAt: string;
 };

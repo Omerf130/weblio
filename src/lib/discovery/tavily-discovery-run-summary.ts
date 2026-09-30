@@ -1,3 +1,5 @@
+import type { DiscoveryProfileMetricsRow } from "@/lib/discovery/discovery-profile-metrics";
+
 export type TavilyDiscoveryProfileError = {
   profileId: string;
   query: string;
@@ -29,6 +31,9 @@ export type TavilyDiscoveryRunSummary = {
 
   classificationLimit: number;
   classificationLimitReached: boolean;
+
+  /** Per-profile metrics; bounded to production profile count. */
+  profileSummaries: DiscoveryProfileMetricsRow[];
 };
 
 export function createEmptyTavilyDiscoveryRunSummary(
@@ -55,5 +60,6 @@ export function createEmptyTavilyDiscoveryRunSummary(
     failed: 0,
     classificationLimit,
     classificationLimitReached: false,
+    profileSummaries: [],
   };
 }

@@ -1,4 +1,7 @@
+import { assessDiscoveryContentQuality } from "@/lib/discovery/discovery-content-quality";
+import { extractDiscoveryProvenance } from "@/lib/discovery/discovery-provenance";
 import type { NormalizedDiscoveryInput } from "@/lib/discovery/types";
+import type { IntentContentQuality } from "@/types/intent";
 
 /** Fields that must never change on rediscovery upsert. */
 export const REDISCOVERY_PRESERVED_FIELD_KEYS = [
@@ -41,6 +44,10 @@ export type FirstDiscoveryDocumentFields = {
   classification: "unclassified";
   status: "new";
   rawMetadata?: Record<string, unknown>;
+  discoveryProfileId?: string;
+  discoveryQuery?: string;
+  contentQuality?: IntentContentQuality;
+  contentQualityReasons?: string[];
 };
 
 export function buildFirstDiscoveryDocument(
@@ -48,6 +55,14 @@ export function buildFirstDiscoveryDocument(
   dedupeKey: string,
   now: Date
 ): FirstDiscoveryDocumentFields {
+  const provenance = extractDiscoveryProvenance(input);
+  const quality = assessDiscoveryContentQuality({
+    content: input.content,
+    title: input.title,
+    sourceUrl: input.sourceUrl,
+    sourcePlatform: input.sourcePlatform,
+  });
+
   return {
     provider: input.provider.trim().toLowerCase(),
     externalId: input.externalId?.trim() || undefined,
@@ -65,6 +80,10 @@ export function buildFirstDiscoveryDocument(
     classification: "unclassified",
     status: "new",
     rawMetadata: input.rawMetadata,
+    discoveryProfileId: provenance.discoveryProfileId,
+    discoveryQuery: provenance.discoveryQuery,
+    contentQuality: quality.quality,
+    ...(quality.reasons.length > 0 ? { contentQualityReasons: quality.reasons } : {}),
   };
 }
 

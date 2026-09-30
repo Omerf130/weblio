@@ -147,6 +147,13 @@
   color: admin.$admin-text;
 }
 
+.contentQualityHint {
+  margin: 0.5rem 0 0;
+  font-size: 0.88rem;
+  color: admin.$admin-text-secondary;
+  line-height: 1.45;
+}
+
 .reason {
   margin: 0.75rem 0 0;
   font-size: 0.88rem;

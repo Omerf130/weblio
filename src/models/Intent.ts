@@ -117,6 +117,37 @@ const intentSchema = new Schema(
       type: Schema.Types.Mixed,
       required: false,
     },
+    discoveryProfileId: {
+      type: String,
+      required: false,
+      trim: true,
+      maxlength: 16,
+    },
+    discoveryQuery: {
+      type: String,
+      required: false,
+      trim: true,
+      maxlength: 400,
+    },
+    contentQuality: {
+      type: String,
+      enum: ["normal", "aggregated_social"],
+      required: false,
+    },
+    contentQualityReasons: {
+      type: [String],
+      required: false,
+      default: undefined,
+      validate: {
+        validator: (value: unknown) =>
+          !Array.isArray(value) ||
+          (value.length <= 5 &&
+            value.every(
+              (entry) => typeof entry === "string" && entry.length <= 80
+            )),
+        message: "contentQualityReasons exceeds bounds",
+      },
+    },
   },
   {
     timestamps: true,

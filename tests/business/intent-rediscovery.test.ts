@@ -39,6 +39,21 @@ describe("intent rediscovery update logic", () => {
     assert.equal(doc.title, "title");
   });
 
+  it("persists content quality assessment on first discovery", () => {
+    const now = new Date("2026-09-30T12:00:00.000Z");
+    const doc = buildFirstDiscoveryDocument(
+      {
+        provider: "tavily",
+        content: "Title: x\nImage 1\n## Other posts\nImage 2",
+        sourceUrl: "https://www.facebook.com/groups/a/posts/b",
+      },
+      "url:https://www.facebook.com/groups/a/posts/b",
+      now
+    );
+    assert.equal(doc.contentQuality, "aggregated_social");
+    assert.ok(doc.contentQualityReasons?.includes("other_posts_section"));
+  });
+
   it("documents preserved fields for rediscovery", () => {
     assert.ok(REDISCOVERY_PRESERVED_FIELD_KEYS.includes("classification"));
     assert.ok(REDISCOVERY_PRESERVED_FIELD_KEYS.includes("status"));

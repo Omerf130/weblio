@@ -22,6 +22,25 @@ const policySnapshotSchema = new Schema(
   { _id: false }
 );
 
+const profileSummarySchema = new Schema(
+  {
+    profileId: { type: String, required: true, trim: true, maxlength: 16 },
+    query: { type: String, required: true, trim: true, maxlength: 400 },
+    raw: { type: Number, required: true, min: 0 },
+    afterFilter: { type: Number, required: true, min: 0 },
+    uniqueAttributed: { type: Number, required: true, min: 0 },
+    created: { type: Number, required: true, min: 0 },
+    rediscovered: { type: Number, required: true, min: 0 },
+    classified: { type: Number, required: true, min: 0 },
+    explicitNeed: { type: Number, required: true, min: 0 },
+    possibleNeed: { type: Number, required: true, min: 0 },
+    irrelevant: { type: Number, required: true, min: 0 },
+    unclassified: { type: Number, required: true, min: 0 },
+    errors: { type: Number, required: true, min: 0 },
+  },
+  { _id: false }
+);
+
 const catalogSnapshotSchema = new Schema(
   {
     catalogVersion: { type: Number, required: true },
@@ -69,6 +88,11 @@ const discoveryRunSchema = new Schema(
     profileErrorCount: { type: Number, required: false, min: 0 },
     profileErrors: {
       type: [profileErrorSummarySchema],
+      required: false,
+      default: undefined,
+    },
+    profileSummaries: {
+      type: [profileSummarySchema],
       required: false,
       default: undefined,
     },

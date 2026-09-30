@@ -5,6 +5,7 @@ import {
   tavilyRequestPolicyFromDiscoveryPolicy,
   type DiscoveryPolicy,
 } from "@/lib/discovery/discovery-policy";
+import { createDiscoveryProfileMetricsTracker } from "@/lib/discovery/discovery-profile-metrics";
 import { dedupeRunCandidates } from "@/lib/discovery/dedupe-run-candidates";
 import {
   ingestDiscoveredResult,
@@ -61,7 +62,8 @@ async function ingestCandidatesWithClassificationCap(
   candidates: PreIngestCandidate[],
   policy: DiscoveryPolicy,
   deps: RunTavilyProductionDiscoveryDeps,
-  summary: TavilyDiscoveryRunSummary
+  summary: TavilyDiscoveryRunSummary,
+  profileMetrics: ReturnType<typeof createDiscoveryProfileMetricsTracker>
 ): Promise<void> {
   const ingestFn = deps.ingestDiscoveredResult ?? ingestDiscoveredResult;
   const baseClassifier = deps.getClassifier?.() ?? noopIntentClassifier;
@@ -86,13 +88,21 @@ async function ingestCandidatesWithClassificationCap(
       });
     } catch {
       summary.failed += 1;
+      profileMetrics.recordIngestOutcome(candidate.profileId, {
+        ok: false,
+        code: "INGEST_EXCEPTION",
+        message: "Ingest failed",
+      });
       continue;
     }
 
     if (!outcome.ok) {
       summary.failed += 1;
+      profileMetrics.recordIngestOutcome(candidate.profileId, outcome);
       continue;
     }
+
+    profileMetrics.recordIngestOutcome(candidate.profileId, outcome);
 
     if (outcome.created) {
       summary.created += 1;
@@ -129,6 +139,7 @@ export async function runTavilyProductionDiscovery(
   const tavilyRequest = toTavilySearchRequestPolicy(policy);
   const excludedDomains = policy.tavily.excludeDomains;
   const allCandidates: PreIngestCandidate[] = [];
+  const profileMetrics = createDiscoveryProfileMetricsTracker(profiles);
 
   for (const profile of profiles) {
     summary.profilesSearched += 1;
@@ -147,6 +158,7 @@ export async function runTavilyProductionDiscovery(
         query: profile.queryHe,
         message: result.error,
       });
+      profileMetrics.recordProfileRequestError(profile.id, profile.queryHe);
     }
 
     const { candidates, counts } = filterMappedRowsForIngest(
@@ -154,6 +166,10 @@ export async function runTavilyProductionDiscovery(
       profile.id,
       excludedDomains
     );
+    profileMetrics.recordProfileSearch(profile.id, profile.queryHe, {
+      raw: result.rawResultCount,
+      afterFilter: candidates.length,
+    });
     mergePreIngestFilterCounts(summary, counts);
     allCandidates.push(...candidates);
   }
@@ -167,7 +183,18 @@ export async function runTavilyProductionDiscovery(
   summary.uniqueCandidates = limited.length;
   summary.candidatesLimited = Math.max(0, unique.length - limited.length);
 
-  await ingestCandidatesWithClassificationCap(limited, policy, deps, summary);
+  profileMetrics.recordUniqueAttributedCandidates(limited);
+  summary.profileSummaries = profileMetrics.toSummaries();
+
+  await ingestCandidatesWithClassificationCap(
+    limited,
+    policy,
+    deps,
+    summary,
+    profileMetrics
+  );
+
+  summary.profileSummaries = profileMetrics.toSummaries();
 
   return summary;
 }

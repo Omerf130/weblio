@@ -4,6 +4,9 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
 import {
+  getProductionDiscoveryPolicy,
+} from "../../src/lib/discovery/discovery-policy";
+import {
   loadSearchProfileCatalog,
   loadSearchProfileCatalogPoc1,
   loadSearchProfileCatalogPoc2,
@@ -70,19 +73,47 @@ describe("search profile catalog", () => {
     const catalog = loadSearchProfileCatalogProduction();
     assert.equal(catalog.environment, "production");
     assert.equal(catalog.strategy, "explicit-intent");
+    assert.equal(catalog.version, 2);
     assert.equal(catalog.profiles.length, 7);
     assert.deepEqual(
       catalog.profiles.map((p) => ({ id: p.id, queryHe: p.queryHe })),
       [
-        { id: "P1", queryHe: "מחפש מישהו שיבנה לי אתר" },
-        { id: "P2", queryHe: "מחפש בונה אתרים" },
-        { id: "P3", queryHe: "מישהו מכיר בונה אתרים מומלץ" },
-        { id: "P4", queryHe: "מחפש מישהו שיבנה לי דף נחיתה" },
-        { id: "P5", queryHe: "מחפש מישהו שיבנה לי חנות אינטרנטית" },
-        { id: "P6", queryHe: "מחפש מישהו שישדרג לי אתר קיים" },
-        { id: "P7", queryHe: "מחפש מישהו שיעצב מחדש את האתר של העסק" },
+        { id: "W1", queryHe: "מחפש מישהו שיבנה לי אתר לעסק" },
+        { id: "W2", queryHe: "מחפש מישהו שיבנה לי חנות Shopify" },
+        { id: "W3", queryHe: "מחפש המלצה על בונה אתרים לעסק" },
+        { id: "W4", queryHe: "מחפש הצעת מחיר לבניית אתר לעסק" },
+        { id: "W5", queryHe: "מחפש מישהו שיבנה לי דף נחיתה לעסק" },
+        { id: "W6", queryHe: "האתר שלנו מיושן מחפשים מישהו שיעצב אותו מחדש" },
+        { id: "W7", queryHe: "צריך מישהו שיבנה לי חנות אינטרנטית לעסק" },
       ]
     );
+  });
+
+  it("production catalog has unique demand-side queries without retired noise strings", () => {
+    const catalog = loadSearchProfileCatalogProduction();
+    const queries = catalog.profiles.map((profile) => profile.queryHe);
+    assert.equal(new Set(queries).size, queries.length);
+    for (const query of queries) {
+      assert.doesNotMatch(query, /site:/i);
+    }
+    const joined = queries.join("\n");
+    assert.doesNotMatch(joined, /מחפש בונה אתרים$/m);
+    assert.doesNotMatch(joined, /מישהו מכיר בונה אתרים מומלץ/);
+    assert.doesNotMatch(joined, /מחפש מישהו שישדרג לי אתר קיים/);
+    assert.doesNotMatch(joined, /מחפש מישהו שיעצב מחדש את האתר של העסק/);
+  });
+
+  it("production discovery budget remains 7 profiles × 5 results with week time_range", () => {
+    const policy = getProductionDiscoveryPolicy();
+    const catalog = loadSearchProfileCatalogProduction();
+    assert.equal(policy.limits.maxProfilesPerRun, 7);
+    assert.equal(policy.limits.maxTavilyRequestsPerRun, 7);
+    assert.equal(policy.tavily.maxResultsPerQuery, 5);
+    assert.equal(policy.limits.maxCandidatesPerRun, 35);
+    assert.equal(policy.limits.maxClassificationsPerRun, 20);
+    assert.equal(policy.tavily.timeRange, "week");
+    assert.equal(policy.tavily.searchDepth, "basic");
+    assert.equal(catalog.profiles.length, 7);
   });
 
   it("production catalog path is separate from PoC catalogs", () => {
@@ -92,7 +123,7 @@ describe("search profile catalog", () => {
     const prod = loadSearchProfileCatalogProduction();
     assert.equal(poc1.profiles.length, 12);
     assert.equal(prod.profiles.length, 7);
-    assert.equal(prod.profiles[0]?.id, "P1");
+    assert.equal(prod.profiles[0]?.id, "W1");
     assert.equal(poc1.profiles[0]?.id, "A1");
   });
 

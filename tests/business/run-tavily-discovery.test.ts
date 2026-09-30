@@ -320,6 +320,13 @@ describe("runTavilyProductionDiscovery", () => {
     assert.equal(summary.filteredDuplicateInRun, 1);
     assert.equal(summary.uniqueCandidates, 1);
     assert.equal(ingestCount, 1);
+
+    const p1Row = summary.profileSummaries.find((row) => row.profileId === "P1");
+    const p2Row = summary.profileSummaries.find((row) => row.profileId === "P2");
+    assert.equal(p1Row?.uniqueAttributed, 1);
+    assert.equal(p2Row?.uniqueAttributed, 0);
+    assert.equal(p1Row?.created, 1);
+    assert.equal(p2Row?.created, 0);
   });
 
   it("enforces maxCandidatesPerRun", async () => {

@@ -331,6 +331,109 @@ describe("intent classifier injection", () => {
     assert.equal(shouldAttemptIntentClassification("possibleNeed"), false);
     assert.equal(shouldAttemptIntentClassification("irrelevant"), false);
   });
+
+  it("aggregated_social skips automatic OpenAI classification", async () => {
+    let classifyCalls = 0;
+    const mixedContent = [
+      "Title: group | Facebook",
+      "Image 1",
+      "## Other posts",
+      "### **מחפש שותף**",
+      "React Native job",
+      "Image 2",
+    ].join("\n");
+
+    const outcome = await ingestDiscoveredResult(
+      {
+        provider: "tavily",
+        sourceUrl: "https://www.facebook.com/groups/1/posts/2",
+        content: mixedContent,
+      },
+      {
+        classifier: {
+          async classify() {
+            classifyCalls += 1;
+            return {
+              classification: "explicitNeed" as const,
+              reason: "should not run",
+              classifierVersion: "test-v1",
+            };
+          },
+        },
+        deps: {
+          upsertDiscoveredIntent: async () => ({
+            intentId: mockIntent().id,
+            created: true,
+            dedupeKey: "url:fb",
+            intent: mockIntent({
+              classification: "unclassified",
+              contentQuality: "aggregated_social",
+              contentQualityReasons: ["other_posts_section"],
+              content: mixedContent,
+              sourceUrl: "https://www.facebook.com/groups/1/posts/2",
+            }),
+          }),
+          updateIntentClassification: async () => {
+            throw new Error("must not persist AI classification");
+          },
+        },
+      }
+    );
+
+    assert.equal(classifyCalls, 0);
+    assert.equal(outcome.ok, true);
+    if (outcome.ok) {
+      assert.equal(outcome.classified, false);
+      assert.equal(outcome.classification, "unclassified");
+      assert.equal(outcome.autoClassificationSkipped, true);
+    }
+  });
+
+  it("normal Facebook content still uses classifier path", async () => {
+    let classifyCalls = 0;
+    const outcome = await ingestDiscoveredResult(
+      {
+        provider: "tavily",
+        sourceUrl: "https://www.facebook.com/groups/1/posts/2",
+        content: "היי, מחפש מישהו שיבנה לי אתר לעסק",
+      },
+      {
+        classifier: {
+          async classify() {
+            classifyCalls += 1;
+            return {
+              classification: "explicitNeed" as const,
+              reason: "בקשה",
+              classifierVersion: "test-v1",
+            };
+          },
+        },
+        deps: {
+          upsertDiscoveredIntent: async () => ({
+            intentId: mockIntent().id,
+            created: true,
+            dedupeKey: "url:fb2",
+            intent: mockIntent({
+              classification: "unclassified",
+              contentQuality: "normal",
+              content: "היי, מחפש מישהו שיבנה לי אתר לעסק",
+            }),
+          }),
+          updateIntentClassification: async (input) =>
+            mockIntent({
+              classification: input.classification,
+              classificationReason: input.classificationReason,
+            }),
+        },
+      }
+    );
+
+    assert.equal(classifyCalls, 1);
+    assert.equal(outcome.ok, true);
+    if (outcome.ok) {
+      assert.equal(outcome.classified, true);
+    }
+  });
 });
 
 describe("intent rediscovery preserved fields (upsert contract via mocks)", () => {
