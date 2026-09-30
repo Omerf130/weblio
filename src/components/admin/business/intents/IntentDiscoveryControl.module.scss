@@ -1,0 +1,134 @@
+@use "../../../../assets/styles/variables" as *;
+@use "../../_admin-light-theme" as admin;
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid admin.$admin-border;
+  border-radius: 12px;
+  background: admin.$admin-surface-muted;
+  max-width: 100%;
+}
+
+.textBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+}
+
+.helper {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: admin.$admin-text-secondary;
+}
+
+.lastRun {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: admin.$admin-text-muted;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.primaryButton {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: $weight-bold;
+  font-family: $font-family-base;
+  font-size: 0.88rem;
+  background: linear-gradient(135deg, $third-color, lighten($third-color, 10%));
+  color: #ffffff;
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(79, 127, 185, 0.85);
+    outline-offset: 2px;
+  }
+}
+
+.result {
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+}
+
+.result_success {
+  border-color: rgba(46, 125, 50, 0.35);
+}
+
+.result_partial {
+  border-color: rgba(237, 108, 2, 0.35);
+}
+
+.result_info {
+  border-color: admin.$admin-border;
+}
+
+.result_error {
+  border-color: rgba(198, 40, 40, 0.35);
+}
+
+.resultTitle {
+  margin: 0 0 0.35rem;
+  font-size: 0.9rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+}
+
+.resultList {
+  margin: 0;
+  padding-right: 1.1rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: admin.$admin-text-secondary;
+}
+
+@media (min-width: 640px) {
+  .section {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .textBlock {
+    flex: 1 1 14rem;
+  }
+
+  .actions {
+    flex: 0 0 auto;
+    align-self: center;
+  }
+
+  .primaryButton {
+    width: auto;
+    min-width: 11rem;
+  }
+
+  .result {
+    flex: 1 1 100%;
+  }
+}

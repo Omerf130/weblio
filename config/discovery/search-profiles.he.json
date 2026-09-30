@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "locale": "he-IL",
+  "profiles": [
+    {
+      "id": "A1",
+      "category": "explicit_website_need",
+      "queryHe": "מחפש בונה אתרים לעסק קטן",
+      "notes": "Explicit website need — small business"
+    },
+    {
+      "id": "A2",
+      "category": "explicit_website_need",
+      "queryHe": "מישהו מכיר בונה אתרים אמין",
+      "notes": "Recommendation request for website developer"
+    },
+    {
+      "id": "A3",
+      "category": "explicit_website_need",
+      "queryHe": "צריך אתר לעסק חדש מי אתם ממליצים",
+      "notes": "New business explicit website need"
+    },
+    {
+      "id": "B1",
+      "category": "landing_page",
+      "queryHe": "מחפש מישהו שיבנה דף נחיתה",
+      "notes": "Landing page builder search"
+    },
+    {
+      "id": "B2",
+      "category": "landing_page",
+      "queryHe": "צריך דף נחיתה לקמפיין",
+      "notes": "Campaign landing page need"
+    },
+    {
+      "id": "C1",
+      "category": "ecommerce",
+      "queryHe": "מחפש מישהו שיבנה חנות אינטרנטית לעסק",
+      "notes": "Online store builder search"
+    },
+    {
+      "id": "C2",
+      "category": "ecommerce",
+      "queryHe": "צריך אתר מכירות אונליין לעסק",
+      "notes": "E-commerce website need"
+    },
+    {
+      "id": "D1",
+      "category": "redesign",
+      "queryHe": "האתר שלי מיושן צריך לעצב מחדש",
+      "notes": "Outdated site redesign"
+    },
+    {
+      "id": "D2",
+      "category": "redesign",
+      "queryHe": "מחפש לשדרג את האתר של העסק",
+      "notes": "Business website upgrade"
+    },
+    {
+      "id": "E1",
+      "category": "possible_need",
+      "queryHe": "פתחתי עסק חדש האם צריך אתר",
+      "notes": "New business — website necessity question"
+    },
+    {
+      "id": "E2",
+      "category": "possible_need",
+      "queryHe": "עסק רק באינסטגרם האם כדאי אתר",
+      "notes": "Instagram-only business"
+    },
+    {
+      "id": "E3",
+      "category": "possible_need",
+      "queryHe": "עסק מקומי בלי אתר האם זה מפריע",
+      "notes": "Local business without website"
+    }
+  ]
+}

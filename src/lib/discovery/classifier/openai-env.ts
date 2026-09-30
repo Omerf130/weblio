@@ -1,6 +1,6 @@
 export const DEFAULT_OPENAI_INTENT_MODEL = "gpt-5.4-nano";
 
-export const OPENAI_INTENT_PROMPT_SUFFIX = "prompt-v1";
+export const OPENAI_INTENT_PROMPT_SUFFIX = "prompt-v2";
 
 export const DEFAULT_OPENAI_INTENT_TIMEOUT_MS = 20_000;
 

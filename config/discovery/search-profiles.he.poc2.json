@@ -1,0 +1,80 @@
+{
+  "version": 2,
+  "pocVersion": 2,
+  "strategy": "explicit-intent-focused",
+  "locale": "he-IL",
+  "profiles": [
+    {
+      "id": "A1",
+      "category": "explicit_website",
+      "queryHe": "מחפש בונה אתרים",
+      "notes": "PoC2 demand-side — masculine singular"
+    },
+    {
+      "id": "A2",
+      "category": "explicit_website",
+      "queryHe": "מחפשת בונה אתרים",
+      "notes": "PoC2 demand-side — feminine singular"
+    },
+    {
+      "id": "A3",
+      "category": "explicit_website",
+      "queryHe": "מחפש מישהו שיבנה לי אתר",
+      "notes": "PoC2 conversational explicit website need"
+    },
+    {
+      "id": "A4",
+      "category": "explicit_website",
+      "queryHe": "מחפשת מישהו שיבנה לי אתר",
+      "notes": "PoC2 conversational explicit website need (f)"
+    },
+    {
+      "id": "A5",
+      "category": "explicit_website",
+      "queryHe": "מישהו מכיר בונה אתרים מומלץ",
+      "notes": "PoC2 recommendation phrasing"
+    },
+    {
+      "id": "A6",
+      "category": "explicit_website",
+      "queryHe": "מחפש המלצה על בונה אתרים",
+      "notes": "PoC2 recommendation phrasing variant"
+    },
+    {
+      "id": "B1",
+      "category": "explicit_landing_page",
+      "queryHe": "מחפש מישהו שיבנה לי דף נחיתה",
+      "notes": "PoC2 explicit landing page"
+    },
+    {
+      "id": "B2",
+      "category": "explicit_landing_page",
+      "queryHe": "מחפשת מישהו שיבנה לי דף נחיתה",
+      "notes": "PoC2 explicit landing page (f)"
+    },
+    {
+      "id": "C1",
+      "category": "explicit_ecommerce",
+      "queryHe": "מחפש מישהו שיבנה לי חנות אינטרנטית",
+      "notes": "PoC2 explicit ecommerce"
+    },
+    {
+      "id": "C2",
+      "category": "explicit_ecommerce",
+      "queryHe": "מחפשת מישהו שיבנה לי חנות אינטרנטית",
+      "notes": "PoC2 explicit ecommerce (f)"
+    },
+    {
+      "id": "D1",
+      "category": "explicit_redesign",
+      "queryHe": "מחפש מישהו שישדרג לי אתר קיים",
+      "notes": "PoC2 website upgrade"
+    },
+    {
+      "id": "D2",
+      "category": "explicit_redesign",
+      "queryHe": "מחפש מישהו שיעצב מחדש את האתר של העסק",
+      "notes": "PoC2 business site redesign"
+    }
+  ]
+}

@@ -26,7 +26,7 @@ export type ClassifyIntentWithAiResult =
   | { ok: true; intent: AdminIntentDetailDto }
   | { ok: false; reason: ClassifyIntentWithAiFailureReason };
 
-function buildClassifierInputFromIntent(
+export function buildClassifierInputFromIntent(
   intent: AdminIntentDetailDto
 ): Parameters<IntentClassifier["classify"]>[0] {
   return {

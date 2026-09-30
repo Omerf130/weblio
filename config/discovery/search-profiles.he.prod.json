@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "environment": "production",
+  "locale": "he-IL",
+  "strategy": "explicit-intent",
+  "profiles": [
+    {
+      "id": "P1",
+      "category": "explicit_website",
+      "queryHe": "מחפש מישהו שיבנה לי אתר",
+      "notes": "Production — conversational explicit website need"
+    },
+    {
+      "id": "P2",
+      "category": "explicit_website",
+      "queryHe": "מחפש בונה אתרים",
+      "notes": "Production — short explicit website search"
+    },
+    {
+      "id": "P3",
+      "category": "explicit_website",
+      "queryHe": "מישהו מכיר בונה אתרים מומלץ",
+      "notes": "Production — recommendation phrasing"
+    },
+    {
+      "id": "P4",
+      "category": "explicit_landing_page",
+      "queryHe": "מחפש מישהו שיבנה לי דף נחיתה",
+      "notes": "Production — explicit landing page"
+    },
+    {
+      "id": "P5",
+      "category": "explicit_ecommerce",
+      "queryHe": "מחפש מישהו שיבנה לי חנות אינטרנטית",
+      "notes": "Production — explicit ecommerce"
+    },
+    {
+      "id": "P6",
+      "category": "explicit_redesign",
+      "queryHe": "מחפש מישהו שישדרג לי אתר קיים",
+      "notes": "Production — website upgrade"
+    },
+    {
+      "id": "P7",
+      "category": "explicit_redesign",
+      "queryHe": "מחפש מישהו שיעצב מחדש את האתר של העסק",
+      "notes": "Production — business site redesign"
+    }
+  ]
+}

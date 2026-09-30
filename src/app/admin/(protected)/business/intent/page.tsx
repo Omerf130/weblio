@@ -1,4 +1,6 @@
+import { findLatestDiscoveryRunForCooldown } from "@/lib/data/discovery-runs";
 import { getDistinctIntentProviders, listIntents } from "@/lib/data/intents";
+import { toLastDiscoveryRunHint } from "@/lib/business/discovery/discovery-run-messages";
 import {
   mapIntentFiltersToListOptions,
   parseIntentListPage,
@@ -32,10 +34,15 @@ export default async function IntentMonitorPage({ searchParams }: IntentListPage
     page,
   });
 
-  const [result, providers] = await Promise.all([
+  const [result, providers, latestDiscoveryRun] = await Promise.all([
     listIntents({ ...listOptions, sort: "-discoveredAt" }),
     getDistinctIntentProviders(),
+    findLatestDiscoveryRunForCooldown().catch(() => null),
   ]);
+
+  const lastDiscoveryRun = latestDiscoveryRun
+    ? toLastDiscoveryRunHint(latestDiscoveryRun)
+    : null;
 
   const hasActiveFilters =
     provider !== "all" ||
@@ -57,6 +64,7 @@ export default async function IntentMonitorPage({ searchParams }: IntentListPage
         totalItems: result.totalItems,
       }}
       hasActiveFilters={hasActiveFilters}
+      lastDiscoveryRun={lastDiscoveryRun}
     />
   );
 }

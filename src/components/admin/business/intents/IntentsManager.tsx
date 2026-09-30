@@ -8,6 +8,8 @@ import type {
   IntentProviderFilter,
   IntentStatusFilter,
 } from "@/lib/business/intents/list-url";
+import type { LastDiscoveryRunHint } from "@/lib/business/discovery/discovery-run-messages";
+import IntentDiscoveryControl from "./IntentDiscoveryControl";
 import IntentFilters from "./IntentFilters";
 import IntentItem from "./IntentItem";
 import styles from "./IntentsManager.module.scss";
@@ -25,6 +27,7 @@ type IntentsManagerProps = {
     totalItems: number;
   };
   hasActiveFilters: boolean;
+  lastDiscoveryRun?: LastDiscoveryRunHint | null;
 };
 
 export default function IntentsManager({
@@ -36,6 +39,7 @@ export default function IntentsManager({
   providers,
   pagination,
   hasActiveFilters,
+  lastDiscoveryRun,
 }: IntentsManagerProps) {
   const listHrefBase = { status, classification, provider, q };
 
@@ -55,6 +59,8 @@ export default function IntentsManager({
           </p>
         </div>
       </header>
+
+      <IntentDiscoveryControl lastRun={lastDiscoveryRun} />
 
       <IntentFilters
         status={status}
