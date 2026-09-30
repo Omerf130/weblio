@@ -15,6 +15,7 @@
     "seed:intents": "tsx --env-file=.env.local scripts/seed-intents.ts",
     "discovery:poc:tavily": "tsx --env-file=.env.local scripts/discovery-poc/run-tavily.ts",
     "discovery:poc:tavily:poc2": "tsx --env-file=.env.local scripts/discovery-poc/run-tavily-poc2.ts",
+    "discovery:poc:business-verification": "tsx --env-file=.env.local scripts/discovery-poc/run-business-verification-poc.ts",
     "reclassify:tavily-intents": "tsx --env-file=.env.local scripts/reclassify-tavily-intents.ts",
     "migrate:landing-copy": "tsx --env-file=.env.local scripts/migrate-landing-guide-copy.ts",
     "test:auth": "tsx --test tests/auth/**/*.test.ts",
