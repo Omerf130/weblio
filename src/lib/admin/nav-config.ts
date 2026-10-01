@@ -8,6 +8,7 @@ import {
   MdChecklist,
   MdLightbulbOutline,
   MdTravelExplore,
+  MdAutoAwesome,
 } from "react-icons/md";
 
 export type AdminNavItemConfig = {
@@ -83,6 +84,12 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
         label: "הזדמנויות",
         href: "/admin/business/opportunities",
         icon: MdLightbulbOutline,
+      },
+      {
+        id: "ai-marketing",
+        label: "שיווק AI",
+        href: "/admin/business/ai-marketing",
+        icon: MdAutoAwesome,
       },
     ],
   },

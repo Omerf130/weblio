@@ -37,7 +37,7 @@ export const CONSTS = {
         bgWord: "LANDING",
         title: "דפי נחיתה",
         description: [
-          "עמודים ממוקדים שנבנים סביב מטרה אחת —",
+          "עמודים ממוקדים שנבנים סביב מטרה אחת -",
           "לגרום למשתמש לפעול.",
         ],
         tags: ["CONVERSION", "PERFORMANCE", "SEO"],
@@ -131,7 +131,7 @@ export const CONSTS = {
     TITLE: "צרו קשר",
     SUBTITLE: "נשמח לשמוע ממך! מלאו את הטופס או פנו אלינו ישירות.",
     BUSINESS_NAME: "Weblio",
-    /** Digits only, without + — used by wa.me and the contact form */
+    /** Digits only, without + - used by wa.me and the contact form */
     WHATSAPP_PHONE: "972544993155",
     DISPLAY_PHONE: "054-499-3155",
     TEL: "+972544993155",

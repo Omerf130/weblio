@@ -46,7 +46,7 @@ function buildGuideEmailHtml(name: string): string {
       </p>
     </div>
     <p style="text-align:center;margin:20px 0 0;font-size:13px;color:#999;">
-      © Weblio — בניית אתרים ופתרונות דיגיטליים
+      © Weblio - בניית אתרים ופתרונות דיגיטליים
     </p>
   </div>
 </body>
@@ -180,7 +180,7 @@ export async function sendLeadNotificationEmail(
 ): Promise<{ success: boolean; error?: string }> {
   const notificationEmail = process.env.LEAD_NOTIFICATION_EMAIL;
   if (!notificationEmail) {
-    console.warn("[lead-emails] LEAD_NOTIFICATION_EMAIL is not set — owner notification skipped.");
+    console.warn("[lead-emails] LEAD_NOTIFICATION_EMAIL is not set - owner notification skipped.");
     return { success: false, error: "LEAD_NOTIFICATION_EMAIL not configured" };
   }
 
@@ -193,7 +193,7 @@ export async function sendLeadNotificationEmail(
     const { error } = await resend.emails.send({
       from: SENDER,
       to: notificationEmail,
-      subject: `ליד חדש #${lead.leadNumber} — ${lead.name}`,
+      subject: `ליד חדש #${lead.leadNumber} - ${lead.name}`,
       html: buildNotificationHtml(lead),
     });
 

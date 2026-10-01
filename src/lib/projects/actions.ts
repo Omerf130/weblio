@@ -1,8 +1,8 @@
 "use server";
 
 import { randomUUID } from "node:crypto";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { revalidateProjectPaths } from "@/lib/projects/revalidate-paths";
 import mongoose from "mongoose";
 import { countPublishedHomeProjects } from "@/lib/data/projects";
 import { connectDB } from "@/lib/db/mongoose";
@@ -29,12 +29,6 @@ import {
 } from "@/lib/validations/project";
 import { Project } from "@/models/Project";
 import type { ProjectActionState } from "@/lib/projects/action-states";
-
-function revalidateProjectPaths(): void {
-  revalidatePath("/");
-  revalidatePath("/projects");
-  revalidatePath("/admin/projects");
-}
 
 async function validateHomeFeaturedLimit(
   isPublished: boolean,

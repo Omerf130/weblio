@@ -1,0 +1,379 @@
+@use "../../_admin-light-theme" as admin;
+
+.workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.panel,
+.resultPanel {
+  border-radius: 14px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  padding: 1.25rem 1.35rem;
+}
+
+.resultPanel {
+  border-color: rgba(79, 127, 185, 0.22);
+  box-shadow: admin.$admin-shadow;
+}
+
+.sectionTitle {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: admin.$admin-text;
+}
+
+.sectionHint {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: admin.$admin-text-muted;
+  line-height: 1.55;
+}
+
+.hubHeading {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: admin.$admin-text;
+}
+
+.hubGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.85rem;
+}
+
+.purposeCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.05rem;
+  border-radius: 12px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  text-align: right;
+  cursor: pointer;
+  min-height: 44px;
+  font-family: inherit;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+
+  &:hover {
+    border-color: rgba(79, 127, 185, 0.35);
+    box-shadow: admin.$admin-shadow;
+  }
+}
+
+.purposeCardLabel {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: admin.$admin-text;
+}
+
+.purposeCardDescription {
+  font-size: 0.78rem;
+  color: admin.$admin-text-muted;
+  line-height: 1.45;
+}
+
+.backButton {
+  align-self: flex-start;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: admin.$admin-link;
+  background: none;
+  border: none;
+  padding: 0.25rem 0;
+  cursor: pointer;
+  min-height: 44px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.emptyState {
+  margin: 0;
+  font-size: 0.9rem;
+  color: admin.$admin-text-muted;
+  line-height: 1.55;
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: admin.$admin-text-muted;
+  margin-bottom: 0.35rem;
+}
+
+.input,
+.select,
+.textarea,
+.resultTextarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid admin.$admin-border;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: admin.$admin-text;
+  background-color: admin.$admin-surface;
+}
+
+.select {
+  padding-inline-start: 0.65rem;
+  padding-inline-end: 2rem;
+  min-height: 44px;
+  color-scheme: light;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 0.75rem center;
+
+  &:focus {
+    outline: none;
+    border-color: admin.$admin-focus-border;
+    box-shadow: admin.$admin-focus-ring;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  option {
+    color: admin.$admin-text;
+    background-color: admin.$admin-surface;
+  }
+}
+
+.textarea,
+.resultTextarea {
+  padding: 0.65rem 0.75rem;
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.resultTextarea {
+  min-height: 220px;
+}
+
+.fieldHint {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  color: admin.$admin-text-muted;
+}
+
+.notice {
+  margin: 0 0 1rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  color: #92400e;
+}
+
+.techTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.techTag {
+  font-size: 0.76rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: 6px;
+  background: admin.$admin-surface-muted;
+  color: admin.$admin-text-secondary;
+  border: 1px solid admin.$admin-border;
+}
+
+.applyNote {
+  margin: 1rem 0 0;
+  font-size: 0.82rem;
+  color: admin.$admin-text-muted;
+  line-height: 1.5;
+}
+
+.error {
+  margin: 0 0 0.85rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  color: #991b1b;
+  font-size: 0.85rem;
+}
+
+.success {
+  margin: 0 0 0.85rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  color: #166534;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.inlineLink {
+  color: admin.$admin-link;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.modalDialog {
+  width: min(100%, 480px);
+  max-height: min(90vh, 640px);
+  overflow: auto;
+  border-radius: 14px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  padding: 1.25rem 1.35rem;
+  box-shadow: admin.$admin-shadow;
+  direction: rtl;
+}
+
+.modalTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: admin.$admin-text;
+  line-height: 1.45;
+}
+
+.modalLead {
+  margin: 0 0 0.85rem;
+  font-size: 0.88rem;
+  color: admin.$admin-text-muted;
+  line-height: 1.5;
+}
+
+.modalFieldList {
+  margin: 0 0 0.85rem;
+  padding: 0 1.1rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: admin.$admin-text-secondary;
+}
+
+.modalFieldName {
+  font-weight: 600;
+  color: admin.$admin-text;
+}
+
+.modalFieldValue {
+  word-break: break-word;
+}
+
+.modalNote {
+  margin: 0 0 1rem;
+  font-size: 0.82rem;
+  color: admin.$admin-text-muted;
+}
+
+.modalActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: flex-start;
+}
+
+.primaryButton,
+.secondaryButton {
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  min-height: 44px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.primaryButton {
+  background: admin.$admin-link;
+  color: #fff;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.secondaryButton {
+  background: admin.$admin-surface;
+  border-color: admin.$admin-border;
+  color: admin.$admin-text;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.resultActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+}
+
+.copyStatus {
+  margin: 0.65rem 0 0;
+  min-height: 1.25rem;
+  font-size: 0.82rem;
+  color: admin.$admin-text-muted;
+}
+
+@media (max-width: 600px) {
+  .panel,
+  .resultPanel {
+    padding: 1rem;
+  }
+
+  .hubGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .resultActions {
+    flex-direction: column;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .purposeCard {
+    transition: none;
+  }
+}

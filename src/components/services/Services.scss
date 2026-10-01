@@ -239,7 +239,7 @@ $weblio-blue: rgba(96, 139, 193, 1);
 
   &::before,
   &::after {
-    content: "—";
+    content: "-";
     margin-inline: 0.35rem;
     opacity: 0.6;
   }
@@ -1124,7 +1124,7 @@ $weblio-blue: rgba(96, 139, 193, 1);
   }
 }
 
-// Touch devices — rows remain complete without hover
+// Touch devices - rows remain complete without hover
 @media (hover: none), (pointer: coarse) {
   .home-services__row:not(.home-services__row--active) {
     .home-services__service-title {

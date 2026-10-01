@@ -22,7 +22,7 @@ describe("admin navigation groups", () => {
     assert.equal(business!.label, "עסקי");
   });
 
-  it("business group contains overview, follow-ups, intent monitor, and opportunities", () => {
+  it("business group contains overview, follow-ups, intent monitor, opportunities, and ai marketing", () => {
     const business = ADMIN_NAV_GROUPS.find((g) => g.id === "business");
     assert.ok(business);
 
@@ -31,19 +31,19 @@ describe("admin navigation groups", () => {
     assert.ok(ids.includes("follow-ups"));
     assert.ok(ids.includes("intent-monitor"));
     assert.ok(ids.includes("opportunities"));
+    assert.ok(ids.includes("ai-marketing"));
 
     const intentIndex = ids.indexOf("intent-monitor");
     const oppIndex = ids.indexOf("opportunities");
     assert.ok(intentIndex >= 0 && oppIndex >= 0 && intentIndex < oppIndex);
   });
 
-  it("business group does NOT contain future items", () => {
+  it("business group does NOT contain legacy marketing placeholder id", () => {
     const business = ADMIN_NAV_GROUPS.find((g) => g.id === "business");
     assert.ok(business);
 
     const ids = business!.items.map((i) => i.id);
     assert.ok(!ids.includes("marketing"));
-    assert.ok(!ids.includes("ai-marketing"));
   });
 
   it("no items have comingSoon flag", () => {
@@ -143,6 +143,20 @@ describe("business route matching", () => {
 
   it("getAdminPageTitle returns intent monitor title", () => {
     assert.equal(getAdminPageTitle("/admin/business/intent"), "ניטור כוונות");
+  });
+
+  it("ai marketing is active on /admin/business/ai-marketing", () => {
+    const aiMarketing = ADMIN_NAV_ITEMS.find((i) => i.id === "ai-marketing");
+    assert.ok(aiMarketing);
+    assert.equal(aiMarketing!.href, "/admin/business/ai-marketing");
+    assert.equal(
+      isAdminNavItemActive("/admin/business/ai-marketing", aiMarketing!),
+      true
+    );
+  });
+
+  it("getAdminPageTitle returns ai marketing title", () => {
+    assert.equal(getAdminPageTitle("/admin/business/ai-marketing"), "שיווק AI");
   });
 
   it("dashboard is NOT active on /admin/business", () => {

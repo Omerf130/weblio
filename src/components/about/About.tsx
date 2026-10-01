@@ -14,7 +14,7 @@ const About = () => {
       </div>
 
       <div className="about__inner">
-        {/* Portrait composition — left column */}
+        {/* Portrait composition - left column */}
         <Reveal className="about__portrait" y={32} amount={0.15}>
           <div className="about__portrait-glow" aria-hidden="true" />
           <div className="about__portrait-frame about__portrait-frame--far" aria-hidden="true" />
@@ -22,7 +22,7 @@ const About = () => {
           <div className="about__portrait-img">
             <img
               src={assetSrc(aboutPhoto)}
-              alt="עומר — מפתח ומעצב אתרים, Weblio"
+              alt="עומר - מפתח ומעצב אתרים, Weblio"
               loading="lazy"
               decoding="async"
             />
@@ -36,10 +36,10 @@ const About = () => {
           <span className="about__detail-dot" aria-hidden="true" />
         </Reveal>
 
-        {/* Content — right column */}
+        {/* Content - right column */}
         <div className="about__content">
           <Reveal as="span" className="about__eyebrow" delay={0.05}>
-            ABOUT WEBLIO —
+            ABOUT WEBLIO -
           </Reveal>
 
           <Reveal as="h2" className="about__heading" delay={0.1}>
