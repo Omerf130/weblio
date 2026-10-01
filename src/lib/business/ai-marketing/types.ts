@@ -19,12 +19,15 @@ export const MARKETING_SOURCES = [
 
 export type MarketingSource = (typeof MARKETING_SOURCES)[number];
 
-/** Purposes exposed in the Phase 6C.2 hub (usable without Coming Soon placeholders). */
+/** Purposes exposed in the AI Marketing hub. */
 export const HUB_MARKETING_PURPOSES = [
   "websiteProjectContent",
   "socialPost",
   "linkedinPost",
   "story",
+  "contentIdeas",
+  "rewrite",
+  "freeform",
 ] as const satisfies readonly MarketingPurpose[];
 
 export type HubMarketingPurpose = (typeof HUB_MARKETING_PURPOSES)[number];

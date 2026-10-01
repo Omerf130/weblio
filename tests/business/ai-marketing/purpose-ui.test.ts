@@ -9,21 +9,18 @@ import { safeParseMarketingGenerationInput } from "../../../src/lib/business/ai-
 const validProjectId = "507f1f77bcf86cd799439011";
 
 describe("purpose hub ui helpers", () => {
-  it("exposes only the four usable hub tools (no Coming Soon placeholders)", () => {
-    assert.equal(MARKETING_HUB_PURPOSE_CARDS.length, 4);
+  it("exposes all seven hub tools (no Coming Soon placeholders)", () => {
+    assert.equal(MARKETING_HUB_PURPOSE_CARDS.length, 7);
     const purposes = MARKETING_HUB_PURPOSE_CARDS.map((c) => c.purpose);
     assert.deepEqual(purposes, [
       "websiteProjectContent",
       "socialPost",
       "linkedinPost",
       "story",
+      "contentIdeas",
+      "rewrite",
+      "freeform",
     ]);
-    assert.ok(!purposes.includes("contentIdeas" as never));
-    assert.ok(
-      !MARKETING_HUB_PURPOSE_CARDS.some((c) =>
-        c.label.includes("תיאור מורחב")
-      )
-    );
   });
 
   it("buildProjectPurposeInput produces valid server payloads", () => {

@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 import {
   buildMarketingPromptMessages,
   getMarketingAccuracyInstructions,
+  getPersonalClaimSafetyInstructions,
   getPurposeInstructionBlock,
 } from "../../../src/lib/business/ai-marketing/prompt-builder";
 import { mapAdminProjectToMarketingContext } from "../../../src/lib/business/ai-marketing/project-marketing-context";
@@ -32,6 +33,9 @@ describe("marketing prompt builder", () => {
     assert.ok(accuracy.includes("אל תמציא"));
     assert.ok(accuracy.includes("מדדים"));
     assert.ok(accuracy.includes("PROJECT DATA"));
+    const personal = getPersonalClaimSafetyInstructions();
+    assert.ok(accuracy.includes(personal));
+    assert.ok(personal.includes("אסור להמציא"));
   });
 
   it("selects purpose-specific website instructions", () => {
@@ -39,6 +43,14 @@ describe("marketing prompt builder", () => {
     assert.ok(block.includes("JSON"));
     assert.ok(block.includes("technologies"));
     assert.ok(block.includes("אסור להמציא"));
+  });
+
+  it("keeps social and linkedin prompts distinct", () => {
+    const social = getPurposeInstructionBlock("socialPost");
+    const linkedin = getPurposeInstructionBlock("linkedinPost");
+    assert.notEqual(social, linkedin);
+    assert.ok(social.includes("Instagram/Facebook"));
+    assert.ok(linkedin.includes("LinkedIn"));
   });
 
   it("delimits project data and excludes raw mongo id from prompt user block", () => {

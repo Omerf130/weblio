@@ -3,8 +3,11 @@
 import { useState } from "react";
 import type { AiMarketingProjectPickerOption } from "@/lib/business/ai-marketing/project-picker-options";
 import type { HubMarketingPurpose } from "@/lib/business/ai-marketing/types";
+import AiMarketingContentIdeasTool from "./AiMarketingContentIdeasTool";
 import AiMarketingContentTool from "./AiMarketingContentTool";
+import AiMarketingFreeformTool from "./AiMarketingFreeformTool";
 import AiMarketingHub from "./AiMarketingHub";
+import AiMarketingRewriteTool from "./AiMarketingRewriteTool";
 import AiMarketingWebsiteTool from "./AiMarketingWebsiteTool";
 
 type AiMarketingShellProps = {
@@ -35,6 +38,27 @@ export default function AiMarketingShell({ projects }: AiMarketingShellProps) {
         projects={projects}
         onBack={() => setSelectedPurpose(null)}
       />
+    );
+  }
+
+  if (selectedPurpose === "contentIdeas") {
+    return (
+      <AiMarketingContentIdeasTool
+        projects={projects}
+        onBack={() => setSelectedPurpose(null)}
+      />
+    );
+  }
+
+  if (selectedPurpose === "rewrite") {
+    return (
+      <AiMarketingRewriteTool onBack={() => setSelectedPurpose(null)} />
+    );
+  }
+
+  if (selectedPurpose === "freeform") {
+    return (
+      <AiMarketingFreeformTool onBack={() => setSelectedPurpose(null)} />
     );
   }
 

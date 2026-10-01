@@ -58,13 +58,9 @@ describe("ai marketing website tool (apply UX)", () => {
 
   it("includes admin-reviewed technologies in apply payload helper", () => {
     const tool = readFileSync(toolPath, "utf8");
-    assert.ok(tool.includes("fields: fieldsForApply(fields)"));
-    const helperMatch = tool.match(
-      /function fieldsForApply\([\s\S]*?\n\}/
-    );
-    assert.ok(helperMatch);
-    assert.ok(helperMatch[0].includes("technologies"));
-    assert.ok(tool.includes("parseTechnologiesFromInput"));
+    assert.ok(tool.includes("technologiesInput"));
+    assert.ok(tool.includes("commitTechnologiesInput"));
+    assert.ok(tool.includes("fieldsForApply"));
     assert.ok(tool.includes("showApplyConfirm"));
   });
 });

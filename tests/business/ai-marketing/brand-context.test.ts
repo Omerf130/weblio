@@ -23,8 +23,10 @@ describe("brand context", () => {
     assert.ok(voice.includes("בניתי"));
     assert.ok(voice.includes("דברו איתי"));
     assert.ok(voice.includes("יצרנו"));
-    assert.ok(formatted.includes("weblio-brand-v3"));
+    assert.ok(formatted.includes("weblio-brand-v4"));
     assert.ok(WEBLIO_BRAND_CONTEXT.ctaPreferences.includes("דברו איתי"));
+    assert.ok(voice.includes("לא המצאת"));
+    assert.ok(WEBLIO_BRAND_CONTEXT.positioningNotes.includes("ביוגרפיות"));
   });
 
   it("prohibits em dash and en dash in punctuation instructions", () => {

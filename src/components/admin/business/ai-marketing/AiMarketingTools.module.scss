@@ -173,6 +173,12 @@
   color: admin.$admin-text-muted;
 }
 
+.loadingHint {
+  margin: 0 0 0.85rem;
+  font-size: 0.85rem;
+  color: admin.$admin-text-muted;
+}
+
 .notice {
   margin: 0 0 1rem;
   padding: 0.55rem 0.65rem;
@@ -350,6 +356,89 @@
   min-height: 1.25rem;
   font-size: 0.82rem;
   color: admin.$admin-text-muted;
+}
+
+.sourceSwitch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sourceSwitchButton,
+.sourceSwitchActive {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  min-height: 40px;
+  cursor: pointer;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface-muted;
+  color: admin.$admin-text-secondary;
+}
+
+.sourceSwitchActive {
+  border-color: rgba(79, 127, 185, 0.45);
+  background: rgba(79, 127, 185, 0.12);
+  color: admin.$admin-text;
+}
+
+.transformGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.5rem;
+}
+
+.ideasHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+}
+
+.ideasList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.ideaItem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface-muted;
+}
+
+.ideaText {
+  margin: 0;
+  flex: 1 1 200px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: admin.$admin-text;
+}
+
+.ideaCopyButton {
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  color: admin.$admin-text;
+  cursor: pointer;
+  min-height: 36px;
 }
 
 @media (max-width: 600px) {

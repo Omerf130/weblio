@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { formatTechnologiesForInput } from "@/lib/business/ai-marketing/technologies-input";
 import type { WebsiteProjectContentFields } from "@/lib/business/ai-marketing/types";
 import styles from "./AiMarketingTools.module.scss";
@@ -31,6 +32,16 @@ export default function AiMarketingWebsiteApplyConfirm({
   onConfirm,
 }: AiMarketingWebsiteApplyConfirmProps) {
   const technologiesPreview = formatTechnologiesForInput(fields.technologies);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !isApplying) {
+        onCancel();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isApplying, onCancel]);
 
   return (
     <div

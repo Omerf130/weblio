@@ -9,10 +9,10 @@ import {
 import type { AiMarketingProjectPickerOption } from "@/lib/business/ai-marketing/project-picker-options";
 import { findPickerOptionById } from "@/lib/business/ai-marketing/project-picker-options";
 import { THIN_PROJECT_CONTEXT_NOTICE } from "@/lib/business/ai-marketing/project-context-hints";
-import { buildProjectPurposeInput } from "@/lib/business/ai-marketing/purpose-ui";
+import { buildWebsiteProjectPurposeInput } from "@/lib/business/ai-marketing/marketing-input-builders";
 import {
+  commitTechnologiesInput,
   formatTechnologiesForInput,
-  parseTechnologiesFromInput,
 } from "@/lib/business/ai-marketing/technologies-input";
 import type { WebsiteProjectContentFields } from "@/lib/business/ai-marketing/types";
 import { MAX_MARKETING_USER_INSTRUCTION_CHARS } from "@/lib/business/ai-marketing/validations";
@@ -39,15 +39,17 @@ function emptyWebsiteFields(): WebsiteProjectContentFields {
 }
 
 function fieldsForApply(
-  fields: WebsiteProjectContentFields
+  fields: WebsiteProjectContentFields,
+  technologiesInput: string
 ): WebsiteProjectContentFields {
+  const { technologies } = commitTechnologiesInput(technologiesInput);
   return {
     title: fields.title,
     subtitle: fields.subtitle,
     description: fields.description?.trim() || undefined,
     homeTitle: fields.homeTitle?.trim() || undefined,
     homeSubtitle: fields.homeSubtitle?.trim() || undefined,
-    technologies: fields.technologies.map((item) => item.trim()).filter(Boolean),
+    technologies,
   };
 }
 
@@ -67,6 +69,7 @@ export default function AiMarketingWebsiteTool({
   const [isGenerating, setIsGenerating] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
   const [showApplyConfirm, setShowApplyConfirm] = useState(false);
+  const [technologiesInput, setTechnologiesInput] = useState("");
 
   const selected = useMemo(
     () => findPickerOptionById(projects, projectId),
@@ -88,9 +91,17 @@ export default function AiMarketingWebsiteTool({
     setHasDraft(false);
     setDraftProjectId(null);
     setFields(emptyWebsiteFields());
+    setTechnologiesInput("");
     setApplySuccess(false);
     setShowApplyConfirm(false);
   }, []);
+
+  const syncTechnologiesFromInput = useCallback(() => {
+    const committed = commitTechnologiesInput(technologiesInput);
+    setTechnologiesInput(committed.text);
+    setFields((prev) => ({ ...prev, technologies: committed.technologies }));
+    return committed.technologies;
+  }, [technologiesInput]);
 
   const handleProjectChange = (id: string) => {
     if (id !== projectId) {
@@ -110,8 +121,7 @@ export default function AiMarketingWebsiteTool({
     setError(null);
     setApplySuccess(false);
 
-    const payload = buildProjectPurposeInput({
-      purpose: "websiteProjectContent",
+    const payload = buildWebsiteProjectPurposeInput({
       projectId,
       userInstruction: userInstruction.trim() || undefined,
     });
@@ -126,6 +136,9 @@ export default function AiMarketingWebsiteTool({
 
       if (result.websiteContent) {
         setFields(result.websiteContent);
+        setTechnologiesInput(
+          formatTechnologiesForInput(result.websiteContent.technologies)
+        );
         setHasDraft(true);
         setDraftProjectId(projectId);
         return;
@@ -149,10 +162,15 @@ export default function AiMarketingWebsiteTool({
     setIsApplying(true);
     setError(null);
 
+    const committedTech = syncTechnologiesFromInput();
+
     try {
       const result = await applyAiMarketingWebsiteContentAction({
         projectId,
-        fields: fieldsForApply(fields),
+        fields: fieldsForApply(
+          { ...fields, technologies: committedTech },
+          technologiesInput
+        ),
       });
 
       if (result.error) {
@@ -169,7 +187,14 @@ export default function AiMarketingWebsiteTool({
     } finally {
       setIsApplying(false);
     }
-  }, [draftMatchesProject, projectId, selected, fields]);
+  }, [
+    draftMatchesProject,
+    projectId,
+    selected,
+    fields,
+    technologiesInput,
+    syncTechnologiesFromInput,
+  ]);
 
   const updateField = (
     key: keyof WebsiteProjectContentFields,
@@ -250,6 +275,18 @@ export default function AiMarketingWebsiteTool({
                 </Link>
               </>
             ) : null}
+          </p>
+        ) : null}
+
+        {isGenerating ? (
+          <p className={styles.loadingHint} role="status" aria-live="polite">
+            יוצר טיוטה… זה עשוי לקחת כמה שניות.
+          </p>
+        ) : null}
+
+        {isApplying ? (
+          <p className={styles.loadingHint} role="status" aria-live="polite">
+            מעדכן את הפרויקט…
           </p>
         ) : null}
 
@@ -351,16 +388,16 @@ export default function AiMarketingWebsiteTool({
             <input
               id="wc-technologies"
               className={styles.input}
-              value={formatTechnologiesForInput(fields.technologies)}
+              value={technologiesInput}
               onChange={(e) => {
                 setApplySuccess(false);
-                setFields((prev) => ({
-                  ...prev,
-                  technologies: parseTechnologiesFromInput(e.target.value),
-                }));
+                setTechnologiesInput(e.target.value);
+              }}
+              onBlur={() => {
+                syncTechnologiesFromInput();
               }}
               disabled={isGenerating || isApplying}
-              placeholder="Next.js, TypeScript, SCSS"
+              placeholder="Next.js, TypeScript, CMS, Responsive"
             />
           </div>
 
@@ -368,7 +405,10 @@ export default function AiMarketingWebsiteTool({
             <button
               type="button"
               className={styles.secondaryButton}
-              onClick={() => setShowApplyConfirm(true)}
+              onClick={() => {
+                syncTechnologiesFromInput();
+                setShowApplyConfirm(true);
+              }}
               disabled={!fields.title.trim() || isGenerating || isApplying}
             >
               החל תוכן בפרויקט

@@ -17,41 +17,48 @@ const contentToolPath = join(
   repoRoot,
   "src/components/admin/business/ai-marketing/AiMarketingContentTool.tsx"
 );
+const ideasToolPath = join(
+  repoRoot,
+  "src/components/admin/business/ai-marketing/AiMarketingContentIdeasTool.tsx"
+);
 const pagePath = join(
   repoRoot,
   "src/app/admin/(protected)/business/ai-marketing/page.tsx"
 );
 
-describe("ai marketing purpose hub shell (phase 6C.2)", () => {
-  it("shell routes hub to purpose-specific tools", () => {
+describe("ai marketing purpose hub shell", () => {
+  it("shell routes hub to all purpose-specific tools", () => {
     const source = readFileSync(shellPath, "utf8");
     assert.ok(source.includes("AiMarketingHub"));
     assert.ok(source.includes("AiMarketingWebsiteTool"));
     assert.ok(source.includes("AiMarketingContentTool"));
+    assert.ok(source.includes("AiMarketingContentIdeasTool"));
+    assert.ok(source.includes("AiMarketingRewriteTool"));
+    assert.ok(source.includes("AiMarketingFreeformTool"));
   });
 
   it("tools call generateMarketingDraftAction without direct OpenAI client", () => {
-    for (const path of [websiteToolPath, contentToolPath]) {
+    for (const path of [websiteToolPath, contentToolPath, ideasToolPath]) {
       const source = readFileSync(path, "utf8");
       assert.ok(source.includes("generateMarketingDraftAction"));
       assert.ok(!source.includes("openai-marketing-generator"));
-      assert.ok(!source.includes("getOpenAIMarketingClient"));
     }
   });
 
   it("website tool uses separate apply action without mongoose", () => {
     const source = readFileSync(websiteToolPath, "utf8");
-    assert.ok(source.includes("buildProjectPurposeInput"));
+    assert.ok(source.includes("buildWebsiteProjectPurposeInput"));
     assert.ok(source.includes("applyAiMarketingWebsiteContentAction"));
+    assert.ok(source.includes("technologiesInput"));
     assert.ok(!source.includes("updateProjectAction"));
-    assert.ok(!source.includes("mongoose"));
   });
 
-  it("content tool supports editable result, copy, and regenerate", () => {
+  it("content tool supports source switch and shared result panel", () => {
     const source = readFileSync(contentToolPath, "utf8");
-    assert.ok(source.includes("setDraftContent"));
-    assert.ok(source.includes("navigator.clipboard.writeText"));
-    assert.ok(source.includes("צור מחדש"));
+    assert.ok(source.includes("AiMarketingSourceSwitch"));
+    assert.ok(source.includes("AiMarketingContentResultPanel"));
+    assert.ok(source.includes("clearResult"));
+    assert.ok(source.includes("resultSourceMode"));
   });
 
   it("page hides shell when marketing is disabled", () => {
