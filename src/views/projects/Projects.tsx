@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import Footer from "../../components/footer/Footer";
 import ProjectsNav from "../../components/projectsNav/ProjectsNav";
+import ProjectsPageHero from "./components/ProjectsPageHero";
 import type { PublicProjectDto } from "../../types/project";
 import { PROJECT_LINK_REL, projectHref, projectImageSrc } from "../../utils/projectLinks";
 import "./Projects.scss";
@@ -25,10 +26,9 @@ const Projects = ({ projects = [] }: ProjectsPageProps) => {
   return (
     <div className="project-page-wrapper">
       <ProjectsNav />
+      <ProjectsPageHero />
       <div className="project-page-container">
-        <div className="project-page-content-wrapper">
-          <h1 className="project-page-title">פרוייקטים</h1>
-
+        <div className="project-page-content-wrapper" id="projects-grid">
           {hasProjects ? (
             <ul className="project-page-ul">
               {projects.map((project) => (
