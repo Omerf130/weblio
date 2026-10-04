@@ -62,10 +62,27 @@ const discoveryRunSchema = new Schema(
     completedAt: { type: Date, required: false },
     status: {
       type: String,
-      enum: ["running", "completed", "partial", "failed"],
+      enum: ["running", "completed", "partial", "failed", "skipped"],
       required: true,
     },
     triggeredBy: { type: String, required: true, trim: true, maxlength: 320 },
+    triggerKind: {
+      type: String,
+      enum: ["manual", "scheduled"],
+      required: false,
+    },
+    scheduleIsraelDateKey: {
+      type: String,
+      required: false,
+      trim: true,
+      maxlength: 10,
+    },
+    activeDiscoverySlot: {
+      type: String,
+      required: false,
+      trim: true,
+      maxlength: 16,
+    },
     failureCategory: { type: String, required: false, trim: true, maxlength: 64 },
 
     profilesConfigured: { type: Number, required: false, min: 0 },
@@ -78,6 +95,8 @@ const discoveryRunSchema = new Schema(
     },
     profilesSearched: { type: Number, required: false, min: 0 },
     tavilyRequests: { type: Number, required: false, min: 0 },
+    tavilyHttpAttempts: { type: Number, required: false, min: 0 },
+    estimatedTavilyCredits: { type: Number, required: false, min: 0 },
     rawResults: { type: Number, required: false, min: 0 },
 
     filteredMapping: { type: Number, required: false, min: 0 },
@@ -127,6 +146,26 @@ const discoveryRunSchema = new Schema(
 discoveryRunSchema.index({ status: 1, startedAt: -1 });
 discoveryRunSchema.index({ startedAt: -1 });
 discoveryRunSchema.index({ completedAt: -1 });
+discoveryRunSchema.index(
+  { scheduleIsraelDateKey: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      triggerKind: "scheduled",
+      scheduleIsraelDateKey: { $type: "string" },
+    },
+  }
+);
+discoveryRunSchema.index(
+  { activeDiscoverySlot: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      status: "running",
+      activeDiscoverySlot: "global",
+    },
+  }
+);
 
 export type DiscoveryRunDocument = InferSchemaType<typeof discoveryRunSchema> & {
   _id: mongoose.Types.ObjectId;

@@ -29,11 +29,23 @@ export type TavilySearchApiResponse = {
   response_time?: number;
 };
 
+export type TavilyHttpAttemptCounter = {
+  count: number;
+};
+
 export type TavilySearchProviderDeps = {
   apiKey: string;
   fetchImpl?: typeof fetch;
   searchDepth?: typeof DEFAULT_TAVILY_SEARCH_DEPTH;
+  /** Incremented on every Tavily HTTP POST (including retries). */
+  httpAttemptCounter?: TavilyHttpAttemptCounter;
 };
+
+function recordTavilyHttpPost(deps: TavilySearchProviderDeps): void {
+  if (deps.httpAttemptCounter) {
+    deps.httpAttemptCounter.count += 1;
+  }
+}
 
 export type TavilySearchRequestBuildInput = {
   query: string;
@@ -136,6 +148,7 @@ export async function fetchTavilySearchResults(
   });
 
   for (let attempt = 0; attempt < 2; attempt += 1) {
+    recordTavilyHttpPost(deps);
     const response = await postTavilySearch(deps, body);
 
     if (response.ok) {
@@ -261,11 +274,12 @@ export function createTavilySearchProvider(
 }
 
 export function createTavilySearchProviderFromEnv(
-  fetchImpl?: typeof fetch
+  fetchImpl?: typeof fetch,
+  httpAttemptCounter?: TavilyHttpAttemptCounter
 ): DiscoverySearchProvider | null {
   const apiKey = getTavilyApiKey();
   if (!apiKey) {
     return null;
   }
-  return createTavilySearchProvider({ apiKey, fetchImpl });
+  return createTavilySearchProvider({ apiKey, fetchImpl, httpAttemptCounter });
 }

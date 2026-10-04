@@ -11,13 +11,42 @@ import type {
   DiscoveryRunPolicySnapshot,
   DiscoveryRunProfileErrorSummary,
   DiscoveryRunProfileSummaryDto,
+  DiscoveryRunSkipFailureCategory,
   DiscoveryRunStatus,
   DiscoveryRunSummaryDto,
+  DiscoveryTriggerKind,
 } from "@/types/discovery-run";
 import { MAX_DISCOVERY_RUN_PROFILE_SUMMARIES } from "@/lib/discovery/discovery-profile-metrics";
 
 /** Max wall-clock time a run may stay `running` before treated as stale (30 minutes). */
 export const DISCOVERY_RUN_STALE_AFTER_MS = 30 * 60 * 1000;
+
+export const DISCOVERY_GLOBAL_ACTIVE_SLOT = "global";
+
+export type TryBeginDiscoveryRunResult =
+  | { ok: true; run: DiscoveryRunDto }
+  | { ok: false; reason: "already_running" | "already_executed" };
+
+function isDuplicateKeyError(error: unknown): boolean {
+  return (
+    error instanceof mongoose.mongo.MongoServerError &&
+    typeof error.code === "number" &&
+    error.code === 11000
+  );
+}
+
+function duplicateKeyReason(error: unknown): "already_running" | "already_executed" {
+  if (error instanceof mongoose.mongo.MongoServerError) {
+    const message = error.message ?? "";
+    if (message.includes("scheduleIsraelDateKey")) {
+      return "already_executed";
+    }
+    if (message.includes("activeDiscoverySlot")) {
+      return "already_running";
+    }
+  }
+  return "already_running";
+}
 
 const MAX_STORED_PROFILE_ERRORS = 12;
 const MAX_PROFILE_ERROR_MESSAGE = 200;
@@ -84,6 +113,8 @@ export function toDiscoveryRunSummaryDto(
     selectionShortfallTotal: summary.selectionShortfallTotal,
     profilesSearched: summary.profilesSearched,
     tavilyRequests: summary.tavilyRequests,
+    tavilyHttpAttempts: summary.tavilyHttpAttempts,
+    estimatedTavilyCredits: summary.estimatedTavilyCredits,
     rawResults: summary.rawResults,
     filteredMapping: summary.filteredMapping,
     filteredValidation: summary.filteredValidation,
@@ -117,6 +148,8 @@ function toDiscoveryRunDto(doc: DiscoveryRunDocument): DiscoveryRunDto {
     startedAt: doc.startedAt.toISOString(),
     completedAt: doc.completedAt?.toISOString(),
     triggeredBy: doc.triggeredBy,
+    triggerKind: doc.triggerKind as DiscoveryTriggerKind | undefined,
+    scheduleIsraelDateKey: doc.scheduleIsraelDateKey ?? undefined,
     failureCategory: doc.failureCategory ?? undefined,
     policy: doc.policy as DiscoveryRunPolicySnapshot,
     catalog: doc.catalog as DiscoveryRunCatalogSnapshot,
@@ -127,6 +160,8 @@ function toDiscoveryRunDto(doc: DiscoveryRunDocument): DiscoveryRunDto {
           selectionShortfallTotal: doc.selectionShortfallTotal ?? 0,
           profilesSearched: doc.profilesSearched ?? 0,
           tavilyRequests: doc.tavilyRequests ?? 0,
+          tavilyHttpAttempts: doc.tavilyHttpAttempts ?? undefined,
+          estimatedTavilyCredits: doc.estimatedTavilyCredits ?? undefined,
           rawResults: doc.rawResults ?? 0,
           filteredMapping: doc.filteredMapping ?? 0,
           filteredValidation: doc.filteredValidation ?? 0,
@@ -157,24 +192,139 @@ function toDiscoveryRunDto(doc: DiscoveryRunDocument): DiscoveryRunDto {
   };
 }
 
+export async function findScheduledDiscoveryRunForIsraelDate(
+  scheduleIsraelDateKey: string
+): Promise<DiscoveryRunDto | null> {
+  await connectDB();
+  const doc = await DiscoveryRun.findOne({
+    triggerKind: "scheduled",
+    scheduleIsraelDateKey,
+  })
+    .sort({ startedAt: -1 })
+    .lean<DiscoveryRunDocument>();
+
+  if (!doc) {
+    return null;
+  }
+
+  return toDiscoveryRunDto(doc as DiscoveryRunDocument);
+}
+
+export async function tryBeginDiscoveryRun(input: {
+  triggeredBy: string;
+  triggerKind: DiscoveryTriggerKind;
+  scheduleIsraelDateKey?: string;
+  policy: DiscoveryPolicy;
+  catalog: DiscoverySearchProfileCatalog;
+  startedAt?: Date;
+}): Promise<TryBeginDiscoveryRunResult> {
+  await connectDB();
+  const startedAt = input.startedAt ?? new Date();
+
+  if (input.triggerKind === "scheduled" && input.scheduleIsraelDateKey) {
+    const existing = await findScheduledDiscoveryRunForIsraelDate(
+      input.scheduleIsraelDateKey
+    );
+    if (existing) {
+      return { ok: false, reason: "already_executed" };
+    }
+  }
+
+  const payload: Record<string, unknown> = {
+    startedAt,
+    status: "running",
+    triggeredBy: input.triggeredBy.trim(),
+    triggerKind: input.triggerKind,
+    activeDiscoverySlot: DISCOVERY_GLOBAL_ACTIVE_SLOT,
+    policy: buildPolicySnapshot(input.policy),
+    catalog: buildCatalogSnapshot(input.catalog),
+  };
+
+  if (input.triggerKind === "scheduled" && input.scheduleIsraelDateKey) {
+    payload.scheduleIsraelDateKey = input.scheduleIsraelDateKey;
+  }
+
+  try {
+    const doc = await DiscoveryRun.create(payload);
+    return { ok: true, run: toDiscoveryRunDto(doc) };
+  } catch (error) {
+    if (isDuplicateKeyError(error)) {
+      return { ok: false, reason: duplicateKeyReason(error) };
+    }
+    throw error;
+  }
+}
+
 export async function createDiscoveryRunRunning(input: {
   triggeredBy: string;
   policy: DiscoveryPolicy;
   catalog: DiscoverySearchProfileCatalog;
   startedAt?: Date;
+  triggerKind?: DiscoveryTriggerKind;
+  scheduleIsraelDateKey?: string;
+}): Promise<DiscoveryRunDto> {
+  const result = await tryBeginDiscoveryRun({
+    triggeredBy: input.triggeredBy,
+    triggerKind: input.triggerKind ?? "manual",
+    scheduleIsraelDateKey: input.scheduleIsraelDateKey,
+    policy: input.policy,
+    catalog: input.catalog,
+    startedAt: input.startedAt,
+  });
+
+  if (!result.ok) {
+    throw new Error(`DISCOVERY_RUN_BEGIN_${result.reason}`);
+  }
+
+  return result.run;
+}
+
+export async function skipDiscoveryRun(input: {
+  triggeredBy: string;
+  triggerKind: DiscoveryTriggerKind;
+  scheduleIsraelDateKey?: string;
+  policy: DiscoveryPolicy;
+  catalog: DiscoverySearchProfileCatalog;
+  failureCategory: DiscoveryRunSkipFailureCategory;
+  startedAt?: Date;
+  completedAt?: Date;
 }): Promise<DiscoveryRunDto> {
   await connectDB();
   const startedAt = input.startedAt ?? new Date();
+  const completedAt = input.completedAt ?? startedAt;
 
-  const doc = await DiscoveryRun.create({
+  const payload: Record<string, unknown> = {
     startedAt,
-    status: "running",
+    completedAt,
+    status: "skipped",
     triggeredBy: input.triggeredBy.trim(),
+    triggerKind: input.triggerKind,
+    failureCategory: input.failureCategory,
+    tavilyRequests: 0,
+    tavilyHttpAttempts: 0,
+    estimatedTavilyCredits: 0,
     policy: buildPolicySnapshot(input.policy),
     catalog: buildCatalogSnapshot(input.catalog),
-  });
+  };
 
-  return toDiscoveryRunDto(doc);
+  if (input.triggerKind === "scheduled" && input.scheduleIsraelDateKey) {
+    payload.scheduleIsraelDateKey = input.scheduleIsraelDateKey;
+  }
+
+  try {
+    const doc = await DiscoveryRun.create(payload);
+    return toDiscoveryRunDto(doc);
+  } catch (error) {
+    if (isDuplicateKeyError(error) && input.scheduleIsraelDateKey) {
+      const existing = await findScheduledDiscoveryRunForIsraelDate(
+        input.scheduleIsraelDateKey
+      );
+      if (existing) {
+        return existing;
+      }
+    }
+    throw error;
+  }
 }
 
 function summaryToUpdateFields(summary: TavilyDiscoveryRunSummary) {
@@ -186,6 +336,8 @@ function summaryToUpdateFields(summary: TavilyDiscoveryRunSummary) {
       summary.selectedProfileIds.length > 0 ? summary.selectedProfileIds : undefined,
     profilesSearched: summary.profilesSearched,
     tavilyRequests: summary.tavilyRequests,
+    tavilyHttpAttempts: summary.tavilyHttpAttempts,
+    estimatedTavilyCredits: summary.estimatedTavilyCredits,
     rawResults: summary.rawResults,
     filteredMapping: summary.filteredMapping,
     filteredValidation: summary.filteredValidation,
@@ -214,7 +366,7 @@ function summaryToUpdateFields(summary: TavilyDiscoveryRunSummary) {
 
 export async function completeDiscoveryRun(input: {
   runId: string;
-  status: Exclude<DiscoveryRunStatus, "running">;
+  status: Exclude<DiscoveryRunStatus, "running" | "skipped">;
   summary: TavilyDiscoveryRunSummary;
   completedAt?: Date;
   failureCategory?: string;
@@ -231,6 +383,7 @@ export async function completeDiscoveryRun(input: {
         failureCategory: input.failureCategory?.trim() || undefined,
         ...summaryToUpdateFields(input.summary),
       },
+      $unset: { activeDiscoverySlot: "" },
     },
     { new: true }
   ).lean<DiscoveryRunDocument>();
@@ -262,7 +415,7 @@ export async function failDiscoveryRun(input: {
 
   const doc = await DiscoveryRun.findByIdAndUpdate(
     input.runId,
-    { $set: update },
+    { $set: update, $unset: { activeDiscoverySlot: "" } },
     { new: true }
   ).lean<DiscoveryRunDocument>();
 
@@ -294,6 +447,7 @@ export async function findLatestDiscoveryRunForCooldown(): Promise<DiscoveryRunD
   const doc = await DiscoveryRun.findOne({
     status: { $in: ["completed", "partial", "failed"] },
     completedAt: { $exists: true },
+    $or: [{ triggerKind: "manual" }, { triggerKind: { $exists: false } }],
   })
     .sort({ completedAt: -1 })
     .lean<DiscoveryRunDocument>();
@@ -359,6 +513,7 @@ export async function markStaleDiscoveryRunsFailed(
         completedAt: now,
         failureCategory: "stale_running",
       },
+      $unset: { activeDiscoverySlot: "" },
     }
   );
 

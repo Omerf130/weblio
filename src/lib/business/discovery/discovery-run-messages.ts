@@ -59,6 +59,14 @@ export function formatDiscoveryActionResult(
           title: "חיפוש כבר מתבצע",
           lines: ["חיפוש כבר מתבצע כרגע. נסה שוב בעוד כמה דקות."],
         };
+      case "credit_limit":
+        return {
+          variant: "info",
+          title: "מגבלת קרדיט חודשית",
+          lines: [
+            "הגעתם למגבלת הקרדיט החודשית לחיפוש Tavily. לא ניתן להפעיל חיפוש נוסף החודש.",
+          ],
+        };
       case "failed":
       default:
         return {

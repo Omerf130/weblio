@@ -13,7 +13,7 @@ function revalidateAfterDiscoveryRun(): void {
 export async function runTavilyDiscoveryAction(): Promise<RunTavilyDiscoveryActionResult> {
   const admin = await requireAdmin();
 
-  const result = await executeTavilyDiscoveryRun(admin);
+  const result = await executeTavilyDiscoveryRun({ kind: "manual", admin });
 
   if (result.success) {
     revalidateAfterDiscoveryRun();

@@ -14,6 +14,8 @@ export type TavilyDiscoveryRunSummary = {
   selectionShortfallTotal: number;
   profilesSearched: number;
   tavilyRequests: number;
+  tavilyHttpAttempts: number;
+  estimatedTavilyCredits: number;
   profileErrors: TavilyDiscoveryProfileError[];
 
   rawResults: number;
@@ -58,6 +60,8 @@ export function createEmptyTavilyDiscoveryRunSummary(
     selectionShortfallTotal: 0,
     profilesSearched: 0,
     tavilyRequests: 0,
+    tavilyHttpAttempts: 0,
+    estimatedTavilyCredits: 0,
     profileErrors: [],
     rawResults: 0,
     filteredMapping: 0,

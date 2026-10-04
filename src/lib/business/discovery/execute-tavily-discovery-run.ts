@@ -1,43 +1,62 @@
 import type { AdminSessionUser } from "@/lib/auth/session";
+import { getDiscoveryMonthlyCreditUsage } from "@/lib/data/discovery-monthly-credits";
 import {
-  computeCooldownRemainingSeconds,
-  createDiscoveryRunRunning,
   completeDiscoveryRun,
+  computeCooldownRemainingSeconds,
   failDiscoveryRun,
   findActiveDiscoveryRun,
   findLatestDiscoveryRunForCooldown,
+  findScheduledDiscoveryRunForIsraelDate,
   isDiscoveryRunStale,
   markStaleDiscoveryRunsFailed,
+  skipDiscoveryRun,
   toDiscoveryRunSummaryDto,
+  tryBeginDiscoveryRun,
 } from "@/lib/data/discovery-runs";
+import { getIntentClassifierForIngest } from "@/lib/discovery/classifier/get-intent-classifier";
+import { evaluateCreditPreflight } from "@/lib/discovery/discovery-credit-guard";
+import { getDiscoveryCreditConfig } from "@/lib/discovery/discovery-credit-env";
 import { isDiscoveryTavilyEnabled } from "@/lib/discovery/discovery-env";
 import {
   getV2ProductionDiscoveryPolicy,
   type DiscoveryPolicy,
 } from "@/lib/discovery/discovery-policy";
+import { countPlannedTavilyProfileSearches } from "@/lib/discovery/discovery-planned-profiles";
 import { deriveDiscoveryRunStatus } from "@/lib/discovery/discovery-run-status";
-import { getIntentClassifierForIngest } from "@/lib/discovery/classifier/get-intent-classifier";
+import {
+  normalizeDiscoveryRunTrigger,
+  triggeredByFromTrigger,
+  triggerKindFromTrigger,
+  type DiscoveryRunTrigger,
+} from "@/lib/discovery/discovery-run-trigger";
 import { runTavilyProductionDiscovery } from "@/lib/discovery/run-tavily-discovery";
 import { loadSearchProfileCatalogV2Production } from "@/lib/discovery/providers/load-search-profiles";
-import { createTavilySearchProviderFromEnv } from "@/lib/discovery/providers/tavily-search-provider";
+import {
+  createTavilySearchProviderFromEnv,
+  type TavilyHttpAttemptCounter,
+} from "@/lib/discovery/providers/tavily-search-provider";
 import type { DiscoverySearchProvider } from "@/lib/discovery/providers/types";
 import type {
   RunTavilyDiscoveryActionResult,
   RunTavilyDiscoveryBlockReason,
+  ScheduledDiscoveryOutcome,
 } from "@/types/discovery-run";
 
 export type ExecuteTavilyDiscoveryRunDeps = {
   isEnabled?: () => boolean;
   getPolicy?: () => DiscoveryPolicy;
   loadCatalog?: typeof loadSearchProfileCatalogV2Production;
-  createProvider?: () => DiscoverySearchProvider | null;
+  createProvider?: (httpAttemptCounter: TavilyHttpAttemptCounter) => DiscoverySearchProvider | null;
   runDiscovery?: typeof runTavilyProductionDiscovery;
   markStaleRuns?: typeof markStaleDiscoveryRunsFailed;
   findActiveRun?: typeof findActiveDiscoveryRun;
   findLatestForCooldown?: typeof findLatestDiscoveryRunForCooldown;
-  createRunning?: typeof createDiscoveryRunRunning;
+  tryBeginRun?: typeof tryBeginDiscoveryRun;
   completeRun?: typeof completeDiscoveryRun;
   failRun?: typeof failDiscoveryRun;
+  skipRun?: typeof skipDiscoveryRun;
+  getMonthlyUsage?: typeof getDiscoveryMonthlyCreditUsage;
+  getCreditConfig?: typeof getDiscoveryCreditConfig;
   now?: () => Date;
 };
 
@@ -54,10 +73,40 @@ function blockedResult(
   };
 }
 
+function creditLimitMessageHebrew(): string {
+  return "הגעתם למגבלת הקרדיט החודשית לחיפוש Tavily. לא ניתן להפעיל חיפוש נוסף החודש.";
+}
+
+async function runCreditPreflight(input: {
+  catalog: ReturnType<typeof loadSearchProfileCatalogV2Production>;
+  policy: DiscoveryPolicy;
+  referenceDate: Date;
+  deps: ExecuteTavilyDiscoveryRunDeps;
+}) {
+  const getCreditConfig = input.deps.getCreditConfig ?? getDiscoveryCreditConfig;
+  const getMonthlyUsage = input.deps.getMonthlyUsage ?? getDiscoveryMonthlyCreditUsage;
+  const creditConfig = getCreditConfig();
+  const monthUsage = await getMonthlyUsage({
+    referenceDate: input.referenceDate,
+    creditConfig,
+  });
+  const plannedProfileCount = countPlannedTavilyProfileSearches({
+    catalog: input.catalog,
+    policy: input.policy,
+    referenceDate: input.referenceDate,
+  });
+  return evaluateCreditPreflight({
+    monthCreditsUsed: monthUsage.estimatedCreditsUsed,
+    plannedProfileCount,
+    creditConfig,
+  });
+}
+
 export async function executeTavilyDiscoveryRun(
-  admin: Pick<AdminSessionUser, "email" | "id">,
+  triggerInput: DiscoveryRunTrigger | Pick<AdminSessionUser, "email" | "id">,
   deps: ExecuteTavilyDiscoveryRunDeps = {}
 ): Promise<RunTavilyDiscoveryActionResult> {
+  const trigger = normalizeDiscoveryRunTrigger(triggerInput);
   const now = deps.now?.() ?? new Date();
   const isEnabled = deps.isEnabled ?? isDiscoveryTavilyEnabled;
   const getPolicy = deps.getPolicy ?? getV2ProductionDiscoveryPolicy;
@@ -65,7 +114,7 @@ export async function executeTavilyDiscoveryRun(
   const markStaleRuns = deps.markStaleRuns ?? markStaleDiscoveryRunsFailed;
   const findActiveRun = deps.findActiveRun ?? findActiveDiscoveryRun;
   const findLatestForCooldown = deps.findLatestForCooldown ?? findLatestDiscoveryRunForCooldown;
-  const createRunning = deps.createRunning ?? createDiscoveryRunRunning;
+  const tryBeginRun = deps.tryBeginRun ?? tryBeginDiscoveryRun;
   const completeRun = deps.completeRun ?? completeDiscoveryRun;
   const failRun = deps.failRun ?? failDiscoveryRun;
   const runDiscovery = deps.runDiscovery ?? runTavilyProductionDiscovery;
@@ -78,6 +127,11 @@ export async function executeTavilyDiscoveryRun(
   }
 
   const policy = getPolicy();
+  const catalog = loadCatalog();
+  const triggeredBy = triggeredByFromTrigger(trigger);
+  const triggerKind = triggerKindFromTrigger(trigger);
+  const scheduleIsraelDateKey =
+    trigger.kind === "scheduled" ? trigger.scheduleIsraelDateKey : undefined;
 
   await markStaleRuns(now);
 
@@ -97,43 +151,84 @@ export async function executeTavilyDiscoveryRun(
     });
   }
 
-  const latestRun = await findLatestForCooldown();
-  if (latestRun?.completedAt) {
-    const remaining = computeCooldownRemainingSeconds({
-      lastCompletedAt: new Date(latestRun.completedAt),
-      cooldownMinutes: policy.limits.runCooldownMinutes,
-      now,
-    });
-    if (remaining > 0) {
-      return blockedResult(
-        "cooldown",
-        `Discovery is on cooldown. Try again in about ${remaining} seconds.`,
-        remaining
-      );
+  const creditPreflight = await runCreditPreflight({
+    catalog,
+    policy,
+    referenceDate: now,
+    deps,
+  });
+
+  if (!creditPreflight.ok) {
+    if (triggerKind === "scheduled" && scheduleIsraelDateKey) {
+      const skipRun = deps.skipRun ?? skipDiscoveryRun;
+      await skipRun({
+        triggeredBy,
+        triggerKind: "scheduled",
+        scheduleIsraelDateKey,
+        policy,
+        catalog,
+        failureCategory: "blocked_credit_limit",
+        startedAt: now,
+        completedAt: now,
+      });
+    }
+    return blockedResult("credit_limit", creditLimitMessageHebrew());
+  }
+
+  if (triggerKind === "manual") {
+    const latestRun = await findLatestForCooldown();
+    if (latestRun?.completedAt) {
+      const remaining = computeCooldownRemainingSeconds({
+        lastCompletedAt: new Date(latestRun.completedAt),
+        cooldownMinutes: policy.limits.runCooldownMinutes,
+        now,
+      });
+      if (remaining > 0) {
+        return blockedResult(
+          "cooldown",
+          `Discovery is on cooldown. Try again in about ${remaining} seconds.`,
+          remaining
+        );
+      }
     }
   }
 
-  const catalog = loadCatalog();
-  const triggeredBy = admin.email?.trim() || admin.id;
-
-  let runId: string;
+  let beginResult;
   try {
-    const running = await createRunning({
+    beginResult = await tryBeginRun({
       triggeredBy,
+      triggerKind,
+      scheduleIsraelDateKey,
       policy,
       catalog,
       startedAt: now,
     });
-    runId = running.id;
   } catch {
     return blockedResult("failed", "Could not start discovery run.");
   }
 
+  if (!beginResult.ok) {
+    if (beginResult.reason === "already_running") {
+      return blockedResult(
+        "already_running",
+        "A discovery run is already in progress. Try again later."
+      );
+    }
+    if (beginResult.reason === "already_executed") {
+      return blockedResult("failed", "Discovery already executed for this schedule.");
+    }
+    return blockedResult("failed", "Could not start discovery run.");
+  }
+
+  const runId = beginResult.run.id;
+  const httpAttemptCounter: TavilyHttpAttemptCounter = { count: 0 };
+
   const createProvider =
     deps.createProvider ??
-    (() => createTavilySearchProviderFromEnv());
+    ((counter: TavilyHttpAttemptCounter) =>
+      createTavilySearchProviderFromEnv(undefined, counter));
 
-  const provider = createProvider();
+  const provider = createProvider(httpAttemptCounter);
   if (!provider) {
     await failRun({
       runId,
@@ -149,6 +244,8 @@ export async function executeTavilyDiscoveryRun(
       loadCatalog: () => catalog,
       getPolicy: () => policy,
       getClassifier: () => getIntentClassifierForIngest(),
+      referenceDate: now,
+      tavilyHttpAttemptCounter: httpAttemptCounter,
     });
 
     const status = deriveDiscoveryRunStatus({ summary });
@@ -177,4 +274,55 @@ export async function executeTavilyDiscoveryRun(
     });
     return blockedResult("failed", "Discovery run failed unexpectedly.");
   }
+}
+
+/** Callable from tests and future cron (7B.2B) — no HTTP route in 7B.2A. */
+export async function executeScheduledDiscoveryRun(
+  input: { scheduleIsraelDateKey: string; referenceDate?: Date },
+  deps: ExecuteTavilyDiscoveryRunDeps = {}
+): Promise<ScheduledDiscoveryOutcome> {
+  const referenceDate = input.referenceDate ?? deps.now?.() ?? new Date();
+  const trigger: DiscoveryRunTrigger = {
+    kind: "scheduled",
+    channel: "vercel_cron",
+    scheduleIsraelDateKey: input.scheduleIsraelDateKey,
+  };
+
+  const existing = await findScheduledDiscoveryRunForIsraelDate(
+    input.scheduleIsraelDateKey
+  );
+  if (existing) {
+    return {
+      success: false,
+      reason: "already_executed",
+      message: "Scheduled discovery already executed for this Israel calendar date.",
+      runId: existing.id,
+    };
+  }
+
+  const result = await executeTavilyDiscoveryRun(trigger, {
+    ...deps,
+    now: () => referenceDate,
+  });
+
+  if (
+    !result.success &&
+    (result.reason === "already_running" ||
+      (result.reason === "failed" &&
+        result.message.includes("already executed")))
+  ) {
+    const raced = await findScheduledDiscoveryRunForIsraelDate(
+      input.scheduleIsraelDateKey
+    );
+    if (raced) {
+      return {
+        success: false,
+        reason: "already_executed",
+        message: "Scheduled discovery already executed for this Israel calendar date.",
+        runId: raced.id,
+      };
+    }
+  }
+
+  return result;
 }

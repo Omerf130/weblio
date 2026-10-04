@@ -31,6 +31,8 @@ import {
   mergePreIngestFilterCounts,
   type PreIngestCandidate,
 } from "@/lib/discovery/pre-ingest-filter";
+import { applySummaryCreditFields } from "@/lib/discovery/discovery-run-credits";
+import type { TavilyHttpAttemptCounter } from "@/lib/discovery/providers/tavily-search-provider";
 import {
   createEmptyTavilyDiscoveryRunSummary,
   type TavilyDiscoveryRunSummary,
@@ -52,6 +54,8 @@ export type RunTavilyProductionDiscoveryDeps = {
   ingestDeps?: Partial<IngestPipelineDeps>;
   /** Israel-local daily selection anchor (V2 only). */
   referenceDate?: Date;
+  /** Shared counter wired into Tavily provider (optional). */
+  tavilyHttpAttemptCounter?: TavilyHttpAttemptCounter;
 };
 
 type ResolvedProfiles = {
@@ -323,6 +327,10 @@ export async function runTavilyProductionDiscovery(
   );
 
   summary.profileSummaries = profileMetrics.toSummaries();
+
+  if (deps.tavilyHttpAttemptCounter) {
+    applySummaryCreditFields(summary, deps.tavilyHttpAttemptCounter.count);
+  }
 
   return summary;
 }

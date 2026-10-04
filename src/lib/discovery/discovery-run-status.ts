@@ -14,7 +14,7 @@ export type DeriveDiscoveryRunStatusInput = {
  */
 export function deriveDiscoveryRunStatusFromSummary(
   summary: TavilyDiscoveryRunSummary
-): Exclude<DiscoveryRunStatus, "running"> {
+): Exclude<DiscoveryRunStatus, "running" | "skipped"> {
   const hasProfileErrors = summary.profileErrors.length > 0;
   const hasIngestFailures = summary.failed > 0;
 
@@ -27,7 +27,7 @@ export function deriveDiscoveryRunStatusFromSummary(
 
 export function deriveDiscoveryRunStatus(
   input: DeriveDiscoveryRunStatusInput
-): Exclude<DiscoveryRunStatus, "running"> {
+): Exclude<DiscoveryRunStatus, "running" | "skipped"> {
   if (input.orchestrationFailed || input.providerUnavailable) {
     return "failed";
   }

@@ -4,7 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
 import { executeTavilyDiscoveryRun } from "../../src/lib/business/discovery/execute-tavily-discovery-run";
-import { PRODUCTION_DISCOVERY_POLICY } from "../../src/lib/discovery/discovery-policy";
+import { getV2ProductionDiscoveryPolicy } from "../../src/lib/discovery/discovery-policy";
 import { isDiscoveryTavilyEnabled } from "../../src/lib/discovery/discovery-env";
 import { deriveDiscoveryRunStatusFromSummary } from "../../src/lib/discovery/discovery-run-status";
 import {
@@ -19,6 +19,26 @@ const noopMarkStale = async () => 0;
 const noActiveRun = async () => null;
 const noCooldownRun = async () => null;
 
+const defaultCreditDeps = {
+  getMonthlyUsage: async () => ({
+    monthKey: "2026-10",
+    estimatedCreditsUsed: 0,
+    runCountWithSpend: 0,
+    softWarnReached: false,
+    hardStopReached: false,
+    hardStopLimit: 950,
+    softWarnLimit: 780,
+  }),
+  getCreditConfig: () => ({
+    monthlyHardStop: 950,
+    monthlySoftWarn: 780,
+  }),
+};
+
+function withCreditGuard(deps: Record<string, unknown> = {}) {
+  return { ...defaultCreditDeps, ...deps };
+}
+
 function emptySummary(): TavilyDiscoveryRunSummary {
   return createEmptyTavilyDiscoveryRunSummary(20, 7);
 }
@@ -27,14 +47,14 @@ function createMemoryDiscoveryRunStore() {
   const runs = new Map<string, DiscoveryRunDto>();
   let seq = 0;
 
-  return {
+  const store = {
     runs,
-    async createRunning(input: {
+    createRunning: async (input: {
       triggeredBy: string;
-      policy: typeof PRODUCTION_DISCOVERY_POLICY;
+      policy: ReturnType<typeof getV2ProductionDiscoveryPolicy>;
       catalog: { version: number; locale: string; profiles: unknown[]; environment?: string };
       startedAt?: Date;
-    }): Promise<DiscoveryRunDto> {
+    }): Promise<DiscoveryRunDto> => {
       const id = `run-${++seq}`;
       const dto: DiscoveryRunDto = {
         id,
@@ -60,12 +80,12 @@ function createMemoryDiscoveryRunStore() {
       runs.set(id, dto);
       return dto;
     },
-    async completeRun(input: {
+    completeRun: async (input: {
       runId: string;
       status: "completed" | "partial" | "failed";
       summary: TavilyDiscoveryRunSummary;
       completedAt?: Date;
-    }): Promise<DiscoveryRunDto | null> {
+    }): Promise<DiscoveryRunDto | null> => {
       const existing = runs.get(input.runId);
       if (!existing) return null;
       const updated: DiscoveryRunDto = {
@@ -78,6 +98,8 @@ function createMemoryDiscoveryRunStore() {
           selectionShortfallTotal: input.summary.selectionShortfallTotal,
           profilesSearched: input.summary.profilesSearched,
           tavilyRequests: input.summary.tavilyRequests,
+          tavilyHttpAttempts: input.summary.tavilyHttpAttempts,
+          estimatedTavilyCredits: input.summary.estimatedTavilyCredits,
           rawResults: input.summary.rawResults,
           filteredMapping: input.summary.filteredMapping,
           filteredValidation: input.summary.filteredValidation,
@@ -99,11 +121,11 @@ function createMemoryDiscoveryRunStore() {
       runs.set(input.runId, updated);
       return updated;
     },
-    async failRun(input: {
+    failRun: async (input: {
       runId: string;
       failureCategory: string;
       completedAt?: Date;
-    }): Promise<DiscoveryRunDto | null> {
+    }): Promise<DiscoveryRunDto | null> => {
       const existing = runs.get(input.runId);
       if (!existing) return null;
       const updated: DiscoveryRunDto = {
@@ -115,7 +137,45 @@ function createMemoryDiscoveryRunStore() {
       runs.set(input.runId, updated);
       return updated;
     },
+    tryBeginRun: async (input: {
+      triggeredBy: string;
+      triggerKind: "manual" | "scheduled";
+      scheduleIsraelDateKey?: string;
+      policy: ReturnType<typeof getV2ProductionDiscoveryPolicy>;
+      catalog: { version: number; locale: string; profiles: unknown[]; environment?: string };
+      startedAt?: Date;
+    }) => {
+      if (input.triggerKind === "scheduled" && input.scheduleIsraelDateKey) {
+        for (const run of runs.values()) {
+          if (
+            run.triggerKind === "scheduled" &&
+            run.scheduleIsraelDateKey === input.scheduleIsraelDateKey
+          ) {
+            return { ok: false as const, reason: "already_executed" as const };
+          }
+        }
+      }
+      for (const run of runs.values()) {
+        if (run.status === "running") {
+          return { ok: false as const, reason: "already_running" as const };
+        }
+      }
+      const run = await store.createRunning({
+        triggeredBy: input.triggeredBy,
+        policy: input.policy,
+        catalog: input.catalog,
+        startedAt: input.startedAt,
+      });
+      const enriched = {
+        ...run,
+        triggerKind: input.triggerKind,
+        scheduleIsraelDateKey: input.scheduleIsraelDateKey,
+      };
+      runs.set(run.id, enriched);
+      return { ok: true as const, run: enriched };
+    },
   };
+  return store;
 }
 
 describe("discovery feature gate", () => {
@@ -147,7 +207,7 @@ describe("executeTavilyDiscoveryRun", () => {
 
   it("blocks during cooldown using persisted completedAt", async () => {
     const now = new Date("2026-09-30T12:00:00.000Z");
-    const result = await executeTavilyDiscoveryRun(admin, {
+    const result = await executeTavilyDiscoveryRun(admin, withCreditGuard({
       isEnabled: () => true,
       now: () => now,
       markStaleRuns: noopMarkStale,
@@ -171,7 +231,7 @@ describe("executeTavilyDiscoveryRun", () => {
         catalog: { catalogVersion: 1, profileCount: 7 },
       }),
       runDiscovery: async () => emptySummary(),
-    });
+    }));
 
     assert.equal(result.success, false);
     if (!result.success) {
@@ -182,7 +242,7 @@ describe("executeTavilyDiscoveryRun", () => {
 
   it("blocks when a non-stale run is already active", async () => {
     const now = new Date("2026-09-30T12:00:00.000Z");
-    const result = await executeTavilyDiscoveryRun(admin, {
+    const result = await executeTavilyDiscoveryRun(admin, withCreditGuard({
       isEnabled: () => true,
       now: () => now,
       markStaleRuns: noopMarkStale,
@@ -205,7 +265,7 @@ describe("executeTavilyDiscoveryRun", () => {
         catalog: { catalogVersion: 1, profileCount: 7 },
       }),
       runDiscovery: async () => emptySummary(),
-    });
+    }));
 
     assert.equal(result.success, false);
     if (!result.success) {
@@ -218,7 +278,7 @@ describe("executeTavilyDiscoveryRun", () => {
     const store = createMemoryDiscoveryRunStore();
     let failCalled = false;
 
-    const result = await executeTavilyDiscoveryRun(admin, {
+    const result = await executeTavilyDiscoveryRun(admin, withCreditGuard({
       isEnabled: () => true,
       now: () => now,
       markStaleRuns: noopMarkStale,
@@ -244,7 +304,7 @@ describe("executeTavilyDiscoveryRun", () => {
         failCalled = true;
         return store.failRun(input);
       },
-      createRunning: (input) => store.createRunning(input),
+      tryBeginRun: (input) => store.tryBeginRun(input),
       completeRun: (input) => store.completeRun(input),
       loadCatalog: () => ({
         version: 1,
@@ -261,7 +321,7 @@ describe("executeTavilyDiscoveryRun", () => {
         rows: [],
       }) }),
       runDiscovery: async () => emptySummary(),
-    });
+    }));
 
     assert.equal(failCalled, true);
     assert.equal(result.success, true);
@@ -276,12 +336,12 @@ describe("executeTavilyDiscoveryRun", () => {
       message: "TAVILY_HTTP_503",
     });
 
-    const result = await executeTavilyDiscoveryRun(admin, {
+    const result = await executeTavilyDiscoveryRun(admin, withCreditGuard({
       isEnabled: () => true,
       markStaleRuns: noopMarkStale,
       findActiveRun: noActiveRun,
       findLatestForCooldown: noCooldownRun,
-      createRunning: (input) => store.createRunning(input),
+      tryBeginRun: (input) => store.tryBeginRun(input),
       completeRun: (input) => store.completeRun(input),
       loadCatalog: () => ({
         version: 1,
@@ -298,7 +358,7 @@ describe("executeTavilyDiscoveryRun", () => {
         rows: [],
       }) }),
       runDiscovery: async () => summary,
-    });
+    }));
 
     assert.equal(result.success, true);
     if (result.success) {
@@ -312,12 +372,12 @@ describe("executeTavilyDiscoveryRun", () => {
 
   it("marks run failed when provider unavailable after run creation", async () => {
     const store = createMemoryDiscoveryRunStore();
-    const result = await executeTavilyDiscoveryRun(admin, {
+    const result = await executeTavilyDiscoveryRun(admin, withCreditGuard({
       isEnabled: () => true,
       markStaleRuns: noopMarkStale,
       findActiveRun: noActiveRun,
       findLatestForCooldown: noCooldownRun,
-      createRunning: (input) => store.createRunning(input),
+      tryBeginRun: (input) => store.tryBeginRun(input),
       failRun: (input) => store.failRun(input),
       loadCatalog: () => ({
         version: 1,
@@ -325,7 +385,7 @@ describe("executeTavilyDiscoveryRun", () => {
         profiles: [{ id: "P1", category: "x", queryHe: "q" }],
       }),
       createProvider: () => null,
-    });
+    }));
 
     assert.equal(result.success, false);
     if (!result.success) {
@@ -337,12 +397,12 @@ describe("executeTavilyDiscoveryRun", () => {
 
   it("marks run failed when orchestration throws after run creation", async () => {
     const store = createMemoryDiscoveryRunStore();
-    const result = await executeTavilyDiscoveryRun(admin, {
+    const result = await executeTavilyDiscoveryRun(admin, withCreditGuard({
       isEnabled: () => true,
       markStaleRuns: noopMarkStale,
       findActiveRun: noActiveRun,
       findLatestForCooldown: noCooldownRun,
-      createRunning: (input) => store.createRunning(input),
+      tryBeginRun: (input) => store.tryBeginRun(input),
       failRun: (input) => store.failRun(input),
       loadCatalog: () => ({
         version: 1,
@@ -360,7 +420,7 @@ describe("executeTavilyDiscoveryRun", () => {
       runDiscovery: async () => {
         throw new Error("boom");
       },
-    });
+    }));
 
     assert.equal(result.success, false);
     const stored = [...store.runs.values()][0];
@@ -370,12 +430,12 @@ describe("executeTavilyDiscoveryRun", () => {
 
   it("result and stored run contain no secret-like strings", async () => {
     const store = createMemoryDiscoveryRunStore();
-    const result = await executeTavilyDiscoveryRun(admin, {
+    const result = await executeTavilyDiscoveryRun(admin, withCreditGuard({
       isEnabled: () => true,
       markStaleRuns: noopMarkStale,
       findActiveRun: noActiveRun,
       findLatestForCooldown: noCooldownRun,
-      createRunning: (input) => store.createRunning(input),
+      tryBeginRun: (input) => store.tryBeginRun(input),
       completeRun: (input) => store.completeRun(input),
       loadCatalog: () => ({
         version: 1,
@@ -391,7 +451,7 @@ describe("executeTavilyDiscoveryRun", () => {
         rows: [],
       }) }),
       runDiscovery: async () => emptySummary(),
-    });
+    }));
 
     const serialized = JSON.stringify(result);
     assert.doesNotMatch(serialized, /tvly-/i);

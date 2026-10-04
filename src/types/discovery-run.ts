@@ -1,4 +1,20 @@
-export type DiscoveryRunStatus = "running" | "completed" | "partial" | "failed";
+export type DiscoveryRunStatus =
+  | "running"
+  | "completed"
+  | "partial"
+  | "failed"
+  | "skipped";
+
+export type DiscoveryTriggerKind = "manual" | "scheduled";
+
+export type DiscoveryRunSkipFailureCategory =
+  | "already_executed"
+  | "blocked_credit_limit"
+  | "already_running"
+  | "automation_disabled"
+  | "outside_schedule_window"
+  | "not_production"
+  | "cron_secret_missing";
 
 export type DiscoveryRunProfileErrorSummary = {
   profileId: string;
@@ -51,6 +67,8 @@ export type DiscoveryRunSummaryDto = {
   selectionShortfallTotal: number;
   profilesSearched: number;
   tavilyRequests: number;
+  tavilyHttpAttempts?: number;
+  estimatedTavilyCredits?: number;
   rawResults: number;
   filteredMapping: number;
   filteredValidation: number;
@@ -80,6 +98,8 @@ export type DiscoveryRunDto = {
   startedAt: string;
   completedAt?: string;
   triggeredBy: string;
+  triggerKind?: DiscoveryTriggerKind;
+  scheduleIsraelDateKey?: string;
   failureCategory?: string;
   policy: DiscoveryRunPolicySnapshot;
   catalog: DiscoveryRunCatalogSnapshot;
@@ -93,7 +113,17 @@ export type RunTavilyDiscoveryBlockReason =
   | "disabled"
   | "cooldown"
   | "already_running"
+  | "credit_limit"
   | "failed";
+
+export type ScheduledDiscoveryOutcome =
+  | RunTavilyDiscoveryActionResult
+  | {
+      success: false;
+      reason: "already_executed";
+      message: string;
+      runId?: string;
+    };
 
 export type RunTavilyDiscoveryActionResult =
   | {
