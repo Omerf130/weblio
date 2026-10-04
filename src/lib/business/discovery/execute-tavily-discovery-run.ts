@@ -244,6 +244,7 @@ export async function executeTavilyDiscoveryRun(
       loadCatalog: () => catalog,
       getPolicy: () => policy,
       getClassifier: () => getIntentClassifierForIngest(),
+      discoveryRunId: runId,
       referenceDate: now,
       tavilyHttpAttemptCounter: httpAttemptCounter,
     });

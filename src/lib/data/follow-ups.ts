@@ -175,54 +175,80 @@ export async function getFollowUpsForOpportunity(
 // ── Time-based queries ──────────────────────────────────────
 
 export async function getPendingFollowUpsDueToday(
-  reference = new Date()
+  reference = new Date(),
+  limit?: number
 ): Promise<AdminFollowUpDto[]> {
   await connectDB();
 
   const { start, end } = getIsraelTodayRange(reference);
 
-  const docs = await FollowUp.find({
+  let query = FollowUp.find({
     status: "pending",
     dueAt: { $gte: start, $lte: end },
-  })
-    .sort({ dueAt: 1 })
-    .lean<LeanFollowUp[]>();
+  }).sort({ dueAt: 1 });
+
+  if (limit !== undefined) {
+    query = query.limit(limit);
+  }
+
+  const docs = await query.lean<LeanFollowUp[]>();
 
   return docs.map(toAdminFollowUpDto);
 }
 
-export async function getOverdueFollowUps(
+export async function countOverdueFollowUps(
   reference = new Date()
+): Promise<number> {
+  await connectDB();
+  const { start } = getIsraelTodayRange(reference);
+  return FollowUp.countDocuments({
+    status: "pending",
+    dueAt: { $lt: start },
+  });
+}
+
+export async function getOverdueFollowUps(
+  reference = new Date(),
+  limit?: number
 ): Promise<AdminFollowUpDto[]> {
   await connectDB();
 
   const { start } = getIsraelTodayRange(reference);
 
-  const docs = await FollowUp.find({
+  let query = FollowUp.find({
     status: "pending",
     dueAt: { $lt: start },
-  })
-    .sort({ dueAt: 1 })
-    .lean<LeanFollowUp[]>();
+  }).sort({ dueAt: 1 });
+
+  if (limit !== undefined) {
+    query = query.limit(limit);
+  }
+
+  const docs = await query.lean<LeanFollowUp[]>();
 
   return docs.map(toAdminFollowUpDto);
 }
 
 export async function getUpcomingFollowUps(
   days = 7,
-  reference = new Date()
+  reference = new Date(),
+  limit?: number
 ): Promise<AdminFollowUpDto[]> {
   await connectDB();
 
   const { end: todayEnd } = getIsraelTodayRange(reference);
   const futureEnd = getIsraelDaysFromNow(days, reference);
 
-  const docs = await FollowUp.find({
+  let query = FollowUp.find({
     status: "pending",
     dueAt: { $gt: todayEnd, $lte: futureEnd },
-  })
-    .sort({ dueAt: 1 })
-    .lean<LeanFollowUp[]>();
+  }).sort({ dueAt: 1 });
+
+  if (limit !== undefined) {
+    query = query.limit(limit);
+  }
+
+  const docs = await query.lean<LeanFollowUp[]>();
 
   return docs.map(toAdminFollowUpDto);
 }

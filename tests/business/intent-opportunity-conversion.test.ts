@@ -270,23 +270,23 @@ describe("intent conversion auth and transaction wiring", () => {
     assert.match(source, /possibleNeed/);
   });
 
-  it("overview includes actionable intents count", () => {
+  it("overview includes classified review intents count", () => {
     const overviewData = readFileSync(
       join(
         dirname(fileURLToPath(import.meta.url)),
-        "../../src/lib/business/overview-data.ts"
+        "../../src/lib/business/overview-dashboard-data.ts"
       ),
       "utf8"
     );
     const businessPage = readFileSync(
       join(
         dirname(fileURLToPath(import.meta.url)),
-        "../../src/app/admin/(protected)/business/page.tsx"
+        "../../src/components/admin/business/overview/BusinessOverviewKpiRow.tsx"
       ),
       "utf8"
     );
-    assert.match(overviewData, /countActionableIntents/);
-    assert.match(overviewData, /actionableIntentsCount/);
+    assert.match(overviewData, /countClassifiedReviewIntents/);
+    assert.match(overviewData, /classifiedReviewIntentsCount/);
     assert.match(businessPage, /כוונות לסקירה/);
     assert.match(businessPage, /\/admin\/business\/intent/);
   });

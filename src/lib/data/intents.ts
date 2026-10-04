@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import { computeDedupeKey } from "@/lib/discovery/dedupe-key";
 import type { NormalizedDiscoveryInput } from "@/lib/discovery/types";
 import type { UpsertDiscoveredIntentResult } from "@/lib/discovery/types";
+import { buildOverviewActionableIntentQuery } from "@/lib/business/intents/overview-actionable-intent-query";
+import { DISCOVERY_INGEST_PATH_CLASSIFIED_FIRST } from "@/lib/discovery/discovery-ingest-path";
 import {
   assertIntentStatusTransition,
   LIST_CONTENT_PREVIEW_LENGTH,
@@ -231,6 +233,7 @@ export async function createClassifiedDiscoveredIntent(input: {
   classification: Extract<IntentClassification, "explicitNeed" | "possibleNeed">;
   classificationReason: string;
   classifierVersion: string;
+  discoveryCreatedRunId?: string;
 }): Promise<UpsertDiscoveredIntentResult & { intent: AdminIntentDetailDto }> {
   const parsed = parseNormalizedInput(input.normalized);
   const dedupeKey = dedupeKeyForNormalizedInput(parsed);
@@ -245,6 +248,15 @@ export async function createClassifiedDiscoveredIntent(input: {
     input.classificationReason,
     input.classifierVersion
   );
+
+  if (
+    input.discoveryCreatedRunId &&
+    mongoose.Types.ObjectId.isValid(input.discoveryCreatedRunId)
+  ) {
+    (createPayload as { discoveryCreatedRunId?: mongoose.Types.ObjectId }).discoveryCreatedRunId =
+      new mongoose.Types.ObjectId(input.discoveryCreatedRunId);
+    createPayload.discoveryIngestPath = DISCOVERY_INGEST_PATH_CLASSIFIED_FIRST;
+  }
 
   try {
     const doc = await Intent.create(createPayload);
@@ -394,6 +406,23 @@ export async function countActionableIntents(): Promise<number> {
     status: "new",
     classification: { $in: [...ACTIONABLE_INBOX_CLASSIFICATIONS] },
   });
+}
+
+export async function countClassifiedReviewIntents(): Promise<number> {
+  await connectDB();
+  return Intent.countDocuments(buildOverviewActionableIntentQuery());
+}
+
+export async function listRecentClassifiedReviewIntents(
+  limit = 5
+): Promise<AdminIntentListItemDto[]> {
+  await connectDB();
+  const docs = await Intent.find(buildOverviewActionableIntentQuery())
+    .sort({ discoveredAt: -1 })
+    .limit(limit)
+    .lean<LeanIntent[]>();
+
+  return docs.map(toAdminIntentListItemDto);
 }
 
 export async function getDistinctIntentProviders(): Promise<string[]> {

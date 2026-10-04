@@ -1,52 +1,17 @@
-import { countActionableIntents } from "@/lib/data/intents";
-import { getUnreadLeadCount } from "@/lib/data/leads";
-import {
-  getPendingFollowUpsDueToday,
-  getOverdueFollowUps,
-  getUpcomingFollowUps,
-} from "@/lib/data/follow-ups";
-import { getIsraelDaysAgo } from "@/lib/admin/dashboard-time";
-import {
-  countActiveOpportunities,
-  countNewOpportunities,
-} from "@/lib/data/opportunity-conversion";
-import { connectDB } from "@/lib/db/mongoose";
-import { Lead } from "@/models/Lead";
+import { getBusinessOverviewDashboardData } from "@/lib/business/overview-dashboard-data";
 import type { BusinessOverviewData } from "@/types/business";
 
+/** @deprecated Prefer getBusinessOverviewDashboardData */
 export async function getBusinessOverviewData(): Promise<BusinessOverviewData> {
-  await connectDB();
-
-  const sevenDaysAgo = getIsraelDaysAgo(7);
-
-  const [
-    unreadLeadCount,
-    newLeadsLast7Days,
-    newOpportunitiesCount,
-    activeOpportunitiesCount,
-    actionableIntentsCount,
-    followUpsDueToday,
-    overdueFollowUps,
-    upcomingFollowUps,
-  ] = await Promise.all([
-    getUnreadLeadCount(),
-    Lead.countDocuments({ createdAt: { $gte: sevenDaysAgo } }),
-    countNewOpportunities(),
-    countActiveOpportunities(),
-    countActionableIntents(),
-    getPendingFollowUpsDueToday(),
-    getOverdueFollowUps(),
-    getUpcomingFollowUps(7),
-  ]);
-
+  const dashboard = await getBusinessOverviewDashboardData();
   return {
-    unreadLeadCount,
-    newLeadsLast7Days,
-    newOpportunitiesCount,
-    activeOpportunitiesCount,
-    actionableIntentsCount,
-    followUpsDueToday,
-    overdueFollowUps,
-    upcomingFollowUps,
+    unreadLeadCount: dashboard.kpis.unreadLeadCount,
+    newLeadsLast7Days: dashboard.kpis.newLeadsLast7Days,
+    newOpportunitiesCount: dashboard.kpis.newOpportunitiesLast7Days,
+    activeOpportunitiesCount: dashboard.kpis.activeOpportunitiesCount,
+    actionableIntentsCount: dashboard.kpis.classifiedReviewIntentsCount,
+    followUpsDueToday: dashboard.activity.followUps.filter((f) => f.urgency === "today"),
+    overdueFollowUps: dashboard.activity.followUps.filter((f) => f.urgency === "overdue"),
+    upcomingFollowUps: dashboard.activity.followUps.filter((f) => f.urgency === "upcoming"),
   };
 }

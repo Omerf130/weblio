@@ -57,6 +57,8 @@ export type IngestDiscoveredResultOptions = {
   deps?: Partial<IngestPipelineDeps>;
   /** When false, new URLs are not classified or persisted (classification cap). */
   attemptClassification?: boolean;
+  /** Active DiscoveryRun when ingesting from production discovery orchestration. */
+  discoveryRunId?: string;
 };
 
 export type IngestDiscoveredSuccess = {
@@ -413,6 +415,7 @@ export async function ingestDiscoveredResult(
       classification: classificationState.classification,
       classificationReason: classificationState.reason,
       classifierVersion: classificationState.version,
+      discoveryCreatedRunId: options.discoveryRunId,
     });
 
     return {

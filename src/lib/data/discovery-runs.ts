@@ -459,6 +459,22 @@ export async function findLatestDiscoveryRunForCooldown(): Promise<DiscoveryRunD
   return toDiscoveryRunDto(doc as DiscoveryRunDocument);
 }
 
+export async function findLatestCompletedDiscoveryRun(): Promise<DiscoveryRunDto | null> {
+  await connectDB();
+  const doc = await DiscoveryRun.findOne({
+    status: { $in: ["completed", "partial", "failed", "skipped"] },
+    completedAt: { $exists: true },
+  })
+    .sort({ completedAt: -1 })
+    .lean<DiscoveryRunDocument>();
+
+  if (!doc) {
+    return null;
+  }
+
+  return toDiscoveryRunDto(doc as DiscoveryRunDocument);
+}
+
 export async function findActiveDiscoveryRun(): Promise<DiscoveryRunDto | null> {
   await connectDB();
   const doc = await DiscoveryRun.findOne({ status: "running" })

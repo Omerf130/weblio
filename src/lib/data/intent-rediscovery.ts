@@ -1,3 +1,4 @@
+import type mongoose from "mongoose";
 import { assessDiscoveryContentQuality } from "@/lib/discovery/discovery-content-quality";
 import { extractDiscoveryProvenance } from "@/lib/discovery/discovery-provenance";
 import type { NormalizedDiscoveryInput } from "@/lib/discovery/types";
@@ -13,6 +14,8 @@ export const REDISCOVERY_PRESERVED_FIELD_KEYS = [
   "opportunityId",
   "convertedAt",
   "discoveredAt",
+  "discoveryCreatedRunId",
+  "discoveryIngestPath",
 ] as const;
 
 export type RediscoveryMongoUpdate = {
@@ -51,6 +54,8 @@ export type FirstDiscoveryDocumentFields = {
   discoveryQuery?: string;
   contentQuality?: IntentContentQuality;
   contentQualityReasons?: string[];
+  discoveryCreatedRunId?: mongoose.Types.ObjectId;
+  discoveryIngestPath?: "classified_first";
 };
 
 export function buildFirstDiscoveryDocument(

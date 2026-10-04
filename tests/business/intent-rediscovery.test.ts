@@ -59,6 +59,8 @@ describe("intent rediscovery update logic", () => {
     assert.ok(REDISCOVERY_PRESERVED_FIELD_KEYS.includes("status"));
     assert.ok(REDISCOVERY_PRESERVED_FIELD_KEYS.includes("opportunityId"));
     assert.ok(REDISCOVERY_PRESERVED_FIELD_KEYS.includes("convertedAt"));
+    assert.ok(REDISCOVERY_PRESERVED_FIELD_KEYS.includes("discoveryCreatedRunId"));
+    assert.ok(REDISCOVERY_PRESERVED_FIELD_KEYS.includes("discoveryIngestPath"));
   });
 
   it("rejects rediscovery updates that set preserved fields", () => {

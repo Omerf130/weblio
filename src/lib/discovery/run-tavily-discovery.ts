@@ -52,6 +52,8 @@ export type RunTavilyProductionDiscoveryDeps = {
   getClassifier?: () => IntentClassifier;
   ingestDiscoveredResult?: typeof ingestDiscoveredResult;
   ingestDeps?: Partial<IngestPipelineDeps>;
+  /** DiscoveryRun orchestrating this ingest pass (creation provenance). */
+  discoveryRunId?: string;
   /** Israel-local daily selection anchor (V2 only). */
   referenceDate?: Date;
   /** Shared counter wired into Tavily provider (optional). */
@@ -172,6 +174,7 @@ async function ingestCandidatesWithClassificationCap(
         classifier,
         deps: deps.ingestDeps,
         attemptClassification: !blockedByClassificationCap,
+        discoveryRunId: deps.discoveryRunId,
       });
     } catch {
       summary.failed += 1;

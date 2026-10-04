@@ -285,6 +285,17 @@ export async function getRecentOpportunityOptions(
   }));
 }
 
+export async function listRecentNewOpportunities(
+  limit = 3
+): Promise<AdminOpportunityDto[]> {
+  await connectDB();
+  const docs = await Opportunity.find({ status: "new" })
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .lean<LeanOpportunity[]>();
+  return docs.map(toAdminOpportunityDto);
+}
+
 export async function getOpportunitySummaries(
   ids: string[]
 ): Promise<Map<string, OpportunitySummary>> {

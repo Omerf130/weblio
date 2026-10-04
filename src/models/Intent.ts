@@ -148,6 +148,18 @@ const intentSchema = new Schema(
         message: "contentQualityReasons exceeds bounds",
       },
     },
+    /** DiscoveryRun that first created this Intent (classify-first ingest only). */
+    discoveryCreatedRunId: {
+      type: Schema.Types.ObjectId,
+      ref: "DiscoveryRun",
+      required: false,
+    },
+    /** Ingest path at first creation; never updated on rediscovery. */
+    discoveryIngestPath: {
+      type: String,
+      enum: ["classified_first"],
+      required: false,
+    },
   },
   {
     timestamps: true,

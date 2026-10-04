@@ -9,6 +9,7 @@ import type { ConvertOpportunityToLeadInput } from "@/lib/validations/opportunit
 import { FollowUp } from "@/models/FollowUp";
 import { Lead, type LeadDocument } from "@/models/Lead";
 import { Opportunity, type OpportunityDocument } from "@/models/Opportunity";
+import type { OperationalOpportunityStatusCount } from "@/types/business";
 import type { AdminLeadDetailDto } from "@/types/lead";
 
 type LeanLead = Omit<LeadDocument, keyof mongoose.Document> & {
@@ -162,9 +163,37 @@ export async function countNewOpportunities(): Promise<number> {
   return Opportunity.countDocuments({ status: "new" });
 }
 
+export async function countNewOpportunitiesLast7Days(
+  since: Date
+): Promise<number> {
+  await connectDB();
+  return Opportunity.countDocuments({
+    status: "new",
+    createdAt: { $gte: since },
+  });
+}
+
 export async function countActiveOpportunities(): Promise<number> {
   await connectDB();
   return Opportunity.countDocuments({
     status: { $in: ["new", "researching", "contacted"] },
   });
+}
+
+const OPERATIONAL_OPPORTUNITY_STATUSES = ["new", "researching", "contacted"] as const;
+
+export async function countOperationalOpportunityStatuses(): Promise<
+  OperationalOpportunityStatusCount[]
+> {
+  await connectDB();
+  const rows = await Opportunity.aggregate<{ _id: string; count: number }>([
+    { $match: { status: { $in: [...OPERATIONAL_OPPORTUNITY_STATUSES] } } },
+    { $group: { _id: "$status", count: { $sum: 1 } } },
+  ]);
+
+  const byStatus = new Map(rows.map((row) => [row._id, row.count]));
+  return OPERATIONAL_OPPORTUNITY_STATUSES.map((status) => ({
+    status,
+    count: byStatus.get(status) ?? 0,
+  }));
 }
