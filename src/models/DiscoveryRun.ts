@@ -37,6 +37,11 @@ const profileSummarySchema = new Schema(
     irrelevant: { type: Number, required: true, min: 0 },
     unclassified: { type: Number, required: true, min: 0 },
     errors: { type: Number, required: true, min: 0 },
+    rejectedSafety: { type: Number, required: false, min: 0 },
+    rejectedLocale: { type: Number, required: false, min: 0 },
+    rejectedCareers: { type: Number, required: false, min: 0 },
+    skippedNotActionable: { type: Number, required: false, min: 0 },
+    skippedDeferred: { type: Number, required: false, min: 0 },
   },
   { _id: false }
 );
@@ -45,6 +50,7 @@ const catalogSnapshotSchema = new Schema(
   {
     catalogVersion: { type: Number, required: true },
     environment: { type: String, required: false, trim: true, maxlength: 32 },
+    catalogKind: { type: String, required: false, trim: true, maxlength: 16 },
     profileCount: { type: Number, required: true, min: 1 },
   },
   { _id: false }
@@ -63,6 +69,13 @@ const discoveryRunSchema = new Schema(
     failureCategory: { type: String, required: false, trim: true, maxlength: 64 },
 
     profilesConfigured: { type: Number, required: false, min: 0 },
+    profilesSelected: { type: Number, required: false, min: 0 },
+    selectionShortfallTotal: { type: Number, required: false, min: 0 },
+    selectedProfileIds: {
+      type: [String],
+      required: false,
+      default: undefined,
+    },
     profilesSearched: { type: Number, required: false, min: 0 },
     tavilyRequests: { type: Number, required: false, min: 0 },
     rawResults: { type: Number, required: false, min: 0 },
@@ -71,6 +84,11 @@ const discoveryRunSchema = new Schema(
     filteredValidation: { type: Number, required: false, min: 0 },
     filteredDomain: { type: Number, required: false, min: 0 },
     filteredDuplicateInRun: { type: Number, required: false, min: 0 },
+    filteredQualitySafety: { type: Number, required: false, min: 0 },
+    filteredQualityLocale: { type: Number, required: false, min: 0 },
+    filteredQualityCareers: { type: Number, required: false, min: 0 },
+    skippedNotActionable: { type: Number, required: false, min: 0 },
+    skippedClassificationDeferred: { type: Number, required: false, min: 0 },
 
     uniqueCandidates: { type: Number, required: false, min: 0 },
     candidatesLimited: { type: Number, required: false, min: 0 },

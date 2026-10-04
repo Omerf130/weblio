@@ -2,7 +2,11 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { noopIntentClassifier } from "../../src/lib/discovery/classifier/noop-classifier";
 import type { IntentClassifier } from "../../src/lib/discovery/classifier/types";
-import { ingestDiscoveredResult } from "../../src/lib/discovery/ingest";
+import { computeDedupeKey } from "../../src/lib/discovery/dedupe-key";
+import {
+  ingestDiscoveredResult,
+  type IngestPipelineDeps,
+} from "../../src/lib/discovery/ingest";
 import {
   getProductionDiscoveryPolicy,
   PRODUCTION_DISCOVERY_POLICY,
@@ -29,6 +33,33 @@ const profileP2: DiscoverySearchProfile = {
   category: "explicit_website",
   queryHe: "מחפש בונה אתרים",
 };
+
+/** Enough Hebrew to pass P0 Israel/Hebrew relevance gate in discovery tests. */
+const HEBREW_CANDIDATE_SNIPPET =
+  "מחפש מישהו שיבנה לי אתר לעסק קטן באזור המרכז עם תקציב סביר";
+
+function defaultIngestDeps(
+  overrides: Partial<IngestPipelineDeps> = {}
+): Partial<IngestPipelineDeps> {
+  return {
+    findDiscoveredIntentByDedupeKey: async () => null,
+    touchDiscoveredIntentRediscovery: async () => ({
+      intentId: mockIntent().id,
+      created: false,
+      dedupeKey: "url:existing",
+      intent: mockIntent({ classification: "explicitNeed" }),
+    }),
+    createClassifiedDiscoveredIntent: async () => ({
+      intentId: mockIntent().id,
+      created: true,
+      dedupeKey: "url:new",
+      intent: mockIntent({ classification: "explicitNeed" }),
+    }),
+    updateIntentClassification: async (input) =>
+      mockIntent({ classification: input.classification }),
+    ...overrides,
+  };
+}
 
 function mockIntent(
   overrides: Partial<AdminIntentDetailDto> = {}
@@ -128,6 +159,7 @@ describe("runTavilyProductionDiscovery", () => {
       getClassifier: () => noopIntentClassifier,
       ingestDiscoveredResult: async () => ({
         ok: true,
+        persisted: false,
         intentId: mockIntent().id,
         created: false,
         rediscovered: false,
@@ -195,6 +227,7 @@ describe("runTavilyProductionDiscovery", () => {
       getClassifier: () => noopIntentClassifier,
       ingestDiscoveredResult: async () => ({
         ok: true,
+        persisted: true,
         intentId: mockIntent().id,
         created: true,
         rediscovered: false,
@@ -246,6 +279,7 @@ describe("runTavilyProductionDiscovery", () => {
         ingestCount += 1;
         return {
           ok: true,
+          persisted: true,
           intentId: mockIntent().id,
           created: true,
           rediscovered: false,
@@ -261,7 +295,7 @@ describe("runTavilyProductionDiscovery", () => {
   });
 
   it("dedupes same URL across profiles before ingest", async () => {
-    const sharedUrl = "https://example.com/post/1";
+    const sharedUrl = "https://example.co.il/post/1";
     const { provider } = createRecordingProvider({
       P1: () => ({
         provider: "tavily",
@@ -270,7 +304,7 @@ describe("runTavilyProductionDiscovery", () => {
         requestedMaxResults: 5,
         rawResultCount: 1,
         rows: buildRows(profileP1, [
-          { url: sharedUrl, content: "text", id: "id-1" },
+          { url: sharedUrl, content: HEBREW_CANDIDATE_SNIPPET, id: "id-1" },
         ]),
       }),
       P2: () => ({
@@ -280,7 +314,7 @@ describe("runTavilyProductionDiscovery", () => {
         requestedMaxResults: 5,
         rawResultCount: 1,
         rows: buildRows(profileP2, [
-          { url: sharedUrl, content: "text", id: "id-2" },
+          { url: sharedUrl, content: HEBREW_CANDIDATE_SNIPPET, id: "id-2" },
         ]),
       }),
     });
@@ -306,6 +340,7 @@ describe("runTavilyProductionDiscovery", () => {
         ingestCount += 1;
         return {
           ok: true,
+          persisted: true,
           intentId: mockIntent().id,
           created: true,
           rediscovered: false,
@@ -338,9 +373,21 @@ describe("runTavilyProductionDiscovery", () => {
         requestedMaxResults: 5,
         rawResultCount: 3,
         rows: buildRows(profileP1, [
-          { url: "https://example.com/a", content: "a", id: "1" },
-          { url: "https://example.com/b", content: "b", id: "2" },
-          { url: "https://example.com/c", content: "c", id: "3" },
+          {
+            url: "https://example.co.il/a",
+            content: `${HEBREW_CANDIDATE_SNIPPET} א`,
+            id: "1",
+          },
+          {
+            url: "https://example.co.il/b",
+            content: `${HEBREW_CANDIDATE_SNIPPET} ב`,
+            id: "2",
+          },
+          {
+            url: "https://example.co.il/c",
+            content: `${HEBREW_CANDIDATE_SNIPPET} ג`,
+            id: "3",
+          },
         ]),
       }),
     });
@@ -360,6 +407,7 @@ describe("runTavilyProductionDiscovery", () => {
       getClassifier: () => noopIntentClassifier,
       ingestDiscoveredResult: async () => ({
         ok: true,
+        persisted: true,
         intentId: mockIntent().id,
         created: true,
         rediscovered: false,
@@ -383,9 +431,21 @@ describe("runTavilyProductionDiscovery", () => {
         requestedMaxResults: 5,
         rawResultCount: 3,
         rows: buildRows(profileP1, [
-          { url: "https://example.com/a", content: "a", id: "1" },
-          { url: "https://example.com/b", content: "b", id: "2" },
-          { url: "https://example.com/c", content: "c", id: "3" },
+          {
+            url: "https://example.co.il/a",
+            content: `${HEBREW_CANDIDATE_SNIPPET} א`,
+            id: "1",
+          },
+          {
+            url: "https://example.co.il/b",
+            content: `${HEBREW_CANDIDATE_SNIPPET} ב`,
+            id: "2",
+          },
+          {
+            url: "https://example.co.il/c",
+            content: `${HEBREW_CANDIDATE_SNIPPET} ג`,
+            id: "3",
+          },
         ]),
       }),
     });
@@ -417,22 +477,13 @@ describe("runTavilyProductionDiscovery", () => {
       }),
       getClassifier: () => countingClassifier,
       ingestDiscoveredResult,
-      ingestDeps: {
-        upsertDiscoveredIntent: async () => ({
-          intentId: mockIntent().id,
-          created: true,
-          dedupeKey: "url:x",
-          intent: mockIntent({ classification: "unclassified" }),
-        }),
-        updateIntentClassification: async (input) =>
-          mockIntent({ classification: input.classification }),
-      },
+      ingestDeps: defaultIngestDeps(),
     });
 
     assert.equal(classifyCalls, 2);
     assert.equal(summary.ingestReceived, 3);
     assert.equal(summary.classified, 2);
-    assert.equal(summary.unclassified, 1);
+    assert.equal(summary.skippedClassificationDeferred, 1);
     assert.equal(summary.classificationLimitReached, true);
   });
 
@@ -445,8 +496,16 @@ describe("runTavilyProductionDiscovery", () => {
         requestedMaxResults: 5,
         rawResultCount: 2,
         rows: buildRows(profileP1, [
-          { url: "https://example.com/a", content: "a", id: "1" },
-          { url: "https://example.com/b", content: "b", id: "2" },
+          {
+            url: "https://example.co.il/a",
+            content: `${HEBREW_CANDIDATE_SNIPPET} א`,
+            id: "1",
+          },
+          {
+            url: "https://example.co.il/b",
+            content: `${HEBREW_CANDIDATE_SNIPPET} ב`,
+            id: "2",
+          },
         ]),
       }),
     });
@@ -473,16 +532,7 @@ describe("runTavilyProductionDiscovery", () => {
         },
       }),
       ingestDiscoveredResult,
-      ingestDeps: {
-        upsertDiscoveredIntent: async () => ({
-          intentId: mockIntent().id,
-          created: true,
-          dedupeKey: "url:x",
-          intent: mockIntent({ classification: "unclassified" }),
-        }),
-        updateIntentClassification: async (input) =>
-          mockIntent({ classification: input.classification }),
-      },
+      ingestDeps: defaultIngestDeps(),
     });
 
     assert.equal(summary.classified, 2);
@@ -498,8 +548,16 @@ describe("runTavilyProductionDiscovery", () => {
         requestedMaxResults: 5,
         rawResultCount: 2,
         rows: buildRows(profileP1, [
-          { url: "https://example.com/a", content: "a", id: "1" },
-          { url: "https://example.com/b", content: "b", id: "2" },
+          {
+            url: "https://example.co.il/a",
+            content: `${HEBREW_CANDIDATE_SNIPPET} א`,
+            id: "1",
+          },
+          {
+            url: "https://example.co.il/b",
+            content: `${HEBREW_CANDIDATE_SNIPPET} ב`,
+            id: "2",
+          },
         ]),
       }),
     });
@@ -516,7 +574,11 @@ describe("runTavilyProductionDiscovery", () => {
       },
     };
 
-    let upsertCalls = 0;
+    const existingIntent = mockIntent({ classification: "explicitNeed" });
+    const rediscoveryDedupeKey = computeDedupeKey({
+      provider: "tavily",
+      sourceUrl: "https://example.co.il/b",
+    });
     const summary = await runTavilyProductionDiscovery({
       provider,
       loadCatalog: () => ({ version: 1, locale: "he-IL", profiles: [profileP1] }),
@@ -531,22 +593,20 @@ describe("runTavilyProductionDiscovery", () => {
       }),
       getClassifier: () => countingClassifier,
       ingestDiscoveredResult,
-      ingestDeps: {
-        upsertDiscoveredIntent: async () => {
-          upsertCalls += 1;
-          const alreadyClassified = upsertCalls === 1;
-          return {
-            intentId: mockIntent().id,
-            created: !alreadyClassified,
-            dedupeKey: alreadyClassified ? "url:x" : "url:y",
-            intent: mockIntent({
-              classification: alreadyClassified ? "explicitNeed" : "unclassified",
-            }),
-          };
+      ingestDeps: defaultIngestDeps({
+        findDiscoveredIntentByDedupeKey: async (dedupeKey) => {
+          if (dedupeKey === rediscoveryDedupeKey) {
+            return existingIntent;
+          }
+          return null;
         },
-        updateIntentClassification: async (input) =>
-          mockIntent({ classification: input.classification }),
-      },
+        touchDiscoveredIntentRediscovery: async () => ({
+          intentId: existingIntent.id,
+          created: false,
+          dedupeKey: "url:existing",
+          intent: existingIntent,
+        }),
+      }),
     });
 
     assert.equal(classifyCalls, 1);
@@ -564,8 +624,16 @@ describe("runTavilyProductionDiscovery", () => {
         requestedMaxResults: 5,
         rawResultCount: 2,
         rows: buildRows(profileP1, [
-          { url: "https://example.com/a", content: "a", id: "1" },
-          { url: "https://example.com/b", content: "b", id: "2" },
+          {
+            url: "https://example.co.il/a",
+            content: `${HEBREW_CANDIDATE_SNIPPET} א`,
+            id: "1",
+          },
+          {
+            url: "https://example.co.il/b",
+            content: `${HEBREW_CANDIDATE_SNIPPET} ב`,
+            id: "2",
+          },
         ]),
       }),
     });
@@ -587,20 +655,12 @@ describe("runTavilyProductionDiscovery", () => {
         },
       }),
       ingestDiscoveredResult,
-      ingestDeps: {
-        upsertDiscoveredIntent: async () => ({
-          intentId: mockIntent().id,
-          created: true,
-          dedupeKey: "url:x",
-          intent: mockIntent({ classification: "unclassified" }),
-        }),
-        updateIntentClassification: async () => mockIntent(),
-      },
+      ingestDeps: defaultIngestDeps(),
     });
 
     assert.equal(summary.failed, 0);
     assert.equal(summary.ingestReceived, 2);
-    assert.equal(summary.unclassified, 2);
+    assert.equal(summary.skippedClassificationDeferred, 2);
   });
 
   it("respects production profile and request limits from default policy", async () => {
@@ -630,9 +690,11 @@ describe("runTavilyProductionDiscovery", () => {
     const summary = await runTavilyProductionDiscovery({
       provider,
       loadCatalog: () => ({ version: 1, locale: "he-IL", profiles }),
+      getPolicy: () => policy,
       getClassifier: () => noopIntentClassifier,
       ingestDiscoveredResult: async () => ({
         ok: true,
+        persisted: false,
         intentId: mockIntent().id,
         created: false,
         rediscovered: false,

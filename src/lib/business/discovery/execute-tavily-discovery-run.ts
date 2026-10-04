@@ -12,13 +12,13 @@ import {
 } from "@/lib/data/discovery-runs";
 import { isDiscoveryTavilyEnabled } from "@/lib/discovery/discovery-env";
 import {
-  getProductionDiscoveryPolicy,
+  getV2ProductionDiscoveryPolicy,
   type DiscoveryPolicy,
 } from "@/lib/discovery/discovery-policy";
 import { deriveDiscoveryRunStatus } from "@/lib/discovery/discovery-run-status";
 import { getIntentClassifierForIngest } from "@/lib/discovery/classifier/get-intent-classifier";
 import { runTavilyProductionDiscovery } from "@/lib/discovery/run-tavily-discovery";
-import { loadSearchProfileCatalogProduction } from "@/lib/discovery/providers/load-search-profiles";
+import { loadSearchProfileCatalogV2Production } from "@/lib/discovery/providers/load-search-profiles";
 import { createTavilySearchProviderFromEnv } from "@/lib/discovery/providers/tavily-search-provider";
 import type { DiscoverySearchProvider } from "@/lib/discovery/providers/types";
 import type {
@@ -29,7 +29,7 @@ import type {
 export type ExecuteTavilyDiscoveryRunDeps = {
   isEnabled?: () => boolean;
   getPolicy?: () => DiscoveryPolicy;
-  loadCatalog?: typeof loadSearchProfileCatalogProduction;
+  loadCatalog?: typeof loadSearchProfileCatalogV2Production;
   createProvider?: () => DiscoverySearchProvider | null;
   runDiscovery?: typeof runTavilyProductionDiscovery;
   markStaleRuns?: typeof markStaleDiscoveryRunsFailed;
@@ -60,8 +60,8 @@ export async function executeTavilyDiscoveryRun(
 ): Promise<RunTavilyDiscoveryActionResult> {
   const now = deps.now?.() ?? new Date();
   const isEnabled = deps.isEnabled ?? isDiscoveryTavilyEnabled;
-  const getPolicy = deps.getPolicy ?? getProductionDiscoveryPolicy;
-  const loadCatalog = deps.loadCatalog ?? loadSearchProfileCatalogProduction;
+  const getPolicy = deps.getPolicy ?? getV2ProductionDiscoveryPolicy;
+  const loadCatalog = deps.loadCatalog ?? loadSearchProfileCatalogV2Production;
   const markStaleRuns = deps.markStaleRuns ?? markStaleDiscoveryRunsFailed;
   const findActiveRun = deps.findActiveRun ?? findActiveDiscoveryRun;
   const findLatestForCooldown = deps.findLatestForCooldown ?? findLatestDiscoveryRunForCooldown;

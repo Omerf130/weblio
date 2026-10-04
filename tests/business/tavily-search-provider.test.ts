@@ -48,6 +48,17 @@ describe("tavily search provider (mocked)", () => {
     assert.equal(body.end_date, undefined);
   });
 
+  it("buildTavilySearchRequestBody includes V2 Israel scoping when provided", () => {
+    const body = buildTavilySearchRequestBody({
+      query: "מחפש מישהו שיבנה לי אתר",
+      maxResults: 5,
+      topic: "general",
+      country: "israel",
+    });
+    assert.equal(body.topic, "general");
+    assert.equal(body.country, "israel");
+  });
+
   it("buildTavilySearchRequestBody includes production policy fields when provided", () => {
     const policy = tavilyRequestPolicyFromDiscoveryPolicy({
       version: 1,

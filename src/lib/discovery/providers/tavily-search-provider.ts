@@ -41,6 +41,8 @@ export type TavilySearchRequestBuildInput = {
   searchDepth?: typeof DEFAULT_TAVILY_SEARCH_DEPTH;
   timeRange?: string;
   excludeDomains?: readonly string[];
+  topic?: "general" | "news";
+  country?: string;
 };
 
 /** Builds Tavily POST JSON; omits optional fields when unset (PoC default body). */
@@ -64,6 +66,16 @@ export function buildTavilySearchRequestBody(
   const excludeDomains = input.excludeDomains?.filter((d) => d.trim().length > 0);
   if (excludeDomains && excludeDomains.length > 0) {
     body.exclude_domains = [...excludeDomains];
+  }
+
+  const topic = input.topic?.trim();
+  if (topic) {
+    body.topic = topic;
+  }
+
+  const country = input.country?.trim();
+  if (country) {
+    body.country = country;
   }
 
   return body;
@@ -104,6 +116,8 @@ export type FetchTavilySearchOptions = {
   maxResults: number;
   timeRange?: string;
   excludeDomains?: readonly string[];
+  topic?: "general" | "news";
+  country?: string;
 };
 
 export async function fetchTavilySearchResults(
@@ -117,6 +131,8 @@ export async function fetchTavilySearchResults(
     searchDepth: deps.searchDepth,
     timeRange: fetchOptions.timeRange,
     excludeDomains: fetchOptions.excludeDomains,
+    topic: fetchOptions.topic,
+    country: fetchOptions.country,
   });
 
   for (let attempt = 0; attempt < 2; attempt += 1) {
@@ -215,6 +231,8 @@ export function createTavilySearchProvider(
           maxResults,
           timeRange: tavilyRequest?.timeRange,
           excludeDomains: tavilyRequest?.excludeDomains,
+          topic: tavilyRequest?.topic,
+          country: tavilyRequest?.country,
         });
         const apiResults = response.results ?? [];
         const rows = mapTavilyResponseToRows(profile, apiResults);

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { connectDB } from "@/lib/db/mongoose";
 import type { DiscoveryPolicy } from "@/lib/discovery/discovery-policy";
 import type { TavilyDiscoveryRunSummary } from "@/lib/discovery/tavily-discovery-run-summary";
+import { isDiscoveryCatalogV2 } from "@/lib/discovery/discovery-v2-types";
 import type { DiscoverySearchProfileCatalog } from "@/lib/discovery/providers/types";
 import { DiscoveryRun, type DiscoveryRunDocument } from "@/models/DiscoveryRun";
 import type {
@@ -69,6 +70,7 @@ export function buildCatalogSnapshot(
   return {
     catalogVersion: catalog.version,
     environment: catalog.environment,
+    catalogKind: isDiscoveryCatalogV2(catalog) ? "v2" : undefined,
     profileCount: catalog.profiles.length,
   };
 }
@@ -78,6 +80,8 @@ export function toDiscoveryRunSummaryDto(
 ): DiscoveryRunSummaryDto {
   return {
     profilesConfigured: summary.profilesConfigured,
+    profilesSelected: summary.profilesSelected,
+    selectionShortfallTotal: summary.selectionShortfallTotal,
     profilesSearched: summary.profilesSearched,
     tavilyRequests: summary.tavilyRequests,
     rawResults: summary.rawResults,
@@ -85,6 +89,11 @@ export function toDiscoveryRunSummaryDto(
     filteredValidation: summary.filteredValidation,
     filteredDomain: summary.filteredDomain,
     filteredDuplicateInRun: summary.filteredDuplicateInRun,
+    filteredQualitySafety: summary.filteredQualitySafety,
+    filteredQualityLocale: summary.filteredQualityLocale,
+    filteredQualityCareers: summary.filteredQualityCareers,
+    skippedNotActionable: summary.skippedNotActionable,
+    skippedClassificationDeferred: summary.skippedClassificationDeferred,
     uniqueCandidates: summary.uniqueCandidates,
     candidatesLimited: summary.candidatesLimited,
     ingestReceived: summary.ingestReceived,
@@ -114,6 +123,8 @@ function toDiscoveryRunDto(doc: DiscoveryRunDocument): DiscoveryRunDto {
     summary: hasMetrics
       ? {
           profilesConfigured: doc.profilesConfigured ?? 0,
+          profilesSelected: doc.profilesSelected ?? doc.profilesSearched ?? 0,
+          selectionShortfallTotal: doc.selectionShortfallTotal ?? 0,
           profilesSearched: doc.profilesSearched ?? 0,
           tavilyRequests: doc.tavilyRequests ?? 0,
           rawResults: doc.rawResults ?? 0,
@@ -139,6 +150,9 @@ function toDiscoveryRunDto(doc: DiscoveryRunDocument): DiscoveryRunDto {
       : undefined,
     profileSummaries: doc.profileSummaries?.length
       ? (doc.profileSummaries as DiscoveryRunProfileSummaryDto[])
+      : undefined,
+    selectedProfileIds: doc.selectedProfileIds?.length
+      ? [...doc.selectedProfileIds]
       : undefined,
   };
 }
@@ -166,6 +180,10 @@ export async function createDiscoveryRunRunning(input: {
 function summaryToUpdateFields(summary: TavilyDiscoveryRunSummary) {
   return {
     profilesConfigured: summary.profilesConfigured,
+    profilesSelected: summary.profilesSelected,
+    selectionShortfallTotal: summary.selectionShortfallTotal,
+    selectedProfileIds:
+      summary.selectedProfileIds.length > 0 ? summary.selectedProfileIds : undefined,
     profilesSearched: summary.profilesSearched,
     tavilyRequests: summary.tavilyRequests,
     rawResults: summary.rawResults,
@@ -173,6 +191,11 @@ function summaryToUpdateFields(summary: TavilyDiscoveryRunSummary) {
     filteredValidation: summary.filteredValidation,
     filteredDomain: summary.filteredDomain,
     filteredDuplicateInRun: summary.filteredDuplicateInRun,
+    filteredQualitySafety: summary.filteredQualitySafety,
+    filteredQualityLocale: summary.filteredQualityLocale,
+    filteredQualityCareers: summary.filteredQualityCareers,
+    skippedNotActionable: summary.skippedNotActionable,
+    skippedClassificationDeferred: summary.skippedClassificationDeferred,
     uniqueCandidates: summary.uniqueCandidates,
     candidatesLimited: summary.candidatesLimited,
     ingestReceived: summary.ingestReceived,

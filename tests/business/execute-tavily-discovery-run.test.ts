@@ -74,6 +74,8 @@ function createMemoryDiscoveryRunStore() {
         completedAt: (input.completedAt ?? new Date()).toISOString(),
         summary: {
           profilesConfigured: input.summary.profilesConfigured,
+          profilesSelected: input.summary.profilesSelected,
+          selectionShortfallTotal: input.summary.selectionShortfallTotal,
           profilesSearched: input.summary.profilesSearched,
           tavilyRequests: input.summary.tavilyRequests,
           rawResults: input.summary.rawResults,

@@ -8,6 +8,7 @@ import {
   normalizeIntentListPagination,
 } from "@/lib/business/intents/rules";
 import {
+  buildClassifiedFirstDiscoveryDocument,
   buildFirstDiscoveryDocument,
   buildRediscoveryUpdate,
 } from "@/lib/data/intent-rediscovery";
@@ -184,15 +185,89 @@ export async function listIntents(
   };
 }
 
-export async function upsertDiscoveredIntent(
-  input: NormalizedDiscoveryInput
-): Promise<UpsertDiscoveredIntentResult & { intent: AdminIntentDetailDto }> {
-  const parsed = parseNormalizedInput(input);
-  const dedupeKey = computeDedupeKey({
+function dedupeKeyForNormalizedInput(
+  parsed: NormalizedDiscoveryInputParsed
+): string {
+  return computeDedupeKey({
     provider: parsed.provider,
     externalId: parsed.externalId,
     sourceUrl: parsed.sourceUrl,
   });
+}
+
+export async function findDiscoveredIntentByDedupeKey(
+  dedupeKey: string
+): Promise<AdminIntentDetailDto | null> {
+  await connectDB();
+  const doc = await Intent.findOne({ dedupeKey }).lean<LeanIntent | null>();
+  return doc ? toAdminIntentDetailDto(doc) : null;
+}
+
+export async function touchDiscoveredIntentRediscovery(
+  dedupeKey: string,
+  now: Date = new Date()
+): Promise<UpsertDiscoveredIntentResult & { intent: AdminIntentDetailDto }> {
+  await connectDB();
+  const updated = await Intent.findOneAndUpdate(
+    { dedupeKey },
+    buildRediscoveryUpdate(now),
+    { returnDocument: "after" }
+  ).lean<LeanIntent | null>();
+
+  if (!updated) {
+    throw new Error("INTENT_UPSERT_FAILED");
+  }
+
+  return {
+    intentId: updated._id.toString(),
+    created: false,
+    dedupeKey,
+    intent: toAdminIntentDetailDto(updated),
+  };
+}
+
+export async function createClassifiedDiscoveredIntent(input: {
+  normalized: NormalizedDiscoveryInput;
+  classification: Extract<IntentClassification, "explicitNeed" | "possibleNeed">;
+  classificationReason: string;
+  classifierVersion: string;
+}): Promise<UpsertDiscoveredIntentResult & { intent: AdminIntentDetailDto }> {
+  const parsed = parseNormalizedInput(input.normalized);
+  const dedupeKey = dedupeKeyForNormalizedInput(parsed);
+  await connectDB();
+  const now = new Date();
+
+  const createPayload = buildClassifiedFirstDiscoveryDocument(
+    parsed,
+    dedupeKey,
+    now,
+    input.classification,
+    input.classificationReason,
+    input.classifierVersion
+  );
+
+  try {
+    const doc = await Intent.create(createPayload);
+    const lean = doc.toObject() as LeanIntent;
+    return {
+      intentId: lean._id.toString(),
+      created: true,
+      dedupeKey,
+      intent: toAdminIntentDetailDto(lean),
+    };
+  } catch (error) {
+    if (!isDuplicateKeyError(error)) {
+      throw error;
+    }
+    return touchDiscoveredIntentRediscovery(dedupeKey, now);
+  }
+}
+
+export async function upsertDiscoveredIntent(
+  input: NormalizedDiscoveryInput
+): Promise<UpsertDiscoveredIntentResult & { intent: AdminIntentDetailDto }> {
+  const parsed = parseNormalizedInput(input);
+  const dedupeKey = dedupeKeyForNormalizedInput(parsed);
 
   await connectDB();
 
@@ -200,22 +275,7 @@ export async function upsertDiscoveredIntent(
   const existing = await Intent.findOne({ dedupeKey }).lean<LeanIntent | null>();
 
   if (existing) {
-    const updated = await Intent.findOneAndUpdate(
-      { dedupeKey },
-      buildRediscoveryUpdate(now),
-      { returnDocument: "after" }
-    ).lean<LeanIntent | null>();
-
-    if (!updated) {
-      throw new Error("INTENT_UPSERT_FAILED");
-    }
-
-    return {
-      intentId: updated._id.toString(),
-      created: false,
-      dedupeKey,
-      intent: toAdminIntentDetailDto(updated),
-    };
+    return touchDiscoveredIntentRediscovery(dedupeKey, now);
   }
 
   const createPayload = buildFirstDiscoveryDocument(parsed, dedupeKey, now);

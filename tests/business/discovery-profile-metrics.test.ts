@@ -65,6 +65,7 @@ describe("discovery profile metrics", () => {
     const tracker = createDiscoveryProfileMetricsTracker([profileW1]);
     tracker.recordIngestOutcome("W1", {
       ok: true,
+      persisted: true,
       intentId: "1",
       created: true,
       rediscovered: false,
@@ -74,6 +75,7 @@ describe("discovery profile metrics", () => {
     });
     tracker.recordIngestOutcome("W1", {
       ok: true,
+      persisted: true,
       intentId: "2",
       created: true,
       rediscovered: false,
@@ -100,13 +102,14 @@ describe("discovery profile metrics", () => {
     const tracker = createDiscoveryProfileMetricsTracker([profileW1]);
     tracker.recordIngestOutcome("W1", {
       ok: true,
+      persisted: false,
       intentId: "1",
-      created: true,
+      created: false,
       rediscovered: false,
       dedupeKey: "k",
       classification: "unclassified",
       classified: false,
-      autoClassificationSkipped: true,
+      skipReason: "auto_classification_skipped",
     });
     const row = tracker.toSummaries()[0];
     assert.equal(row?.classified, 0);

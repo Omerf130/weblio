@@ -1,5 +1,6 @@
+import type { DiscoveryQualityRejectReason } from "@/lib/discovery/discovery-candidate-quality";
 import type { PreIngestCandidate } from "@/lib/discovery/pre-ingest-filter";
-import type { IngestDiscoveredOutcome } from "@/lib/discovery/ingest";
+import type { IngestDiscoveredOutcome, IngestSkipReason } from "@/lib/discovery/ingest";
 import type { DiscoverySearchProfile } from "@/lib/discovery/providers/types";
 import type { IntentClassification } from "@/types/intent";
 
@@ -13,7 +14,8 @@ import type { IntentClassification } from "@/types/intent";
  *   ingest outcomes for rows attributed to that profile.
  * - errors: Tavily request failure and ingest failures for that profile.
  */
-export const MAX_DISCOVERY_RUN_PROFILE_SUMMARIES = 12;
+/** V2 runs up to 29 profiles per day (+ small buffer for stored rows). */
+export const MAX_DISCOVERY_RUN_PROFILE_SUMMARIES = 32;
 
 export type DiscoveryProfileMetricsRow = {
   profileId: string;
@@ -29,6 +31,11 @@ export type DiscoveryProfileMetricsRow = {
   irrelevant: number;
   unclassified: number;
   errors: number;
+  rejectedSafety: number;
+  rejectedLocale: number;
+  rejectedCareers: number;
+  skippedNotActionable: number;
+  skippedDeferred: number;
 };
 
 type MutableRow = DiscoveryProfileMetricsRow;
@@ -40,6 +47,10 @@ export type DiscoveryProfileMetricsTracker = {
     input: { raw: number; afterFilter: number }
   ) => void;
   recordProfileRequestError: (profileId: string, query: string) => void;
+  recordQualityRejection: (
+    profileId: string,
+    reason: DiscoveryQualityRejectReason
+  ) => void;
   recordUniqueAttributedCandidates: (candidates: PreIngestCandidate[]) => void;
   recordIngestOutcome: (
     profileId: string,
@@ -63,6 +74,11 @@ function createEmptyRow(profileId: string, query: string): MutableRow {
     irrelevant: 0,
     unclassified: 0,
     errors: 0,
+    rejectedSafety: 0,
+    rejectedLocale: 0,
+    rejectedCareers: 0,
+    skippedNotActionable: 0,
+    skippedDeferred: 0,
   };
 }
 
@@ -77,6 +93,20 @@ function incrementClassificationBucket(
   } else if (classification === "irrelevant") {
     row.irrelevant += 1;
   } else {
+    row.unclassified += 1;
+  }
+}
+
+function recordSkipReason(row: MutableRow, skipReason: IngestSkipReason): void {
+  if (skipReason === "not_actionable") {
+    row.skippedNotActionable += 1;
+    incrementClassificationBucket(row, "irrelevant");
+  } else if (
+    skipReason === "classification_deferred" ||
+    skipReason === "classification_failed" ||
+    skipReason === "auto_classification_skipped"
+  ) {
+    row.skippedDeferred += 1;
     row.unclassified += 1;
   }
 }
@@ -124,6 +154,20 @@ export function createDiscoveryProfileMetricsTracker(
       row.errors += 1;
     },
 
+    recordQualityRejection(profileId, reason) {
+      const row = rows.get(profileId);
+      if (!row) {
+        return;
+      }
+      if (reason === "unsafe_adult") {
+        row.rejectedSafety += 1;
+      } else if (reason === "jobs_careers") {
+        row.rejectedCareers += 1;
+      } else {
+        row.rejectedLocale += 1;
+      }
+    },
+
     recordUniqueAttributedCandidates(candidates) {
       for (const candidate of candidates) {
         const row = rows.get(candidate.profileId);
@@ -142,6 +186,14 @@ export function createDiscoveryProfileMetricsTracker(
 
       if (!outcome.ok) {
         row.errors += 1;
+        return;
+      }
+
+      if (outcome.skipReason) {
+        recordSkipReason(row, outcome.skipReason);
+      }
+
+      if (!outcome.persisted) {
         return;
       }
 

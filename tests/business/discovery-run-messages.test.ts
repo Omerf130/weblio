@@ -11,6 +11,8 @@ function sampleSummary(
 ): DiscoveryRunSummaryDto {
   return {
     profilesConfigured: 7,
+    profilesSelected: 7,
+    selectionShortfallTotal: 0,
     profilesSearched: 7,
     tavilyRequests: 7,
     rawResults: 20,

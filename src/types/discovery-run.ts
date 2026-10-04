@@ -19,6 +19,7 @@ export type DiscoveryRunPolicySnapshot = {
 export type DiscoveryRunCatalogSnapshot = {
   catalogVersion: number;
   environment?: string;
+  catalogKind?: string;
   profileCount: number;
 };
 
@@ -37,10 +38,17 @@ export type DiscoveryRunProfileSummaryDto = {
   irrelevant: number;
   unclassified: number;
   errors: number;
+  rejectedSafety?: number;
+  rejectedLocale?: number;
+  rejectedCareers?: number;
+  skippedNotActionable?: number;
+  skippedDeferred?: number;
 };
 
 export type DiscoveryRunSummaryDto = {
   profilesConfigured: number;
+  profilesSelected: number;
+  selectionShortfallTotal: number;
   profilesSearched: number;
   tavilyRequests: number;
   rawResults: number;
@@ -48,6 +56,11 @@ export type DiscoveryRunSummaryDto = {
   filteredValidation: number;
   filteredDomain: number;
   filteredDuplicateInRun: number;
+  filteredQualitySafety?: number;
+  filteredQualityLocale?: number;
+  filteredQualityCareers?: number;
+  skippedNotActionable?: number;
+  skippedClassificationDeferred?: number;
   uniqueCandidates: number;
   candidatesLimited: number;
   ingestReceived: number;
@@ -73,6 +86,7 @@ export type DiscoveryRunDto = {
   summary?: DiscoveryRunSummaryDto;
   profileErrors?: DiscoveryRunProfileErrorSummary[];
   profileSummaries?: DiscoveryRunProfileSummaryDto[];
+  selectedProfileIds?: string[];
 };
 
 export type RunTavilyDiscoveryBlockReason =

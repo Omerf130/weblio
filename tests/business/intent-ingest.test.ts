@@ -13,6 +13,7 @@ import { INGEST_ERROR_CODES, IngestError } from "../../src/lib/discovery/ingest-
 import { noopIntentClassifier } from "../../src/lib/discovery/classifier/noop-classifier";
 import type { AdminIntentDetailDto } from "../../src/types/intent";
 import type { IntentClassifier } from "../../src/lib/discovery/classifier/types";
+import type { IngestPipelineDeps } from "../../src/lib/discovery/ingest";
 
 const validInput = {
   provider: "dev",
@@ -41,27 +42,61 @@ function mockIntent(
   };
 }
 
+const explicitTestClassifier: IntentClassifier = {
+  async classify() {
+    return {
+      classification: "explicitNeed",
+      reason: "test",
+      classifierVersion: "test-v1",
+    };
+  },
+};
+
+function legacyIngestDeps(
+  overrides: Partial<IngestPipelineDeps> = {}
+): Partial<IngestPipelineDeps> {
+  return {
+    findDiscoveredIntentByDedupeKey: async () => null,
+    touchDiscoveredIntentRediscovery: async () => ({
+      intentId: mockIntent().id,
+      created: false,
+      dedupeKey: "provider:dev:ingest-test-1",
+      intent: mockIntent({ classification: "explicitNeed" }),
+    }),
+    createClassifiedDiscoveredIntent: async () => ({
+      intentId: mockIntent().id,
+      created: true,
+      dedupeKey: "provider:dev:ingest-test-1",
+      intent: mockIntent({ classification: "explicitNeed" }),
+    }),
+    updateIntentClassification: async (input) =>
+      mockIntent({ classification: input.classification }),
+    ...overrides,
+  };
+}
+
 describe("intent ingestion single result", () => {
   it("valid normalized result reaches upsert layer", async () => {
-    let upsertCalled = false;
+    let createCalled = false;
     const outcome = await ingestDiscoveredResult(validInput, {
-      deps: {
-        upsertDiscoveredIntent: async () => {
-          upsertCalled = true;
+      classifier: explicitTestClassifier,
+      deps: legacyIngestDeps({
+        createClassifiedDiscoveredIntent: async () => {
+          createCalled = true;
           return {
             intentId: mockIntent().id,
             created: true,
             dedupeKey: "provider:dev:ingest-test-1",
-            intent: mockIntent(),
+            intent: mockIntent({ classification: "explicitNeed" }),
           };
         },
-        updateIntentClassification: async () => mockIntent(),
-      },
+      }),
     });
 
-    assert.equal(upsertCalled, true);
+    assert.equal(createCalled, true);
     assert.equal(outcome.ok, true);
     if (outcome.ok) {
+      assert.equal(outcome.persisted, true);
       assert.equal(outcome.created, true);
       assert.equal(outcome.rediscovered, false);
     }
@@ -82,21 +117,12 @@ describe("intent ingestion single result", () => {
   it("NoOp leaves classification unclassified", async () => {
     const outcome = await ingestDiscoveredResult(validInput, {
       classifier: noopIntentClassifier,
-      deps: {
-        upsertDiscoveredIntent: async () => ({
-          intentId: mockIntent().id,
-          created: true,
-          dedupeKey: "provider:dev:ingest-test-1",
-          intent: mockIntent({ classification: "unclassified" }),
-        }),
-        updateIntentClassification: async () => {
-          throw new Error("classifier must not persist with NoOp");
-        },
-      },
+      deps: legacyIngestDeps(),
     });
 
     assert.equal(outcome.ok, true);
     if (outcome.ok) {
+      assert.equal(outcome.persisted, false);
       assert.equal(outcome.classification, "unclassified");
       assert.equal(outcome.classified, false);
     }
@@ -123,15 +149,8 @@ describe("intent ingestion batch", () => {
         { provider: "dev", externalId: "b2", content: "שניים" },
       ],
       {
-        deps: {
-          upsertDiscoveredIntent: async (input) => ({
-            intentId: "507f1f77bcf86cd799439011",
-            created: true,
-            dedupeKey: `provider:dev:${input.externalId}`,
-            intent: mockIntent({ externalId: input.externalId }),
-          }),
-          updateIntentClassification: async () => mockIntent(),
-        },
+        classifier: explicitTestClassifier,
+        deps: legacyIngestDeps(),
       }
     );
 
@@ -147,15 +166,8 @@ describe("intent ingestion batch", () => {
         { provider: "dev", content: "" },
       ],
       {
-        deps: {
-          upsertDiscoveredIntent: async () => ({
-            intentId: mockIntent().id,
-            created: true,
-            dedupeKey: "provider:dev:ok",
-            intent: mockIntent(),
-          }),
-          updateIntentClassification: async () => mockIntent(),
-        },
+        classifier: explicitTestClassifier,
+        deps: legacyIngestDeps(),
       }
     );
 
@@ -180,21 +192,14 @@ describe("intent ingestion batch", () => {
 describe("intent ingestion rediscovery semantics", () => {
   it("rediscovered ingest reports rediscovered without reclassifying", async () => {
     const outcome = await ingestDiscoveredResult(validInput, {
-      deps: {
-        upsertDiscoveredIntent: async () => ({
-          intentId: mockIntent().id,
-          created: false,
-          dedupeKey: "provider:dev:ingest-test-1",
-          intent: mockIntent({
+      deps: legacyIngestDeps({
+        findDiscoveredIntentByDedupeKey: async () =>
+          mockIntent({
             discoveryCount: 2,
             classification: "explicitNeed",
             classificationReason: "שמור",
           }),
-        }),
-        updateIntentClassification: async () => {
-          throw new Error("must not reclassify");
-        },
-      },
+      }),
     });
 
     assert.equal(outcome.ok, true);
@@ -219,20 +224,7 @@ describe("intent classifier injection", () => {
 
     const outcome = await ingestDiscoveredResult(validInput, {
       classifier: fakeClassifier,
-      deps: {
-        upsertDiscoveredIntent: async () => ({
-          intentId: mockIntent().id,
-          created: true,
-          dedupeKey: "provider:dev:ingest-test-1",
-          intent: mockIntent({ classification: "unclassified" }),
-        }),
-        updateIntentClassification: async (input) =>
-          mockIntent({
-            classification: input.classification,
-            classificationReason: input.classificationReason,
-            classifierVersion: input.classifierVersion,
-          }),
-      },
+      deps: legacyIngestDeps(),
     });
 
     assert.equal(outcome.ok, true);
@@ -280,21 +272,12 @@ describe("intent classifier injection", () => {
           throw new Error("classifier exploded");
         },
       },
-      deps: {
-        upsertDiscoveredIntent: async () => ({
-          intentId: mockIntent().id,
-          created: true,
-          dedupeKey: "provider:dev:ingest-test-1",
-          intent: mockIntent({ classification: "unclassified" }),
-        }),
-        updateIntentClassification: async () => {
-          throw new Error("must not update");
-        },
-      },
+      deps: legacyIngestDeps(),
     });
 
     assert.equal(outcome.ok, true);
     if (outcome.ok) {
+      assert.equal(outcome.persisted, false);
       assert.equal(outcome.classified, false);
       assert.equal(outcome.classification, "unclassified");
     }
@@ -360,32 +343,17 @@ describe("intent classifier injection", () => {
             };
           },
         },
-        deps: {
-          upsertDiscoveredIntent: async () => ({
-            intentId: mockIntent().id,
-            created: true,
-            dedupeKey: "url:fb",
-            intent: mockIntent({
-              classification: "unclassified",
-              contentQuality: "aggregated_social",
-              contentQualityReasons: ["other_posts_section"],
-              content: mixedContent,
-              sourceUrl: "https://www.facebook.com/groups/1/posts/2",
-            }),
-          }),
-          updateIntentClassification: async () => {
-            throw new Error("must not persist AI classification");
-          },
-        },
+        deps: legacyIngestDeps(),
       }
     );
 
     assert.equal(classifyCalls, 0);
     assert.equal(outcome.ok, true);
     if (outcome.ok) {
+      assert.equal(outcome.persisted, false);
       assert.equal(outcome.classified, false);
       assert.equal(outcome.classification, "unclassified");
-      assert.equal(outcome.autoClassificationSkipped, true);
+      assert.equal(outcome.skipReason, "auto_classification_skipped");
     }
   });
 
@@ -408,23 +376,7 @@ describe("intent classifier injection", () => {
             };
           },
         },
-        deps: {
-          upsertDiscoveredIntent: async () => ({
-            intentId: mockIntent().id,
-            created: true,
-            dedupeKey: "url:fb2",
-            intent: mockIntent({
-              classification: "unclassified",
-              contentQuality: "normal",
-              content: "היי, מחפש מישהו שיבנה לי אתר לעסק",
-            }),
-          }),
-          updateIntentClassification: async (input) =>
-            mockIntent({
-              classification: input.classification,
-              classificationReason: input.classificationReason,
-            }),
-        },
+        deps: legacyIngestDeps(),
       }
     );
 
@@ -438,18 +390,17 @@ describe("intent classifier injection", () => {
 
 describe("intent rediscovery preserved fields (upsert contract via mocks)", () => {
   it("dismissed status is returned unchanged from upsert layer", async () => {
+    const existing = mockIntent({ status: "dismissed", classification: "irrelevant" });
     const outcome = await ingestDiscoveredResult(validInput, {
-      deps: {
-        upsertDiscoveredIntent: async () => ({
-          intentId: mockIntent().id,
+      deps: legacyIngestDeps({
+        findDiscoveredIntentByDedupeKey: async () => existing,
+        touchDiscoveredIntentRediscovery: async () => ({
+          intentId: existing.id,
           created: false,
           dedupeKey: "provider:dev:ingest-test-1",
-          intent: mockIntent({ status: "dismissed", classification: "irrelevant" }),
+          intent: existing,
         }),
-        updateIntentClassification: async () => {
-          throw new Error("must not classify");
-        },
-      },
+      }),
     });
 
     assert.equal(outcome.ok, true);
@@ -461,21 +412,14 @@ describe("intent rediscovery preserved fields (upsert contract via mocks)", () =
 
   it("saved status is returned unchanged from upsert layer", async () => {
     const outcome = await ingestDiscoveredResult(validInput, {
-      deps: {
-        upsertDiscoveredIntent: async () => ({
-          intentId: mockIntent().id,
-          created: false,
-          dedupeKey: "provider:dev:ingest-test-1",
-          intent: mockIntent({
+      deps: legacyIngestDeps({
+        findDiscoveredIntentByDedupeKey: async () =>
+          mockIntent({
             status: "saved",
             classification: "explicitNeed",
             opportunityId: "507f1f77bcf86cd799439012",
           }),
-        }),
-        updateIntentClassification: async () => {
-          throw new Error("must not classify");
-        },
-      },
+      }),
     });
 
     assert.equal(outcome.ok, true);

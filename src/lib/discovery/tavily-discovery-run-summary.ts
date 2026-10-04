@@ -8,6 +8,10 @@ export type TavilyDiscoveryProfileError = {
 
 export type TavilyDiscoveryRunSummary = {
   profilesConfigured: number;
+  /** Profiles chosen by the daily selector (V2) or policy slice (legacy). */
+  profilesSelected: number;
+  selectedProfileIds: string[];
+  selectionShortfallTotal: number;
   profilesSearched: number;
   tavilyRequests: number;
   profileErrors: TavilyDiscoveryProfileError[];
@@ -18,6 +22,13 @@ export type TavilyDiscoveryRunSummary = {
   filteredValidation: number;
   filteredDomain: number;
   filteredDuplicateInRun: number;
+
+  filteredQualitySafety: number;
+  filteredQualityLocale: number;
+  filteredQualityCareers: number;
+
+  skippedNotActionable: number;
+  skippedClassificationDeferred: number;
 
   uniqueCandidates: number;
   candidatesLimited: number;
@@ -42,6 +53,9 @@ export function createEmptyTavilyDiscoveryRunSummary(
 ): TavilyDiscoveryRunSummary {
   return {
     profilesConfigured,
+    profilesSelected: 0,
+    selectedProfileIds: [],
+    selectionShortfallTotal: 0,
     profilesSearched: 0,
     tavilyRequests: 0,
     profileErrors: [],
@@ -50,6 +64,11 @@ export function createEmptyTavilyDiscoveryRunSummary(
     filteredValidation: 0,
     filteredDomain: 0,
     filteredDuplicateInRun: 0,
+    filteredQualitySafety: 0,
+    filteredQualityLocale: 0,
+    filteredQualityCareers: 0,
+    skippedNotActionable: 0,
+    skippedClassificationDeferred: 0,
     uniqueCandidates: 0,
     candidatesLimited: 0,
     ingestReceived: 0,

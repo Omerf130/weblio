@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
+import type { DiscoverySearchProfileCatalogV2 } from "@/lib/discovery/discovery-v2-types";
+import { parseSearchProfileCatalogV2 } from "@/lib/discovery/providers/validate-v2-search-catalog";
 import type { DiscoverySearchProfileCatalog } from "@/lib/discovery/providers/types";
 
 const profileSchema = z.object({
@@ -35,6 +37,11 @@ export const PRODUCTION_CATALOG_PATH = join(
   "../../../../config/discovery/search-profiles.he.prod.json"
 );
 
+export const PRODUCTION_V2_CATALOG_PATH = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "../../../../config/discovery/search-profiles.he.v2.prod.json"
+);
+
 const DEFAULT_CATALOG_PATH = POC1_CATALOG_PATH;
 
 export function parseSearchProfileCatalog(
@@ -61,4 +68,10 @@ export function loadSearchProfileCatalogPoc2(): DiscoverySearchProfileCatalog {
 
 export function loadSearchProfileCatalogProduction(): DiscoverySearchProfileCatalog {
   return loadSearchProfileCatalog(PRODUCTION_CATALOG_PATH);
+}
+
+export function loadSearchProfileCatalogV2Production(): DiscoverySearchProfileCatalogV2 {
+  const raw = readFileSync(PRODUCTION_V2_CATALOG_PATH, "utf8");
+  const json = JSON.parse(raw) as unknown;
+  return parseSearchProfileCatalogV2(json);
 }

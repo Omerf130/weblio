@@ -20,6 +20,8 @@ export type DiscoverySearchProfileCatalog = {
 export type TavilySearchRequestPolicy = {
   timeRange?: string;
   excludeDomains?: readonly string[];
+  topic?: "general" | "news";
+  country?: string;
 };
 
 export type DiscoverySearchProviderSearchOptions = {

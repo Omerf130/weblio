@@ -1,7 +1,7 @@
 import { assessDiscoveryContentQuality } from "@/lib/discovery/discovery-content-quality";
 import { extractDiscoveryProvenance } from "@/lib/discovery/discovery-provenance";
 import type { NormalizedDiscoveryInput } from "@/lib/discovery/types";
-import type { IntentContentQuality } from "@/types/intent";
+import type { IntentClassification, IntentContentQuality } from "@/types/intent";
 
 /** Fields that must never change on rediscovery upsert. */
 export const REDISCOVERY_PRESERVED_FIELD_KEYS = [
@@ -41,7 +41,10 @@ export type FirstDiscoveryDocumentFields = {
   discoveredAt: Date;
   lastSeenAt: Date;
   discoveryCount: 1;
-  classification: "unclassified";
+  classification: IntentClassification;
+  classificationReason?: string;
+  classifiedAt?: Date;
+  classifierVersion?: string;
   status: "new";
   rawMetadata?: Record<string, unknown>;
   discoveryProfileId?: string;
@@ -53,7 +56,8 @@ export type FirstDiscoveryDocumentFields = {
 export function buildFirstDiscoveryDocument(
   input: NormalizedDiscoveryInput,
   dedupeKey: string,
-  now: Date
+  now: Date,
+  classification: IntentClassification = "unclassified"
 ): FirstDiscoveryDocumentFields {
   const provenance = extractDiscoveryProvenance(input);
   const quality = assessDiscoveryContentQuality({
@@ -77,13 +81,30 @@ export function buildFirstDiscoveryDocument(
     discoveredAt: now,
     lastSeenAt: now,
     discoveryCount: 1,
-    classification: "unclassified",
+    classification,
     status: "new",
     rawMetadata: input.rawMetadata,
     discoveryProfileId: provenance.discoveryProfileId,
     discoveryQuery: provenance.discoveryQuery,
     contentQuality: quality.quality,
     ...(quality.reasons.length > 0 ? { contentQualityReasons: quality.reasons } : {}),
+  };
+}
+
+export function buildClassifiedFirstDiscoveryDocument(
+  input: NormalizedDiscoveryInput,
+  dedupeKey: string,
+  now: Date,
+  classification: Exclude<IntentClassification, "unclassified" | "irrelevant">,
+  classificationReason: string,
+  classifierVersion: string
+): FirstDiscoveryDocumentFields {
+  const base = buildFirstDiscoveryDocument(input, dedupeKey, now, classification);
+  return {
+    ...base,
+    classificationReason: classificationReason.trim().slice(0, 500),
+    classifiedAt: now,
+    classifierVersion: classifierVersion.trim().slice(0, 64),
   };
 }
 

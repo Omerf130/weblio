@@ -1,0 +1,450 @@
+{
+  "version": 4,
+  "environment": "production-v2.2",
+  "locale": "he-IL",
+  "strategy": "explicit-intent-v2.2",
+  "catalogKind": "v2",
+  "profiles": [
+    {
+      "id": "K01",
+      "category": "explicit_website",
+      "queryHe": "מחפש מישהו שיבנה לי אתר לעסק",
+      "enabled": true,
+      "tier": "core",
+      "intentStrength": "high",
+      "notes": "V2.2 core — W1"
+    },
+    {
+      "id": "K03",
+      "category": "explicit_recommendation",
+      "queryHe": "מחפש המלצה על בונה אתרים לעסק",
+      "enabled": true,
+      "tier": "core",
+      "intentStrength": "high",
+      "notes": "V2.2 core — W3"
+    },
+    {
+      "id": "K04",
+      "category": "explicit_quote",
+      "queryHe": "מחפש הצעת מחיר לבניית אתר לעסק",
+      "enabled": true,
+      "tier": "core",
+      "intentStrength": "high",
+      "notes": "V2.2 core — quote seek"
+    },
+    {
+      "id": "K05",
+      "category": "explicit_landing_page",
+      "queryHe": "מחפש מישהו שיבנה לי דף נחיתה לעסק",
+      "enabled": true,
+      "tier": "core",
+      "intentStrength": "high",
+      "notes": "V2.2 core — W5"
+    },
+    {
+      "id": "K07",
+      "category": "explicit_ecommerce",
+      "queryHe": "צריך מישהו שיבנה לי חנות אינטרנטית לעסק",
+      "enabled": true,
+      "tier": "core",
+      "intentStrength": "high",
+      "notes": "V2.2 core — W7"
+    },
+    {
+      "id": "K08",
+      "category": "explicit_website",
+      "queryHe": "מחפש בונה אתרים לעסק קטן",
+      "enabled": true,
+      "tier": "core",
+      "intentStrength": "high",
+      "notes": "V2.2 core — Run1 explicitNeed"
+    },
+    {
+      "id": "K13",
+      "category": "explicit_landing_page",
+      "queryHe": "מחפש מישהו שיבנה דף נחיתה לקמפיין פרסום",
+      "enabled": true,
+      "tier": "core",
+      "intentStrength": "high",
+      "notes": "V2.2 core — Run1 explicitNeed"
+    },
+    {
+      "id": "R05",
+      "category": "explicit_website",
+      "queryHe": "מחפש מפתח אתרים לפרויקט של עסק",
+      "enabled": true,
+      "tier": "core",
+      "intentStrength": "high",
+      "notes": "V2.2 promoted — Run1 explicitNeed"
+    },
+    {
+      "id": "R06",
+      "category": "explicit_ecommerce",
+      "queryHe": "מחפש מישהו שיבנה אתר מכירות אונליין",
+      "enabled": true,
+      "tier": "core",
+      "intentStrength": "high",
+      "notes": "V2.2 promoted — Run1 explicitNeed"
+    },
+    {
+      "id": "K02",
+      "category": "explicit_ecommerce",
+      "queryHe": "מחפש מישהו שיבנה לי חנות Shopify",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 demoted from core"
+    },
+    {
+      "id": "K06",
+      "category": "explicit_redesign",
+      "queryHe": "מחפשים מישהו שיעצב מחדש אתר לעסק קטן",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 rewrite + demoted from core"
+    },
+    {
+      "id": "K09",
+      "category": "explicit_website",
+      "queryHe": "מחפש מישהו שיבנה לי אתר תדמית לעסק קטן",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 rewrite + demoted from core"
+    },
+    {
+      "id": "K10",
+      "category": "explicit_recommendation",
+      "queryHe": "צריך אתר לעסק חדש מי ממליץ על בונה אתרים",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 demoted from core"
+    },
+    {
+      "id": "K11",
+      "category": "explicit_ecommerce",
+      "queryHe": "מחפש מישהו שיבנה חנות WooCommerce לעסק",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 demoted from core"
+    },
+    {
+      "id": "K12",
+      "category": "site_problem",
+      "queryHe": "מחפשים בונה אתרים שיתקן אתר שלא עובד טוב בנייד לעסק",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 rewrite + demoted from core"
+    },
+    {
+      "id": "K14",
+      "category": "site_problem",
+      "queryHe": "מחפש מישהו שישדרג לי אתר WordPress לעסק",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 rewrite"
+    },
+    {
+      "id": "K15",
+      "category": "site_problem",
+      "queryHe": "מחפשים מישהו לשיפור אתר עסקי (חווית משתמש)",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 rewrite"
+    },
+    {
+      "id": "R01",
+      "category": "explicit_website",
+      "queryHe": "מחפשת מישהו שיבנה לי אתר לעסק",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "PoC2 A4"
+    },
+    {
+      "id": "R02",
+      "category": "explicit_recommendation",
+      "queryHe": "מחפשת המלצה על בונה אתרים לעסק",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "Feminine recommendation"
+    },
+    {
+      "id": "R03",
+      "category": "explicit_website",
+      "queryHe": "מחפש מישהו שיבנה לי אתר",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "PoC2 A3"
+    },
+    {
+      "id": "R04",
+      "category": "explicit_recommendation",
+      "queryHe": "מישהו מכיר בונה אתרים אמין",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "PoC1 A2"
+    },
+    {
+      "id": "R07",
+      "category": "explicit_ecommerce",
+      "queryHe": "צריך מישהו שיבנה לי חנות אונליין לעסק קטן",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 rewrite"
+    },
+    {
+      "id": "R08",
+      "category": "site_problem",
+      "queryHe": "מחפש מישהו שישדרג לי את האתר של העסק",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 rewrite"
+    },
+    {
+      "id": "R09",
+      "category": "site_problem",
+      "queryHe": "מחפש מישהו שיעצב מחדש אתר לעסק קטן",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 rewrite"
+    },
+    {
+      "id": "R10",
+      "category": "site_problem",
+      "queryHe": "מחפשים מישהו שיתקן אתר שלא נראה טוב בנייד לעסק",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 rewrite"
+    },
+    {
+      "id": "R11",
+      "category": "explicit_landing_page",
+      "queryHe": "מחפש בונה דפי נחיתה לעסקים",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "LP builder role"
+    },
+    {
+      "id": "R12",
+      "category": "explicit_landing_page",
+      "queryHe": "מחפשת מישהו שיבנה לי דף נחיתה",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "PoC2 B2"
+    },
+    {
+      "id": "R13",
+      "category": "explicit_ecommerce",
+      "queryHe": "מחפש מישהו לבניית חנות Shopify",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "Shopify alternate"
+    },
+    {
+      "id": "R14",
+      "category": "explicit_recommendation",
+      "queryHe": "מחפש המלצה על חברה לבניית אתרים",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "Company tone"
+    },
+    {
+      "id": "R15",
+      "category": "explicit_website",
+      "queryHe": "מחפש מישהו שיבנה אתר שעובד טוב גם בנייד לעסק",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 rewrite"
+    },
+    {
+      "id": "R16",
+      "category": "explicit_website",
+      "queryHe": "צריכה מישהו שיבנה לי אתר לעסק",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "Feminine צריכה"
+    },
+    {
+      "id": "R17",
+      "category": "specific_need",
+      "queryHe": "מחפש מישהו שיבנה אתר לסטאראפ קטן",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "Startup"
+    },
+    {
+      "id": "R18",
+      "category": "explicit_website",
+      "queryHe": "מחפש מישהו שיבנה לי אתר לעסק עם SEO",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 rewrite"
+    },
+    {
+      "id": "R19",
+      "category": "site_problem",
+      "queryHe": "מחפש מישהו לתחזוק אתר עסקי",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 rewrite"
+    },
+    {
+      "id": "R20",
+      "category": "explicit_website",
+      "queryHe": "מחפש מעצב אתרים לעסק שלי",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "Designer title"
+    },
+    {
+      "id": "R21",
+      "category": "site_problem",
+      "queryHe": "מחפש מישהו שיתקן אתר עסקי שבור",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "Broken site"
+    },
+    {
+      "id": "R22",
+      "category": "research",
+      "queryHe": "מחפש המלצה על בונה או פלטפורמה לחנות אונליין לעסק קטן",
+      "enabled": true,
+      "tier": "rotating",
+      "intentStrength": "medium",
+      "notes": "V2.2 rewrite"
+    },
+    {
+      "id": "X01",
+      "category": "research",
+      "queryHe": "כמה עולה לבנות אתר לעסק קטן",
+      "enabled": true,
+      "tier": "experimental",
+      "intentStrength": "exploratory",
+      "notes": "Price research"
+    },
+    {
+      "id": "X02",
+      "category": "research",
+      "queryHe": "האם כדאי לי כבעל עסק לבנות אתר או להסתפק באינסטגרם",
+      "enabled": true,
+      "tier": "experimental",
+      "intentStrength": "exploratory",
+      "notes": "V2.2 rewrite"
+    },
+    {
+      "id": "X03",
+      "category": "possible_need",
+      "queryHe": "פתחתי עסק חדש האם אני צריך אתר",
+      "enabled": true,
+      "tier": "experimental",
+      "intentStrength": "exploratory",
+      "notes": "PoC1 E1"
+    },
+    {
+      "id": "X04",
+      "category": "possible_need",
+      "queryHe": "עסק מקומי בלי אתר האם זה מפריע",
+      "enabled": true,
+      "tier": "experimental",
+      "intentStrength": "exploratory",
+      "notes": "PoC1 E3"
+    },
+    {
+      "id": "X05",
+      "category": "research",
+      "queryHe": "איך בוחרים בונה אתרים לעסק",
+      "enabled": true,
+      "tier": "experimental",
+      "intentStrength": "exploratory",
+      "notes": "Selection guide"
+    },
+    {
+      "id": "X06",
+      "category": "research",
+      "queryHe": "מה ההבדל בין דף נחיתה לאתר תדמית לעסק",
+      "enabled": false,
+      "tier": "experimental",
+      "intentStrength": "exploratory",
+      "notes": "V2.2 disabled — education"
+    },
+    {
+      "id": "X07",
+      "category": "research",
+      "queryHe": "מחפש חוות דעת על בונה אתרים",
+      "enabled": true,
+      "tier": "experimental",
+      "intentStrength": "exploratory",
+      "notes": "Reviews"
+    },
+    {
+      "id": "X08",
+      "category": "research",
+      "queryHe": "Wix או בונה אתרים מקצועי מה עדיף לעסק קטן",
+      "enabled": false,
+      "tier": "experimental",
+      "intentStrength": "exploratory",
+      "notes": "V2.2 disabled — DIY compare"
+    },
+    {
+      "id": "X09",
+      "category": "research",
+      "queryHe": "לפני שמזמינים בונה אתר — מחפשים המלצות לעסק קטן",
+      "enabled": false,
+      "tier": "experimental",
+      "intentStrength": "exploratory",
+      "notes": "V2.2 disabled — pre-hire research"
+    },
+    {
+      "id": "X10",
+      "category": "social_experiment",
+      "queryHe": "site:facebook.com מחפש מישהו שיבנה לי אתר לעסק",
+      "enabled": true,
+      "tier": "experimental",
+      "intentStrength": "exploratory",
+      "notes": "V2.2 social — Facebook K01 variant"
+    },
+    {
+      "id": "X11",
+      "category": "social_experiment",
+      "queryHe": "site:facebook.com מחפש בונה אתרים לעסק קטן",
+      "enabled": true,
+      "tier": "experimental",
+      "intentStrength": "exploratory",
+      "notes": "V2.2 social — Facebook K08 variant"
+    },
+    {
+      "id": "X12",
+      "category": "social_experiment",
+      "queryHe": "site:instagram.com מחפש מישהו שיבנה לי אתר לעסק",
+      "enabled": true,
+      "tier": "experimental",
+      "intentStrength": "exploratory",
+      "notes": "V2.2 social — Instagram K01 variant"
+    }
+  ]
+}

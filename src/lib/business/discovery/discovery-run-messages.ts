@@ -22,6 +22,7 @@ export function formatCooldownRemainingHebrew(seconds: number): string {
 
 function formatSuccessMetrics(summary: DiscoveryRunSummaryDto): string[] {
   return [
+    `נבחרו ${summary.profilesSelected} פרופילי חיפוש (${summary.tavilyRequests} בקשות Tavily)`,
     `נמצאו ${summary.rawResults} תוצאות`,
     `נבדקו ${summary.uniqueCandidates} מועמדים ייחודיים`,
     `נוספו ${summary.created} כוונות חדשות`,

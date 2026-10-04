@@ -12,10 +12,13 @@ import {
   shouldSkipAutomaticIntentClassification,
   type DiscoveryContentQuality,
 } from "@/lib/discovery/discovery-content-quality";
+import { computeDedupeKey } from "@/lib/discovery/dedupe-key";
 import type { NormalizedDiscoveryInput } from "@/lib/discovery/types";
 import {
+  createClassifiedDiscoveredIntent,
+  findDiscoveredIntentByDedupeKey,
+  touchDiscoveredIntentRediscovery,
   updateIntentClassification,
-  upsertDiscoveredIntent,
 } from "@/lib/data/intents";
 import {
   normalizedDiscoveryInputSchema,
@@ -26,31 +29,46 @@ import type { AdminIntentDetailDto, IntentClassification } from "@/types/intent"
 
 export const MAX_DISCOVERY_INGEST_BATCH_SIZE = 100;
 
+export const INGEST_SKIP_REASONS = [
+  "classification_deferred",
+  "classification_failed",
+  "auto_classification_skipped",
+  "not_actionable",
+] as const;
+
+export type IngestSkipReason = (typeof INGEST_SKIP_REASONS)[number];
+
 export type IngestPipelineDeps = {
-  upsertDiscoveredIntent: typeof upsertDiscoveredIntent;
+  findDiscoveredIntentByDedupeKey: typeof findDiscoveredIntentByDedupeKey;
+  touchDiscoveredIntentRediscovery: typeof touchDiscoveredIntentRediscovery;
+  createClassifiedDiscoveredIntent: typeof createClassifiedDiscoveredIntent;
   updateIntentClassification: typeof updateIntentClassification;
 };
 
 const defaultDeps: IngestPipelineDeps = {
-  upsertDiscoveredIntent,
+  findDiscoveredIntentByDedupeKey,
+  touchDiscoveredIntentRediscovery,
+  createClassifiedDiscoveredIntent,
   updateIntentClassification,
 };
 
 export type IngestDiscoveredResultOptions = {
   classifier?: IntentClassifier;
   deps?: Partial<IngestPipelineDeps>;
+  /** When false, new URLs are not classified or persisted (classification cap). */
+  attemptClassification?: boolean;
 };
 
 export type IngestDiscoveredSuccess = {
   ok: true;
-  intentId: string;
+  persisted: boolean;
+  intentId?: string;
   created: boolean;
   rediscovered: boolean;
   dedupeKey: string;
   classification: IntentClassification;
   classified: boolean;
-  /** Automatic OpenAI classification was skipped (e.g. aggregated social content). */
-  autoClassificationSkipped?: boolean;
+  skipReason?: IngestSkipReason;
 };
 
 export type IngestDiscoveredFailure = {
@@ -76,6 +94,12 @@ export type IngestDiscoveredBatchSummary = {
   failures: IngestBatchFailure[];
 };
 
+export function isActionableIntentClassification(
+  classification: IntentClassification
+): classification is "explicitNeed" | "possibleNeed" {
+  return classification === "explicitNeed" || classification === "possibleNeed";
+}
+
 export function shouldAttemptIntentClassification(
   classification: IntentClassification
 ): boolean {
@@ -90,6 +114,17 @@ export function buildClassifierInput(
     title: normalized.title ?? intent.title,
     content: intent.content,
     sourcePlatform: normalized.sourcePlatform ?? intent.sourcePlatform,
+    sourceType: normalized.sourceType,
+  };
+}
+
+export function buildClassifierInputFromNormalized(
+  normalized: NormalizedDiscoveryInputParsed
+): IntentClassifierInput {
+  return {
+    title: normalized.title,
+    content: normalized.content,
+    sourcePlatform: normalized.sourcePlatform,
     sourceType: normalized.sourceType,
   };
 }
@@ -169,8 +204,15 @@ export async function applyClassifierIfNeeded(
 
 function resolveDeps(partial?: Partial<IngestPipelineDeps>): IngestPipelineDeps {
   return {
-    upsertDiscoveredIntent:
-      partial?.upsertDiscoveredIntent ?? defaultDeps.upsertDiscoveredIntent,
+    findDiscoveredIntentByDedupeKey:
+      partial?.findDiscoveredIntentByDedupeKey ??
+      defaultDeps.findDiscoveredIntentByDedupeKey,
+    touchDiscoveredIntentRediscovery:
+      partial?.touchDiscoveredIntentRediscovery ??
+      defaultDeps.touchDiscoveredIntentRediscovery,
+    createClassifiedDiscoveredIntent:
+      partial?.createClassifiedDiscoveredIntent ??
+      defaultDeps.createClassifiedDiscoveredIntent,
     updateIntentClassification:
       partial?.updateIntentClassification ?? defaultDeps.updateIntentClassification,
   };
@@ -202,6 +244,84 @@ function toNormalizedDiscoveryInput(
   };
 }
 
+function dedupeKeyFromParsed(parsed: NormalizedDiscoveryInputParsed): string {
+  return computeDedupeKey({
+    provider: parsed.provider,
+    externalId: parsed.externalId,
+    sourceUrl: parsed.sourceUrl,
+  });
+}
+
+function skippedSuccess(input: {
+  dedupeKey: string;
+  classification: IntentClassification;
+  classified: boolean;
+  skipReason: IngestSkipReason;
+}): IngestDiscoveredSuccess {
+  return {
+    ok: true,
+    persisted: false,
+    created: false,
+    rediscovered: false,
+    dedupeKey: input.dedupeKey,
+    classification: input.classification,
+    classified: input.classified,
+    skipReason: input.skipReason,
+  };
+}
+
+async function classifyNewCandidate(
+  normalized: NormalizedDiscoveryInputParsed,
+  classifier: IntentClassifier
+): Promise<
+  | { ok: true; classified: true; classification: IntentClassification; reason: string; version: string }
+  | { ok: true; classified: false; classification: IntentClassification; autoClassificationSkipped?: boolean }
+  | { ok: false }
+> {
+  const quality = assessDiscoveryContentQuality({
+    content: normalized.content,
+    title: normalized.title,
+    sourceUrl: normalized.sourceUrl,
+    sourcePlatform: normalized.sourcePlatform,
+  });
+
+  if (
+    shouldSkipAutomaticIntentClassification({
+      classification: "unclassified",
+      quality: quality.quality,
+    })
+  ) {
+    return {
+      ok: true,
+      classified: false,
+      classification: "unclassified",
+      autoClassificationSkipped: true,
+    };
+  }
+
+  let classifierOutput;
+  try {
+    classifierOutput = await classifier.classify(
+      buildClassifierInputFromNormalized(normalized)
+    );
+  } catch {
+    return { ok: false };
+  }
+
+  const parsedOutput = safeParseIntentClassifierResult(classifierOutput);
+  if (!parsedOutput.ok) {
+    return { ok: false };
+  }
+
+  return {
+    ok: true,
+    classified: true,
+    classification: parsedOutput.data.classification,
+    reason: parsedOutput.data.reason,
+    version: parsedOutput.data.classifierVersion,
+  };
+}
+
 export async function ingestDiscoveredResult(
   input: unknown,
   options: IngestDiscoveredResultOptions = {}
@@ -218,30 +338,92 @@ export async function ingestDiscoveredResult(
   const deps = resolveDeps(options.deps);
   const classifier = options.classifier ?? getIntentClassifierForIngest();
   const normalized = parsed.data;
+  const dedupeKey = dedupeKeyFromParsed(normalized);
+  const attemptClassification = options.attemptClassification ?? true;
 
   try {
-    const upsertResult = await deps.upsertDiscoveredIntent(
-      toNormalizedDiscoveryInput(normalized)
-    );
+    const existing = await deps.findDiscoveredIntentByDedupeKey(dedupeKey);
+    if (existing) {
+      const touch = await deps.touchDiscoveredIntentRediscovery(dedupeKey);
+      return {
+        ok: true,
+        persisted: true,
+        intentId: touch.intentId,
+        created: false,
+        rediscovered: true,
+        dedupeKey,
+        classification: touch.intent.classification,
+        classified: false,
+      };
+    }
 
-    const classificationState = await applyClassifierIfNeeded(
-      upsertResult.intent,
-      normalized,
-      classifier,
-      deps
-    );
+    if (!attemptClassification) {
+      return skippedSuccess({
+        dedupeKey,
+        classification: "unclassified",
+        classified: false,
+        skipReason: "classification_deferred",
+      });
+    }
+
+    const classificationState = await classifyNewCandidate(normalized, classifier);
+
+    if (!classificationState.ok) {
+      return skippedSuccess({
+        dedupeKey,
+        classification: "unclassified",
+        classified: false,
+        skipReason: "classification_failed",
+      });
+    }
+
+    if (
+      !classificationState.classified &&
+      "autoClassificationSkipped" in classificationState &&
+      classificationState.autoClassificationSkipped
+    ) {
+      return skippedSuccess({
+        dedupeKey,
+        classification: "unclassified",
+        classified: false,
+        skipReason: "auto_classification_skipped",
+      });
+    }
+
+    if (!classificationState.classified) {
+      return skippedSuccess({
+        dedupeKey,
+        classification: classificationState.classification,
+        classified: false,
+        skipReason: "classification_failed",
+      });
+    }
+
+    if (!isActionableIntentClassification(classificationState.classification)) {
+      return skippedSuccess({
+        dedupeKey,
+        classification: classificationState.classification,
+        classified: true,
+        skipReason: "not_actionable",
+      });
+    }
+
+    const created = await deps.createClassifiedDiscoveredIntent({
+      normalized: toNormalizedDiscoveryInput(normalized),
+      classification: classificationState.classification,
+      classificationReason: classificationState.reason,
+      classifierVersion: classificationState.version,
+    });
 
     return {
       ok: true,
-      intentId: upsertResult.intentId,
-      created: upsertResult.created,
-      rediscovered: !upsertResult.created,
-      dedupeKey: upsertResult.dedupeKey,
-      classification: classificationState.classification,
-      classified: classificationState.classified,
-      ...(classificationState.autoClassificationSkipped
-        ? { autoClassificationSkipped: true }
-        : {}),
+      persisted: true,
+      intentId: created.intentId,
+      created: created.created,
+      rediscovered: !created.created,
+      dedupeKey,
+      classification: created.intent.classification,
+      classified: true,
     };
   } catch (error) {
     const safe = toSafeIngestMessage(error);
@@ -288,10 +470,12 @@ export async function ingestDiscoveredResults(
       continue;
     }
 
-    if (outcome.created) {
-      summary.created += 1;
-    } else {
-      summary.rediscovered += 1;
+    if (outcome.persisted) {
+      if (outcome.created) {
+        summary.created += 1;
+      } else if (outcome.rediscovered) {
+        summary.rediscovered += 1;
+      }
     }
 
     if (outcome.classified) {
