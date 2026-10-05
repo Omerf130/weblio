@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { FaArrowLeftLong } from "react-icons/fa6";
 import Footer from "../../components/footer/Footer";
 import ProjectsNav from "../../components/projectsNav/ProjectsNav";
+import ProjectsPageFeatured from "./components/ProjectsPageFeatured";
+import ProjectsPageGrid from "./components/ProjectsPageGrid";
 import ProjectsPageHero from "./components/ProjectsPageHero";
 import type { PublicProjectDto } from "../../types/project";
-import { PROJECT_LINK_REL, projectHref, projectImageSrc } from "../../utils/projectLinks";
 import "./Projects.scss";
 
 type ProjectsPageProps = {
@@ -21,49 +21,18 @@ const Projects = ({ projects = [] }: ProjectsPageProps) => {
     });
   }, []);
 
-  const hasProjects = projects.length > 0;
-
   return (
     <div className="project-page-wrapper">
       <ProjectsNav />
       <ProjectsPageHero />
+      <ProjectsPageFeatured projects={projects} />
       <div className="project-page-container">
         <div className="project-page-content-wrapper" id="projects-grid">
-          {hasProjects ? (
-            <ul className="project-page-ul">
-              {projects.map((project) => (
-                <li className="project-page-list-item" key={project.id}>
-                  <a
-                    href={projectHref(project.projectUrl)}
-                    target="_blank"
-                    rel={PROJECT_LINK_REL}
-                  >
-                    <div className="project-page-card-content">
-                      <div className="project-page-card-title">{project.title}</div>
-                      {project.subtitle ? (
-                        <div className="project-page-card-subtitle">{project.subtitle}</div>
-                      ) : null}
-
-                      <div className="project-page-button">
-                        <span>{project.ctaLabel}</span>
-                        <FaArrowLeftLong className="project-page-arrow" />
-                      </div>
-                    </div>
-
-                    <img
-                      className="project-page-img"
-                      src={projectImageSrc(project.imageUrl)}
-                      alt={project.imageAlt}
-                    />
-                  </a>
-                </li>
-              ))}
-            </ul>
+          {projects.length > 0 ? (
+            <ProjectsPageGrid projects={projects} />
           ) : (
             <p className="project-page-empty">פרוייקטים נוספים בקרוב</p>
           )}
-
-          <h2 className="project-page-bottom-text">פרוייקטים נוספים בקרוב</h2>
         </div>
       </div>
       <Footer />

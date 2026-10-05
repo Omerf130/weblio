@@ -1,0 +1,288 @@
+@use "../../../assets/styles/variables" as *;
+
+$card-bg: #0a1222;
+$card-border: rgba(96, 139, 193, 0.26);
+$card-border-hover: rgba(120, 168, 228, 0.4);
+$ink-on-light: #07111f;
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.65rem, 1vw, 0.85rem);
+  align-items: stretch;
+}
+
+.item {
+  min-width: 0;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: stretch;
+  min-height: clamp(188px, 13.5vw, 218px);
+  height: 100%;
+  border-radius: clamp(14px, 1.1vw, 18px);
+  overflow: hidden;
+  border: 1px solid $card-border;
+  background: $card-bg;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+    0 8px 24px rgba(0, 0, 0, 0.24),
+    0 0 20px rgba(96, 139, 193, 0.05);
+  direction: ltr;
+  transition:
+    transform 0.28s ease,
+    border-color 0.28s ease,
+    box-shadow 0.28s ease;
+
+  @media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+    &:hover {
+      transform: translateY(-2px);
+      border-color: $card-border-hover;
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+        0 12px 28px rgba(0, 0, 0, 0.3),
+        0 0 26px rgba(96, 139, 193, 0.08);
+
+      .backgroundImage {
+        transform: scale(1.012);
+      }
+    }
+  }
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.backgroundMedia {
+  position: absolute;
+  inset: 0;
+}
+
+.backgroundImage {
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.backgroundTreatment {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 10, 20, 0.06) 0%,
+      rgba(5, 10, 20, 0) 40%,
+      rgba(5, 10, 20, 0.16) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(5, 10, 20, 0) 0%,
+      rgba(5, 10, 20, 0.08) 30%,
+      rgba(5, 10, 20, 0.28) 48%,
+      rgba(5, 10, 20, 0.58) 62%,
+      rgba(5, 10, 20, 0.82) 74%,
+      rgba(8, 15, 28, 0.96) 88%,
+      rgba(8, 15, 28, 1) 100%
+    );
+}
+
+.card[data-slot="ogen"] .backgroundTreatment,
+.card[data-slot="shiputi"] .backgroundTreatment {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 10, 20, 0.04) 0%,
+      rgba(5, 10, 20, 0) 44%,
+      rgba(5, 10, 20, 0.14) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(5, 10, 20, 0.04) 0%,
+      rgba(5, 10, 20, 0.14) 32%,
+      rgba(5, 10, 20, 0.36) 50%,
+      rgba(5, 10, 20, 0.64) 64%,
+      rgba(5, 10, 20, 0.84) 76%,
+      rgba(8, 15, 28, 0.96) 90%,
+      rgba(8, 15, 28, 1) 100%
+    );
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+  flex: 0 0 46%;
+  width: 46%;
+  max-width: 46%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(0.32rem, 0.55vw, 0.45rem);
+  padding: clamp(0.58rem, 0.85vw, 0.72rem) clamp(0.62rem, 0.9vw, 0.78rem)
+    clamp(0.52rem, 0.75vw, 0.65rem);
+  background: transparent;
+  direction: rtl;
+  text-align: right;
+}
+
+.contentInner {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.18rem, 0.32vw, 0.28rem);
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.05vw, 1.08rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: clamp(0.68rem, 0.76vw, 0.74rem);
+  font-weight: $weight-bold;
+  color: rgba(186, 214, 255, 0.86);
+  line-height: 1.3;
+}
+
+.bodyText {
+  margin: 0;
+  font-size: clamp(0.64rem, 0.72vw, 0.7rem);
+  line-height: 1.45;
+  color: rgba(243, 243, 224, 0.6);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28rem;
+  list-style: none;
+  margin: 0.08rem 0 0;
+  padding: 0;
+}
+
+.tag {
+  padding: 0.18rem 0.48rem;
+  border-radius: 999px;
+  border: 1px solid rgba(96, 139, 193, 0.26);
+  background: rgba(12, 20, 34, 0.82);
+  font-size: 0.58rem;
+  font-weight: $weight-normal;
+  letter-spacing: 0.02em;
+  color: rgba(186, 214, 255, 0.7);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 0.34rem 0.68rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #e8f4ff 0%, #c8e4ff 55%, #b8d8f8 100%);
+  color: $ink-on-light !important;
+  font-size: clamp(0.64rem, 0.72vw, 0.7rem);
+  font-weight: $weight-bold;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(120, 180, 255, 0.2);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+
+  span {
+    color: $ink-on-light !important;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $ink-on-light;
+    outline-offset: 2px;
+    color: $ink-on-light !important;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &:hover {
+      color: $ink-on-light !important;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(120, 180, 255, 0.28);
+
+      span,
+      .ctaIcon {
+        color: $ink-on-light !important;
+        fill: $ink-on-light !important;
+      }
+    }
+  }
+}
+
+.ctaIcon {
+  width: 0.72rem;
+  height: 0.72rem;
+  flex-shrink: 0;
+  color: $ink-on-light !important;
+  fill: $ink-on-light !important;
+}
+
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    min-height: clamp(200px, 52vw, 240px);
+  }
+
+  .content {
+    flex: 0 0 48%;
+    width: 48%;
+    max-width: 48%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .backgroundImage,
+  .cta {
+    transition: none;
+  }
+}
