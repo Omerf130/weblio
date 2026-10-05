@@ -1,3 +1,5 @@
+import { resolveDiscoveryCronSecret } from "@/lib/discovery/discovery-cron-auth";
+
 export type DiscoveryAutomationConfig = {
   automationEnabled: boolean;
   cronSecretConfigured: boolean;
@@ -8,10 +10,10 @@ export function getDiscoveryAutomationConfig(
   source: Record<string, string | undefined> = process.env
 ): DiscoveryAutomationConfig {
   const automationEnabled = source.DISCOVERY_AUTOMATION_ENABLED === "1";
-  const cronSecret = source.DISCOVERY_CRON_SECRET?.trim();
+  const cronSecret = resolveDiscoveryCronSecret(source);
   return {
     automationEnabled,
-    cronSecretConfigured: Boolean(cronSecret && cronSecret.length > 0),
+    cronSecretConfigured: Boolean(cronSecret),
   };
 }
 

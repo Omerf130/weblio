@@ -169,6 +169,11 @@ describe("7B.2A automation env foundation", () => {
     assert.equal(config.cronSecretConfigured, false);
   });
 
+  it("treats CRON_SECRET alone as configured when DISCOVERY_CRON_SECRET is unset", () => {
+    const config = getDiscoveryAutomationConfig({ CRON_SECRET: "vercel-only" });
+    assert.equal(config.cronSecretConfigured, true);
+  });
+
   it("production guard rejects preview and disabled automation", () => {
     assert.equal(
       assertProductionDiscoveryAutomationAllowed({

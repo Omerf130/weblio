@@ -2,6 +2,7 @@ import { getIsraelCalendarDateKey } from "@/lib/admin/israel-calendar-date";
 import { executeScheduledDiscoveryRun } from "@/lib/business/discovery/execute-tavily-discovery-run";
 import {
   extractBearerToken,
+  resolveDiscoveryCronSecret,
   verifyDiscoveryCronSecret,
 } from "@/lib/discovery/discovery-cron-auth";
 import { assertProductionDiscoveryAutomationAllowed } from "@/lib/discovery/discovery-production-automation-guard";
@@ -114,7 +115,7 @@ export async function handleDiscoveryCronRequest(
   const executeScheduled = input.executeScheduled ?? executeScheduledDiscoveryRun;
 
   const token = extractBearerToken(input.authorizationHeader);
-  const expectedSecret = env.DISCOVERY_CRON_SECRET?.trim();
+  const expectedSecret = resolveDiscoveryCronSecret(env);
 
   if (!verifyDiscoveryCronSecret(token, expectedSecret)) {
     return unauthorized();

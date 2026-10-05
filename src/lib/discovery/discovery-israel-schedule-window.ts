@@ -19,11 +19,8 @@ export function getIsraelLocalClock(reference = new Date()): IsraelLocalClock {
   return { hour, minute };
 }
 
-/** Daily discovery window: 02:20–02:40 inclusive (Asia/Jerusalem). */
+/** Daily discovery window: entire local hour 02:00–02:59 (Asia/Jerusalem). */
 export function isWithinDiscoveryScheduleWindow(reference = new Date()): boolean {
-  const { hour, minute } = getIsraelLocalClock(reference);
-  if (hour !== 2) {
-    return false;
-  }
-  return minute >= 20 && minute <= 40;
+  const { hour } = getIsraelLocalClock(reference);
+  return hour === 2;
 }
