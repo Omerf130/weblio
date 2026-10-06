@@ -3,6 +3,7 @@ import type { AdminFollowUpDto } from "./follow-up";
 import type { AdminIntentListItemDto } from "./intent";
 import type { AdminOpportunityDto, OpportunityStatus } from "./opportunity";
 import type { DiscoveryRunDto } from "./discovery-run";
+import type { BusinessOverviewDiscoveryCronDiagnostics } from "./discovery-cron-diagnostic";
 
 export type DiscoveryAutomationHealthState =
   | "disabled"
@@ -60,6 +61,7 @@ export type BusinessOverviewDashboardData = {
     automationHealth: BusinessOverviewDiscoveryAutomationHealth;
     latestRun: DiscoveryRunDto | null;
     monthlyCredits: BusinessOverviewMonthlyCreditUsage;
+    cronDiagnostics: BusinessOverviewDiscoveryCronDiagnostics;
   };
 };
 

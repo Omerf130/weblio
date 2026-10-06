@@ -5,8 +5,14 @@ import {
   resolveDiscoveryCronSecret,
   verifyDiscoveryCronSecret,
 } from "@/lib/discovery/discovery-cron-auth";
+import { formatIsraelLocalTimeForDiagnostics } from "@/lib/discovery/discovery-cron-diagnostic-time";
+import {
+  defaultDiscoveryCronDiagnosticsPort,
+  type DiscoveryCronDiagnosticsPort,
+} from "@/lib/discovery/discovery-cron-diagnostics-port";
 import { assertProductionDiscoveryAutomationAllowed } from "@/lib/discovery/discovery-production-automation-guard";
 import { isWithinDiscoveryScheduleWindow } from "@/lib/discovery/discovery-israel-schedule-window";
+import type { DiscoveryCronDiagnosticOutcome } from "@/types/discovery-cron-diagnostic";
 import type { ScheduledDiscoveryOutcome } from "@/types/discovery-run";
 
 export type DiscoveryCronOutcome =
@@ -34,9 +40,11 @@ export type DiscoveryCronResponseBody = {
 
 export type HandleDiscoveryCronInput = {
   authorizationHeader: string | null;
+  vercelCronSchedule?: string | null;
   env?: Record<string, string | undefined>;
   now?: Date;
   executeScheduled?: typeof executeScheduledDiscoveryRun;
+  diagnostics?: DiscoveryCronDiagnosticsPort;
 };
 
 function unauthorized(): { status: number; body: DiscoveryCronResponseBody } {
@@ -107,48 +115,84 @@ function mapScheduledResult(
   }
 }
 
+function toDiagnosticOutcome(outcome: DiscoveryCronOutcome): DiscoveryCronDiagnosticOutcome {
+  return outcome;
+}
+
 export async function handleDiscoveryCronRequest(
   input: HandleDiscoveryCronInput
 ): Promise<{ status: number; body: DiscoveryCronResponseBody }> {
   const env = input.env ?? process.env;
   const now = input.now ?? new Date();
   const executeScheduled = input.executeScheduled ?? executeScheduledDiscoveryRun;
+  const diagnostics = input.diagnostics ?? defaultDiscoveryCronDiagnosticsPort;
+  const scheduleIsraelDateKeyAtInvoke = getIsraelCalendarDateKey(now);
+  const israelLocalTime = formatIsraelLocalTimeForDiagnostics(now);
+  const vercelCronSchedule = input.vercelCronSchedule?.trim() || undefined;
+
+  const attemptId = await diagnostics.beginAttempt({
+    invokedAt: now,
+    israelLocalTime,
+    scheduleIsraelDateKey: scheduleIsraelDateKeyAtInvoke,
+    vercelCronSchedule,
+    environment: env.VERCEL_ENV,
+  });
+
+  const finish = async (response: { status: number; body: DiscoveryCronResponseBody }) => {
+    await diagnostics.recordOutcome(attemptId, {
+      outcome: toDiagnosticOutcome(response.body.outcome),
+      httpStatus: response.status,
+      scheduleIsraelDateKey: response.body.scheduleIsraelDateKey ?? scheduleIsraelDateKeyAtInvoke,
+      details: response.body.message,
+      discoveryRunId: response.body.runId,
+    });
+    return response;
+  };
 
   const token = extractBearerToken(input.authorizationHeader);
   const expectedSecret = resolveDiscoveryCronSecret(env);
 
   if (!verifyDiscoveryCronSecret(token, expectedSecret)) {
-    return unauthorized();
+    return finish(unauthorized());
   }
 
   const guard = assertProductionDiscoveryAutomationAllowed(env);
   if (!guard.ok) {
     if (guard.reason === "not_production") {
-      return skipped("not_production");
+      return finish(skipped("not_production"));
     }
     if (guard.reason === "cron_secret_missing") {
-      return skipped("cron_secret_missing");
+      return finish(skipped("cron_secret_missing"));
     }
-    return skipped("automation_disabled");
+    return finish(skipped("automation_disabled"));
   }
 
   if (!isWithinDiscoveryScheduleWindow(now)) {
-    return skipped("outside_schedule_window", {
-      scheduleIsraelDateKey: getIsraelCalendarDateKey(now),
-    });
+    return finish(
+      skipped("outside_schedule_window", {
+        scheduleIsraelDateKey: scheduleIsraelDateKeyAtInvoke,
+      })
+    );
   }
 
-  const scheduleIsraelDateKey = getIsraelCalendarDateKey(now);
+  const scheduleIsraelDateKey = scheduleIsraelDateKeyAtInvoke;
+
+  await diagnostics.recordOutcome(attemptId, {
+    outcome: "started",
+    httpStatus: 102,
+    scheduleIsraelDateKey,
+    details: "orchestration_entered",
+  });
 
   try {
     const result = await executeScheduled(
       { scheduleIsraelDateKey, referenceDate: now },
       { now: () => now }
     );
-    return mapScheduledResult(scheduleIsraelDateKey, result);
+    return finish(mapScheduledResult(scheduleIsraelDateKey, result));
   } catch {
     console.error("[discovery-cron] Unexpected handler error");
-    return {
+    return finish({
       status: 500,
       body: {
         ok: false,
@@ -156,6 +200,6 @@ export async function handleDiscoveryCronRequest(
         scheduleIsraelDateKey,
         message: "Internal error",
       },
-    };
+    });
   }
 }

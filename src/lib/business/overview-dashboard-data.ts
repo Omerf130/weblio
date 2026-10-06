@@ -5,7 +5,9 @@ import {
 } from "@/lib/admin/dashboard-stats";
 import { getIsraelCalendarDateKey } from "@/lib/admin/israel-calendar-date";
 import { getIsraelDaysAgo } from "@/lib/admin/dashboard-time";
+import { buildBusinessOverviewDiscoveryCronDiagnostics } from "@/lib/business/discovery/cron-diagnostics-overview";
 import { deriveDiscoveryAutomationHealth } from "@/lib/business/discovery/automation-health";
+import { findLatestDiscoveryCronDiagnostic } from "@/lib/data/discovery-cron-diagnostics";
 import { getDiscoveryAutomationConfig } from "@/lib/discovery/discovery-automation-env";
 import { getDiscoveryMonthlyCreditUsage } from "@/lib/data/discovery-monthly-credits";
 import {
@@ -71,6 +73,7 @@ export async function getBusinessOverviewDashboardData(
     scheduledRunToday,
     monthlyCredits,
     recentNewOpportunities,
+    latestCronDiagnostic,
   ] = await Promise.all([
     getUnreadLeadCount(),
     Lead.countDocuments({ createdAt: { $gte: sevenDaysAgo } }),
@@ -107,6 +110,7 @@ export async function getBusinessOverviewDashboardData(
     findScheduledDiscoveryRunForIsraelDate(israelTodayKey),
     getDiscoveryMonthlyCreditUsage({ referenceDate: reference }),
     listRecentNewOpportunities(3),
+    findLatestDiscoveryCronDiagnostic(),
   ]);
 
   const followUps: BusinessOverviewActivityFollowUp[] = [
@@ -114,6 +118,10 @@ export async function getBusinessOverviewDashboardData(
     ...followUpsDueToday.map((item) => ({ ...item, urgency: "today" as const })),
     ...upcomingFollowUps.map((item) => ({ ...item, urgency: "upcoming" as const })),
   ];
+
+  const cronDiagnostics = buildBusinessOverviewDiscoveryCronDiagnostics(
+    latestCronDiagnostic
+  );
 
   const automationHealth = deriveDiscoveryAutomationHealth({
     automationEnabled: automationConfig.automationEnabled,
@@ -152,6 +160,7 @@ export async function getBusinessOverviewDashboardData(
       automationHealth,
       latestRun,
       monthlyCredits,
+      cronDiagnostics,
     },
   };
 }

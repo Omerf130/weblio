@@ -47,7 +47,7 @@ function creditBarTone(credits: Props["discovery"]["monthlyCredits"]): string {
 }
 
 export default function BusinessOverviewDiscoveryPanel({ discovery }: Props) {
-  const { automationHealth, latestRun, monthlyCredits } = discovery;
+  const { automationHealth, latestRun, monthlyCredits, cronDiagnostics } = discovery;
   const creditPercent = Math.min(
     100,
     monthlyCredits.hardStopLimit > 0
@@ -120,6 +120,42 @@ export default function BusinessOverviewDiscoveryPanel({ discovery }: Props) {
             style={{ width: `${creditPercent}%` }}
           />
         </div>
+      </div>
+
+      <div className={styles.discoveryCronDiagnosticsBlock}>
+        <h3 className={styles.discoveryRunTitle}>אבחון Cron (Discovery)</h3>
+        {!cronDiagnostics.lastAttempt ? (
+          <p className={styles.emptyStateInline}>{cronDiagnostics.reachedServerLabel}</p>
+        ) : (
+          <dl className={styles.discoveryCronDiagnosticsList}>
+            <div>
+              <dt>הגעה לשרת</dt>
+              <dd>{cronDiagnostics.reachedServerLabel}</dd>
+            </div>
+            <div>
+              <dt>קריאה אחרונה</dt>
+              <dd>
+                <time dateTime={cronDiagnostics.lastAttempt.invokedAt}>
+                  {formatIsraelDateTime(cronDiagnostics.lastAttempt.invokedAt)}
+                </time>
+              </dd>
+            </div>
+            <div>
+              <dt>תוצאה</dt>
+              <dd>{cronDiagnostics.lastAttemptLabel}</dd>
+            </div>
+            {cronDiagnostics.lastAttempt.vercelCronSchedule ? (
+              <div>
+                <dt>לוח זמנים (UTC)</dt>
+                <dd>
+                  <code className={styles.discoveryCronScheduleCode}>
+                    {cronDiagnostics.lastAttempt.vercelCronSchedule}
+                  </code>
+                </dd>
+              </div>
+            ) : null}
+          </dl>
+        )}
       </div>
 
       <div className={styles.discoveryRunBlock}>

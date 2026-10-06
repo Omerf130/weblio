@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { buildBusinessOverviewDiscoveryCronDiagnostics } from "../../src/lib/business/discovery/cron-diagnostics-overview";
 import { deriveDiscoveryAutomationHealth } from "../../src/lib/business/discovery/automation-health";
 import { getIsraelDaysAgo } from "../../src/lib/admin/dashboard-time";
 import { calculatePercentChange } from "../../src/lib/admin/dashboard-stats";
@@ -108,6 +109,8 @@ describe("Business Overview data layer contracts", () => {
     assert.match(source, /countClassifiedReviewIntents/);
     assert.match(source, /listRecentClassifiedReviewIntents/);
     assert.match(source, /classifiedReviewIntentsCount/);
+    assert.match(source, /findLatestDiscoveryCronDiagnostic/);
+    assert.match(source, /cronDiagnostics/);
   });
 
   it("recent intents list uses classify-at-ingest overview filter", async () => {

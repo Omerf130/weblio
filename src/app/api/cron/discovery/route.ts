@@ -7,8 +7,10 @@ export const maxDuration = 180;
 
 export async function GET(request: Request) {
   const authorizationHeader = request.headers.get("authorization");
+  const vercelCronSchedule = request.headers.get("x-vercel-cron-schedule");
   const { status, body } = await handleDiscoveryCronRequest({
     authorizationHeader,
+    vercelCronSchedule,
   });
 
   return Response.json(body, { status });

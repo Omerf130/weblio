@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { beforeEach, describe, it } from "node:test";
+import { createInMemoryDiscoveryCronDiagnosticsPort } from "./discovery-cron-diagnostics-test-helpers";
 import { getIsraelCalendarDateKey } from "../../src/lib/admin/israel-calendar-date";
 import {
   resolveDiscoveryCronSecret,
@@ -35,24 +36,34 @@ const IST_WINDOW_UTC = new Date("2026-01-15T00:30:00.000Z");
 /** ~02:30 IDT (UTC+3) → 23:30 UTC previous UTC date. */
 const IDT_WINDOW_UTC = new Date("2026-07-15T23:30:00.000Z");
 
+const memoryDiagnostics = createInMemoryDiscoveryCronDiagnosticsPort();
+
+function withDiagnostics<T extends Record<string, unknown>>(input: T) {
+  return { ...input, diagnostics: memoryDiagnostics.port };
+}
+
+beforeEach(() => {
+  memoryDiagnostics.reset();
+});
+
 describe("7B.2B cron authentication", () => {
   it("rejects missing authorization", async () => {
-    const res = await handleDiscoveryCronRequest({
+    const res = await handleDiscoveryCronRequest(withDiagnostics({
       authorizationHeader: null,
       env: prodEnv(),
       now: IST_WINDOW_UTC,
-    });
+    }));
     assert.equal(res.status, 401);
     assert.equal(res.body.outcome, "unauthorized");
     assert.doesNotMatch(JSON.stringify(res.body), /test-cron-secret/);
   });
 
   it("rejects invalid secret", async () => {
-    const res = await handleDiscoveryCronRequest({
+    const res = await handleDiscoveryCronRequest(withDiagnostics({
       authorizationHeader: "Bearer wrong-secret",
       env: prodEnv(),
       now: IST_WINDOW_UTC,
-    });
+    }));
     assert.equal(res.status, 401);
   });
 
@@ -63,7 +74,7 @@ describe("7B.2B cron authentication", () => {
 
   it("accepts Bearer matching CRON_SECRET when DISCOVERY_CRON_SECRET is unset", async () => {
     let called = false;
-    const res = await handleDiscoveryCronRequest({
+    const res = await handleDiscoveryCronRequest(withDiagnostics({
       authorizationHeader: authHeader(VERCEL_CRON_SECRET),
       env: prodEnv({
         DISCOVERY_CRON_SECRET: undefined,
@@ -101,7 +112,7 @@ describe("7B.2B cron authentication", () => {
           },
         };
       },
-    });
+    }));
     assert.equal(called, true);
     assert.equal(res.body.outcome, "completed");
     assert.doesNotMatch(JSON.stringify(res.body), new RegExp(VERCEL_CRON_SECRET));
@@ -118,14 +129,14 @@ describe("7B.2B cron authentication", () => {
   });
 
   it("rejects CRON_SECRET Bearer when DISCOVERY_CRON_SECRET differs", async () => {
-    const res = await handleDiscoveryCronRequest({
+    const res = await handleDiscoveryCronRequest(withDiagnostics({
       authorizationHeader: authHeader(VERCEL_CRON_SECRET),
       env: prodEnv({
         DISCOVERY_CRON_SECRET: DISCOVERY_ONLY_SECRET,
         CRON_SECRET: VERCEL_CRON_SECRET,
       }),
       now: IST_WINDOW_UTC,
-    });
+    }));
     assert.equal(res.status, 401);
   });
 });
@@ -133,7 +144,7 @@ describe("7B.2B cron authentication", () => {
 describe("7B.2B production guard", () => {
   it("does not call scheduled execution when automation disabled", async () => {
     let called = false;
-    const res = await handleDiscoveryCronRequest({
+    const res = await handleDiscoveryCronRequest(withDiagnostics({
       authorizationHeader: authHeader(),
       env: prodEnv({ DISCOVERY_AUTOMATION_ENABLED: "0" }),
       now: IST_WINDOW_UTC,
@@ -141,7 +152,7 @@ describe("7B.2B production guard", () => {
         called = true;
         throw new Error("should not run");
       },
-    });
+    }));
     assert.equal(called, false);
     assert.equal(res.body.outcome, "automation_disabled");
     assert.equal(res.status, 200);
@@ -149,7 +160,7 @@ describe("7B.2B production guard", () => {
 
   it("does not call scheduled execution on preview", async () => {
     let called = false;
-    const res = await handleDiscoveryCronRequest({
+    const res = await handleDiscoveryCronRequest(withDiagnostics({
       authorizationHeader: authHeader(),
       env: prodEnv({ VERCEL_ENV: "preview" }),
       now: IST_WINDOW_UTC,
@@ -157,7 +168,7 @@ describe("7B.2B production guard", () => {
         called = true;
         throw new Error("should not run");
       },
-    });
+    }));
     assert.equal(called, false);
     assert.equal(res.body.outcome, "not_production");
   });
@@ -212,7 +223,7 @@ describe("7B.2B Israel schedule window", () => {
   it("rejects outside window without calling orchestration", async () => {
     const outside = new Date("2026-01-15T12:00:00.000Z");
     let called = false;
-    const res = await handleDiscoveryCronRequest({
+    const res = await handleDiscoveryCronRequest(withDiagnostics({
       authorizationHeader: authHeader(),
       env: prodEnv(),
       now: outside,
@@ -220,7 +231,7 @@ describe("7B.2B Israel schedule window", () => {
         called = true;
         throw new Error("should not run");
       },
-    });
+    }));
     assert.equal(called, false);
     assert.equal(res.body.outcome, "outside_schedule_window");
     assert.equal(res.body.scheduleIsraelDateKey, getIsraelCalendarDateKey(outside));
@@ -231,7 +242,7 @@ describe("7B.2B scheduled orchestration adapter", () => {
   it("calls executeScheduledDiscoveryRun once with Israel date key", async () => {
     let calls = 0;
     let capturedKey = "";
-    const res = await handleDiscoveryCronRequest({
+    const res = await handleDiscoveryCronRequest(withDiagnostics({
       authorizationHeader: authHeader(),
       env: prodEnv(),
       now: IST_WINDOW_UTC,
@@ -267,7 +278,7 @@ describe("7B.2B scheduled orchestration adapter", () => {
           },
         };
       },
-    });
+    }));
 
     assert.equal(calls, 1);
     assert.equal(capturedKey, getIsraelCalendarDateKey(IST_WINDOW_UTC));
@@ -277,7 +288,7 @@ describe("7B.2B scheduled orchestration adapter", () => {
   });
 
   it("maps already_executed without paid work", async () => {
-    const res = await handleDiscoveryCronRequest({
+    const res = await handleDiscoveryCronRequest(withDiagnostics({
       authorizationHeader: authHeader(),
       env: prodEnv(),
       now: IST_WINDOW_UTC,
@@ -287,13 +298,13 @@ describe("7B.2B scheduled orchestration adapter", () => {
         message: "done",
         runId: "existing",
       }),
-    });
+    }));
     assert.equal(res.status, 200);
     assert.equal(res.body.outcome, "already_executed");
   });
 
   it("maps credit_limit to blocked_credit_limit", async () => {
-    const res = await handleDiscoveryCronRequest({
+    const res = await handleDiscoveryCronRequest(withDiagnostics({
       authorizationHeader: authHeader(),
       env: prodEnv(),
       now: IST_WINDOW_UTC,
@@ -302,12 +313,12 @@ describe("7B.2B scheduled orchestration adapter", () => {
         reason: "credit_limit",
         message: "blocked",
       }),
-    });
+    }));
     assert.equal(res.body.outcome, "blocked_credit_limit");
   });
 
   it("maps already_running skip", async () => {
-    const res = await handleDiscoveryCronRequest({
+    const res = await handleDiscoveryCronRequest(withDiagnostics({
       authorizationHeader: authHeader(),
       env: prodEnv(),
       now: IST_WINDOW_UTC,
@@ -316,7 +327,7 @@ describe("7B.2B scheduled orchestration adapter", () => {
         reason: "already_running",
         message: "busy",
       }),
-    });
+    }));
     assert.equal(res.body.outcome, "already_running");
   });
 });
