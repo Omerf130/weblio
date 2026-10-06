@@ -20,6 +20,8 @@ const mockProject: AdminProjectDto = {
   showOnProjectsPage: true,
   homeOrder: 0,
   projectsPageOrder: 0,
+  featuredOnProjectsPage: false,
+  projectsPageShowFeaturedBadge: false,
   technologies: ["React"],
   updatedAt: "2026-01-01T00:00:00.000Z",
   createdAt: "2026-01-01T00:00:00.000Z",

@@ -100,6 +100,24 @@ describe("project validation", () => {
     assert.equal(parsed.success, false);
   });
 
+  it("defaults Projects-page CMS fields for legacy form payloads", () => {
+    const parsed = safeParseProjectFields(projectFieldsFromFormData(new FormData()));
+
+    assert.equal(parsed.success, false);
+
+    const formData = new FormData();
+    formData.set("title", "Legacy");
+    formData.set("projectUrl", "https://example.com");
+    formData.set("ctaLabel", "Take me");
+
+    const legacy = safeParseProjectFields(projectFieldsFromFormData(formData));
+    assert.equal(legacy.success, true);
+    if (legacy.success) {
+      assert.equal(legacy.data.featuredOnProjectsPage, false);
+      assert.equal(legacy.data.projectsPageShowFeaturedBadge, false);
+    }
+  });
+
   it("reads description from FormData for create/update flow", () => {
     const formData = new FormData();
     formData.set("title", "פרויקט");

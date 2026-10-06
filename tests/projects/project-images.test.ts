@@ -166,13 +166,13 @@ describe("publish validation with resolved image URL", () => {
     assert.equal(error, null);
   });
 
-  it("rejects publish when resolved image URL is empty", () => {
+  it("allows publish without main image URL (projects-page-only projects)", () => {
     const error = validatePublishFields({
       title: "פרויקט",
       imageUrl: "",
       projectUrl: "https://example.com",
     });
 
-    assert.equal(error, "תמונת פרויקט נדרשת לפרסום.");
+    assert.equal(error, null);
   });
 });

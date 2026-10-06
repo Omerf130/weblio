@@ -1,5 +1,9 @@
-import { deriveSeedKey } from "@/lib/projects/rules";
-import type { PublicProjectDto } from "@/types/project";
+import { compareByOrderThenUpdatedAt, deriveSeedKey } from "@/lib/projects/rules";
+import {
+  findLegacyFeaturedSlotForProject,
+  resolveProjectsPageShowcaseForFeatured,
+} from "@/lib/projects/projects-page-showcase-resolve";
+import type { ProjectsPagePublicProjectDto, PublicProjectDto } from "@/types/project";
 
 export const PROJECTS_PAGE_FEATURED_EVOIR_IMAGE = "/pics/evoir-projects.png";
 export const PROJECTS_PAGE_FEATURED_LACE_IMAGE = "/pics/lace-projects.png";
@@ -11,6 +15,7 @@ export const PROJECTS_PAGE_FEATURED_CTA_LABEL = "לצפייה באתר";
 
 export const PROJECTS_PAGE_FEATURED_MAX_TAGS = 3;
 export const PROJECTS_PAGE_FEATURED_MAX_DESCRIPTION_CHARS = 168;
+export const PROJECTS_PAGE_FEATURED_MAX_CARDS = 2;
 
 export type ProjectsPageFeaturedSlot = "evoir" | "lace";
 
@@ -33,7 +38,7 @@ function normalizeTitle(value: string): string {
   return value.trim().toLowerCase();
 }
 
-function isEvoirProject(project: PublicProjectDto): boolean {
+export function isEvoirProject(project: PublicProjectDto): boolean {
   try {
     if (EVOIR_SEED_KEYS.has(deriveSeedKey(project.projectUrl))) {
       return true;
@@ -52,7 +57,7 @@ function isEvoirProject(project: PublicProjectDto): boolean {
   );
 }
 
-function isLaceProject(project: PublicProjectDto): boolean {
+export function isLaceProject(project: PublicProjectDto): boolean {
   try {
     if (LACE_SEED_KEYS.has(deriveSeedKey(project.projectUrl))) {
       return true;
@@ -103,47 +108,162 @@ function findFeaturedProject(
   return projects.find(matcher);
 }
 
-function buildCardModel(
+function legacyFeaturedDisplayTitle(slot: ProjectsPageFeaturedSlot): string {
+  return slot === "evoir"
+    ? PROJECTS_PAGE_FEATURED_EVOIR_DISPLAY_TITLE
+    : PROJECTS_PAGE_FEATURED_LACE_DISPLAY_TITLE;
+}
+
+function buildLegacyFeaturedCardModel(
   slot: ProjectsPageFeaturedSlot,
   project: PublicProjectDto
 ): ProjectsPageFeaturedCardModel {
+  const showcase = resolveProjectsPageShowcaseForFeatured(
+    project as ProjectsPagePublicProjectDto,
+    slot
+  );
   const isEvoir = slot === "evoir";
 
   return {
     slot,
     project,
-    displayTitle: isEvoir
-      ? PROJECTS_PAGE_FEATURED_EVOIR_DISPLAY_TITLE
-      : PROJECTS_PAGE_FEATURED_LACE_DISPLAY_TITLE,
-    featuredImageSrc: isEvoir
-      ? PROJECTS_PAGE_FEATURED_EVOIR_IMAGE
-      : PROJECTS_PAGE_FEATURED_LACE_IMAGE,
-    featuredImageAlt: isEvoir
-      ? "תצוגת אתר ÉVOIR: מחשב נייד וטלפון על רקע בושם ופרחים"
-      : "תצוגת אתר Lace Models: מחשב נייד וטלפון בסגנון אופנה עריכתי",
+    displayTitle: legacyFeaturedDisplayTitle(slot),
+    featuredImageSrc:
+      showcase?.showcaseImageSrc ??
+      (isEvoir ? PROJECTS_PAGE_FEATURED_EVOIR_IMAGE : PROJECTS_PAGE_FEATURED_LACE_IMAGE),
+    featuredImageAlt:
+      showcase?.showcaseImageAlt ??
+      (isEvoir
+        ? "תצוגת אתר ÉVOIR: מחשב נייד וטלפון על רקע בושם ופרחים"
+        : "תצוגת אתר Lace Models: מחשב נייד וטלפון בסגנון אופנה עריכתי"),
     showFeaturedBadge: isEvoir,
     description: compactFeaturedDescription(project.description),
     tags: featuredTagsForProject(project),
-    objectPosition: isEvoir ? "28% 50%" : "38% 52%",
+    objectPosition:
+      showcase?.objectPosition ?? (isEvoir ? "28% 50%" : "38% 52%"),
   };
 }
 
+function hasMongoProjectsPageShowcase(project: ProjectsPagePublicProjectDto): boolean {
+  return Boolean(project.projectsPageShowcase?.url?.trim());
+}
+
+function buildMongoFeaturedCardModel(
+  project: ProjectsPagePublicProjectDto
+): ProjectsPageFeaturedCardModel | null {
+  const legacySlot = findLegacyFeaturedSlotForProject(project);
+  const showcase = resolveProjectsPageShowcaseForFeatured(project, legacySlot);
+  if (!showcase) {
+    return null;
+  }
+
+  const hasMongoShowcase = hasMongoProjectsPageShowcase(project);
+  const displayTitle =
+    project.projectsPageDisplayTitle?.trim() ||
+    (!hasMongoShowcase && legacySlot ? legacyFeaturedDisplayTitle(legacySlot) : undefined) ||
+    project.title;
+
+  const showFeaturedBadge = hasMongoShowcase
+    ? project.projectsPageShowFeaturedBadge
+    : legacySlot === "evoir";
+
+  const slot: ProjectsPageFeaturedSlot = legacySlot ?? "lace";
+
+  return {
+    slot,
+    project,
+    displayTitle,
+    featuredImageSrc: showcase.showcaseImageSrc,
+    featuredImageAlt: showcase.showcaseImageAlt,
+    showFeaturedBadge,
+    description: compactFeaturedDescription(project.description),
+    tags: featuredTagsForProject(project),
+    objectPosition: showcase.objectPosition,
+  };
+}
+
+function compareFeaturedOrder(
+  a: ProjectsPagePublicProjectDto,
+  b: ProjectsPagePublicProjectDto
+): number {
+  const orderA = a.projectsPageFeaturedOrder ?? Number.MAX_SAFE_INTEGER;
+  const orderB = b.projectsPageFeaturedOrder ?? Number.MAX_SAFE_INTEGER;
+
+  if (orderA !== orderB) {
+    return orderA - orderB;
+  }
+
+  return compareByOrderThenUpdatedAt("projectsPageOrder")(a, b);
+}
+
+function projectEligibleForMongoFeatured(project: ProjectsPagePublicProjectDto): boolean {
+  return (
+    project.isPublished &&
+    project.showOnProjectsPage &&
+    project.featuredOnProjectsPage &&
+    resolveProjectsPageShowcaseForFeatured(project) !== null
+  );
+}
+
 /**
- * Resolves the two desktop Featured cards for `/projects` (ÉVOIR + Lace Models).
- * Order is fixed: ÉVOIR first, Lace second.
+ * Resolves Featured cards for `/projects` (Mongo-first, legacy ÉVOIR/Lace fallback during migration).
  */
 export function resolveProjectsPageFeaturedCards(
-  projects: PublicProjectDto[]
+  projects: ProjectsPagePublicProjectDto[] | PublicProjectDto[]
 ): ProjectsPageFeaturedCardModel[] {
-  const evoir = findFeaturedProject(projects, isEvoirProject);
-  const lace = findFeaturedProject(projects, isLaceProject);
-
+  const pageProjects = projects as ProjectsPagePublicProjectDto[];
   const cards: ProjectsPageFeaturedCardModel[] = [];
-  if (evoir) {
-    cards.push(buildCardModel("evoir", evoir));
+  const usedProjectIds = new Set<string>();
+
+  const mongoFeatured = pageProjects
+    .filter(projectEligibleForMongoFeatured)
+    .sort(compareFeaturedOrder);
+
+  for (const project of mongoFeatured) {
+    if (cards.length >= PROJECTS_PAGE_FEATURED_MAX_CARDS) {
+      break;
+    }
+
+    const card = buildMongoFeaturedCardModel(project);
+    if (!card) {
+      continue;
+    }
+
+    cards.push(card);
+    usedProjectIds.add(project.id);
   }
-  if (lace) {
-    cards.push(buildCardModel("lace", lace));
+
+  if (cards.length < PROJECTS_PAGE_FEATURED_MAX_CARDS) {
+    const legacySlots: ProjectsPageFeaturedSlot[] = ["evoir", "lace"];
+
+    for (const slot of legacySlots) {
+      if (cards.length >= PROJECTS_PAGE_FEATURED_MAX_CARDS) {
+        break;
+      }
+
+      const matcher = slot === "evoir" ? isEvoirProject : isLaceProject;
+      const project = findFeaturedProject(pageProjects, matcher) as
+        | ProjectsPagePublicProjectDto
+        | undefined;
+
+      if (!project || usedProjectIds.has(project.id)) {
+        continue;
+      }
+
+      if (project.featuredOnProjectsPage) {
+        continue;
+      }
+
+      const publishedOnPage =
+        (project.isPublished ?? true) && (project.showOnProjectsPage ?? true);
+
+      if (!publishedOnPage) {
+        continue;
+      }
+
+      cards.push(buildLegacyFeaturedCardModel(slot, project));
+      usedProjectIds.add(project.id);
+    }
   }
 
   return cards;

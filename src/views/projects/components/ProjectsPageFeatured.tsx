@@ -7,12 +7,12 @@ import {
   resolveProjectsPageFeaturedCards,
   type ProjectsPageFeaturedCardModel,
 } from "@/lib/projects/projectsPageFeatured";
-import type { PublicProjectDto } from "@/types/project";
+import type { ProjectsPagePublicProjectDto } from "@/types/project";
 import { PROJECT_LINK_REL, projectHref } from "@/utils/projectLinks";
 import styles from "./ProjectsPageFeatured.module.scss";
 
 type ProjectsPageFeaturedProps = {
-  projects?: PublicProjectDto[];
+  projects?: ProjectsPagePublicProjectDto[];
 };
 
 function FeaturedProjectCard({ card }: { card: ProjectsPageFeaturedCardModel }) {

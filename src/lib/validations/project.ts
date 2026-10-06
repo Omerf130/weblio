@@ -1,3 +1,7 @@
+import {
+  formatProjectsPageShowcaseObjectPositionFromPercents,
+  isValidProjectsPageShowcaseObjectPosition,
+} from "@/lib/projects/projects-page-showcase-object-position";
 import { z } from "zod";
 
 const plainText = (max: number) =>
@@ -24,6 +28,31 @@ const httpsUrlSchema = z
   });
 
 const orderSchema = z.coerce.number().int().min(0).max(9999);
+
+const optionalOrderSchema = z.preprocess((value) => {
+  if (value === "" || value === null || value === undefined) {
+    return undefined;
+  }
+  return value;
+}, orderSchema.optional());
+
+const projectsPageShowcaseObjectPositionSchema = z.preprocess(
+  (value) => {
+    if (value === "" || value === null || value === undefined) {
+      return undefined;
+    }
+    return String(value).trim();
+  },
+  z
+    .string()
+    .max(40)
+    .optional()
+    .refine(
+      (value) =>
+        value === undefined || isValidProjectsPageShowcaseObjectPosition(value),
+      { message: "Invalid object position" }
+    )
+);
 
 function parseTechnologiesInput(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -64,6 +93,11 @@ export const projectFieldsSchema = z.object({
   homeOrder: orderSchema.default(0),
   projectsPageOrder: orderSchema.default(0),
   technologies: technologiesSchema,
+  featuredOnProjectsPage: z.coerce.boolean().default(false),
+  projectsPageFeaturedOrder: optionalOrderSchema,
+  projectsPageDisplayTitle: optionalPlainText(120),
+  projectsPageShowFeaturedBadge: z.coerce.boolean().default(false),
+  projectsPageShowcaseObjectPosition: projectsPageShowcaseObjectPositionSchema,
 });
 
 export type ProjectFieldsInput = z.infer<typeof projectFieldsSchema>;
@@ -87,6 +121,24 @@ export function safeParseProjectInput(input: unknown) {
   return safeParseProjectFields(input);
 }
 
+function projectsPageShowcaseObjectPositionFromForm(formData: FormData): string | undefined {
+  const rawX = formData.get("showcasePositionX");
+  const rawY = formData.get("showcasePositionY");
+
+  if (rawX === null || rawY === null || rawX === "" || rawY === "") {
+    return undefined;
+  }
+
+  const x = Number(rawX);
+  const y = Number(rawY);
+
+  if (!Number.isFinite(x) || !Number.isFinite(y)) {
+    return undefined;
+  }
+
+  return formatProjectsPageShowcaseObjectPositionFromPercents(x, y);
+}
+
 export function projectFieldsFromFormData(formData: FormData): unknown {
   return {
     title: formData.get("title"),
@@ -103,6 +155,11 @@ export function projectFieldsFromFormData(formData: FormData): unknown {
     homeOrder: formData.get("homeOrder") ?? 0,
     projectsPageOrder: formData.get("projectsPageOrder") ?? 0,
     technologies: formData.get("technologies") ?? "",
+    featuredOnProjectsPage: formData.get("featuredOnProjectsPage") === "on",
+    projectsPageFeaturedOrder: formData.get("projectsPageFeaturedOrder") ?? undefined,
+    projectsPageDisplayTitle: formData.get("projectsPageDisplayTitle") ?? undefined,
+    projectsPageShowFeaturedBadge: formData.get("projectsPageShowFeaturedBadge") === "on",
+    projectsPageShowcaseObjectPosition: projectsPageShowcaseObjectPositionFromForm(formData),
   };
 }
 
@@ -128,10 +185,6 @@ export type PublishValidationInput = {
 export function validatePublishFields(input: PublishValidationInput): string | null {
   if (!input.title.trim()) {
     return "כותרת נדרשת לפרסום.";
-  }
-
-  if (!input.imageUrl.trim()) {
-    return "תמונת פרויקט נדרשת לפרסום.";
   }
 
   if (!input.projectUrl.trim()) {

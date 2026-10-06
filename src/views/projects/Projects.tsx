@@ -6,11 +6,11 @@ import ProjectsNav from "../../components/projectsNav/ProjectsNav";
 import ProjectsPageFeatured from "./components/ProjectsPageFeatured";
 import ProjectsPageGrid from "./components/ProjectsPageGrid";
 import ProjectsPageHero from "./components/ProjectsPageHero";
-import type { PublicProjectDto } from "../../types/project";
+import type { ProjectsPagePublicProjectDto } from "../../types/project";
 import "./Projects.scss";
 
 type ProjectsPageProps = {
-  projects?: PublicProjectDto[];
+  projects?: ProjectsPagePublicProjectDto[];
 };
 
 const Projects = ({ projects = [] }: ProjectsPageProps) => {

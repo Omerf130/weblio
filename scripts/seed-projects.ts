@@ -165,7 +165,7 @@ async function seedProjects(): Promise<void> {
       const hasConflict =
         existing.title !== document.title ||
         existing.subtitle !== document.subtitle ||
-        existing.image.url !== document.image.url ||
+        existing.image?.url !== document.image?.url ||
         existing.projectUrl !== document.projectUrl;
 
       if (hasConflict) {

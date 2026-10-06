@@ -20,6 +20,8 @@ const sampleProject: AdminProjectDto = {
   showOnProjectsPage: true,
   homeOrder: 3,
   projectsPageOrder: 2,
+  featuredOnProjectsPage: false,
+  projectsPageShowFeaturedBadge: false,
   technologies: ["Next.js"],
   updatedAt: "2026-01-01T00:00:00.000Z",
   createdAt: "2026-01-01T00:00:00.000Z",

@@ -10,6 +10,7 @@ import styles from "./ProjectsList.module.scss";
 type ProjectsListProps = {
   projects: AdminProjectDto[];
   errorMessage?: string;
+  warningMessage?: string;
 };
 
 function formatDate(value: string): string {
@@ -29,7 +30,42 @@ function StatusBadge({ published }: { published: boolean }) {
   );
 }
 
-export default function ProjectsList({ projects, errorMessage }: ProjectsListProps) {
+function ProjectsPageIndicators({ project }: { project: AdminProjectDto }) {
+  const hasShowcase = Boolean(project.projectsPageShowcase?.url?.trim());
+
+  return (
+    <div className={styles.pageIndicators} aria-label="סימונים לעמוד הפרויקטים">
+      <span
+        className={`${styles.pageIndicator} ${hasShowcase ? styles.pageIndicatorOn : styles.pageIndicatorOff}`}
+        title={hasShowcase ? "יש תמונת תצוגה" : "אין תמונת תצוגה"}
+      >
+        תצוגה
+      </span>
+      <span
+        className={`${styles.pageIndicator} ${project.showOnProjectsPage ? styles.pageIndicatorOn : styles.pageIndicatorOff}`}
+        title={project.showOnProjectsPage ? "מוצג בעמוד הפרויקטים" : "לא מוצג בעמוד הפרויקטים"}
+      >
+        בעמוד
+      </span>
+      <span
+        className={`${styles.pageIndicator} ${project.featuredOnProjectsPage ? styles.pageIndicatorOn : styles.pageIndicatorOff}`}
+        title={
+          project.featuredOnProjectsPage
+            ? "פרויקט נבחר בעמוד הפרויקטים"
+            : "לא מסומן כפרויקט נבחר"
+        }
+      >
+        נבחר
+      </span>
+    </div>
+  );
+}
+
+export default function ProjectsList({
+  projects,
+  errorMessage,
+  warningMessage,
+}: ProjectsListProps) {
   const duplicateHomeOrder = hasDuplicateOrderValues(projects, "homeOrder");
   const duplicatePageOrder = hasDuplicateOrderValues(projects, "projectsPageOrder");
 
@@ -45,6 +81,12 @@ export default function ProjectsList({ projects, errorMessage }: ProjectsListPro
       {errorMessage ? (
         <p className={styles.alert} role="alert">
           {errorMessage}
+        </p>
+      ) : null}
+
+      {warningMessage ? (
+        <p className={styles.warning} role="status">
+          {warningMessage}
         </p>
       ) : null}
 
@@ -67,7 +109,7 @@ export default function ProjectsList({ projects, errorMessage }: ProjectsListPro
                   <th>כותרת</th>
                   <th>סטטוס</th>
                   <th>בית</th>
-                  <th>עמוד פרויקטים</th>
+                  <th>עמוד הפרויקטים</th>
                   <th>סדר בית</th>
                   <th>סדר עמוד</th>
                   <th>עודכן</th>
@@ -89,7 +131,9 @@ export default function ProjectsList({ projects, errorMessage }: ProjectsListPro
                       <StatusBadge published={project.isPublished} />
                     </td>
                     <td>{project.showOnHome ? "כן" : "לא"}</td>
-                    <td>{project.showOnProjectsPage ? "כן" : "לא"}</td>
+                    <td>
+                      <ProjectsPageIndicators project={project} />
+                    </td>
                     <td>{project.homeOrder}</td>
                     <td>{project.projectsPageOrder}</td>
                     <td>{formatDate(project.updatedAt)}</td>
@@ -126,9 +170,9 @@ export default function ProjectsList({ projects, errorMessage }: ProjectsListPro
                   alt={project.imageAlt}
                   className={styles.thumb}
                 />
+                <ProjectsPageIndicators project={project} />
                 <div className={styles.meta}>
                   <span>בית: {project.showOnHome ? "כן" : "לא"}</span>
-                  <span>עמוד: {project.showOnProjectsPage ? "כן" : "לא"}</span>
                   <span>סדר בית: {project.homeOrder}</span>
                   <span>סדר עמוד: {project.projectsPageOrder}</span>
                   <span>עודכן: {formatDate(project.updatedAt)}</span>

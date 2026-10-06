@@ -18,7 +18,7 @@ export type ProjectsPageGridBatch1SlotId =
   | "ogen"
   | "shiputi";
 
-type Batch1SlotConfig = {
+export type Batch1SlotConfig = {
   id: ProjectsPageGridBatch1SlotId;
   showcaseImageSrc: string;
   seedKeys: string[];
@@ -116,22 +116,28 @@ function isOgenLaneshamaProject(project: PublicProjectDto): boolean {
   return hebrew.includes("עוגן") && /נשמ/i.test(hebrew);
 }
 
-function findProjectForSlot(
-  projects: PublicProjectDto[],
+export function projectMatchesLegacyGridBatch1Slot(
+  project: PublicProjectDto,
   slot: Batch1SlotConfig
-): PublicProjectDto | undefined {
+): boolean {
   for (const key of slot.seedKeys) {
-    const match = projects.find((project) => projectSeedKey(project) === key);
-    if (match) {
-      return match;
+    if (projectSeedKey(project) === key) {
+      return true;
     }
   }
 
   if (slot.matchProject) {
-    return projects.find((project) => slot.matchProject!(project));
+    return slot.matchProject(project);
   }
 
-  return undefined;
+  return false;
+}
+
+function findProjectForSlot(
+  projects: PublicProjectDto[],
+  slot: Batch1SlotConfig
+): PublicProjectDto | undefined {
+  return projects.find((project) => projectMatchesLegacyGridBatch1Slot(project, slot));
 }
 
 export function resolveProjectsPageGridBatch1(

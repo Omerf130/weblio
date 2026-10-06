@@ -52,8 +52,8 @@ function toDashboardProjectSummary(project: LeanProject): DashboardProjectSummar
   return {
     id: project._id.toString(),
     title: project.title,
-    imageUrl: project.image.url,
-    imageAlt: project.image.alt,
+    imageUrl: project.image?.url ?? "",
+    imageAlt: project.image?.alt ?? project.title,
     updatedAt: project.updatedAt.toISOString(),
   };
 }

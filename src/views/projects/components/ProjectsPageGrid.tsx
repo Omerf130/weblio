@@ -1,16 +1,16 @@
 "use client";
 
-import { resolveProjectsPageGridBatch1 } from "@/lib/projects/projectsPageGridBatch1";
-import type { PublicProjectDto } from "@/types/project";
+import { resolveProjectsPageGridCards } from "@/lib/projects/projects-page-grid";
+import type { ProjectsPagePublicProjectDto } from "@/types/project";
 import ProjectsPageGridCard from "./ProjectsPageGridCard";
 import styles from "./ProjectsPageGrid.module.scss";
 
 type ProjectsPageGridProps = {
-  projects?: PublicProjectDto[];
+  projects?: ProjectsPagePublicProjectDto[];
 };
 
 export default function ProjectsPageGrid({ projects = [] }: ProjectsPageGridProps) {
-  const cards = resolveProjectsPageGridBatch1(projects);
+  const cards = resolveProjectsPageGridCards(projects);
 
   if (cards.length === 0) {
     return null;

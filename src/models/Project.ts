@@ -50,7 +50,7 @@ const projectSchema = new Schema(
     },
     image: {
       type: projectImageSchema,
-      required: true,
+      required: false,
     },
     projectUrl: {
       type: String,
@@ -87,6 +87,38 @@ const projectSchema = new Schema(
       default: 0,
       required: true,
     },
+    projectsPageShowcase: {
+      type: projectImageSchema,
+      required: false,
+    },
+    featuredOnProjectsPage: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
+    projectsPageFeaturedOrder: {
+      type: Number,
+      required: false,
+      min: 0,
+      max: 9999,
+    },
+    projectsPageDisplayTitle: {
+      type: String,
+      required: false,
+      trim: true,
+      maxlength: 120,
+    },
+    projectsPageShowFeaturedBadge: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
+    projectsPageShowcaseObjectPosition: {
+      type: String,
+      required: false,
+      trim: true,
+      maxlength: 40,
+    },
     technologies: {
       type: [String],
       default: [],
@@ -110,6 +142,12 @@ projectSchema.index({
   isPublished: 1,
   showOnProjectsPage: 1,
   projectsPageOrder: 1,
+});
+projectSchema.index({
+  isPublished: 1,
+  showOnProjectsPage: 1,
+  featuredOnProjectsPage: 1,
+  projectsPageFeaturedOrder: 1,
 });
 
 export type ProjectDocument = InferSchemaType<typeof projectSchema> & {

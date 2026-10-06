@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import type { ProjectsPageGridBatch1CardModel } from "@/lib/projects/projectsPageGridBatch1";
+import type { ProjectsPageGridCardModel } from "@/lib/projects/projects-page-grid";
 import { PROJECT_LINK_REL, projectHref } from "@/utils/projectLinks";
 import styles from "./ProjectsPageGrid.module.scss";
 
 type ProjectsPageGridCardProps = {
-  card: ProjectsPageGridBatch1CardModel;
+  card: ProjectsPageGridCardModel;
 };
 
 export default function ProjectsPageGridCard({ card }: ProjectsPageGridCardProps) {
@@ -42,7 +42,7 @@ export default function ProjectsPageGridCard({ card }: ProjectsPageGridCardProps
         <div className={styles.content}>
           <div className={styles.contentInner}>
             <h3 id={headingId} className={styles.title}>
-              {card.project.title}
+              {card.displayTitle}
             </h3>
 
             {showSubtitle ? (

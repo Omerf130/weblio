@@ -7,9 +7,12 @@ import {
   featuredTagsForProject,
   resolveProjectsPageFeaturedCards,
 } from "../../src/lib/projects/projectsPageFeatured";
-import type { PublicProjectDto } from "../../src/types/project";
+import type { ProjectsPagePublicProjectDto } from "../../src/types/project";
 
-function sampleProject(overrides: Partial<PublicProjectDto> & Pick<PublicProjectDto, "id">): PublicProjectDto {
+function sampleProject(
+  overrides: Partial<ProjectsPagePublicProjectDto> &
+    Pick<ProjectsPagePublicProjectDto, "id">
+): ProjectsPagePublicProjectDto {
   return {
     title: "Example",
     subtitle: "תת-כותרת",
@@ -18,13 +21,19 @@ function sampleProject(overrides: Partial<PublicProjectDto> & Pick<PublicProject
     projectUrl: "https://example.com/",
     ctaLabel: "Take me",
     technologies: [],
+    isPublished: true,
+    showOnProjectsPage: true,
+    featuredOnProjectsPage: false,
+    projectsPageOrder: 0,
+    projectsPageShowFeaturedBadge: false,
+    updatedAt: "2024-01-01T00:00:00.000Z",
     ...overrides,
   };
 }
 
 describe("projects page featured section", () => {
   it("resolves ÉVOIR and Lace Models with display overrides and assets", () => {
-    const projects: PublicProjectDto[] = [
+    const projects: ProjectsPagePublicProjectDto[] = [
       sampleProject({
         id: "lace",
         title: "lace",

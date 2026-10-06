@@ -2,7 +2,7 @@ import ProjectsList from "@/components/admin/projects/ProjectsList";
 import { getAdminProjects } from "@/lib/data/projects";
 
 type ProjectsAdminPageProps = {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; warning?: string }>;
 };
 
 export default async function ProjectsAdminPage({
@@ -15,6 +15,9 @@ export default async function ProjectsAdminPage({
     <ProjectsList
       projects={projects}
       errorMessage={params.error ? decodeURIComponent(params.error) : undefined}
+      warningMessage={
+        params.warning ? decodeURIComponent(params.warning) : undefined
+      }
     />
   );
 }

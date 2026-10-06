@@ -7,7 +7,11 @@ import {
   type HomeProjectSource,
 } from "@/lib/projects/rules";
 import { Project, type ProjectDocument } from "@/models/Project";
-import type { AdminProjectDto, PublicProjectDto } from "@/types/project";
+import type {
+  AdminProjectDto,
+  ProjectsPagePublicProjectDto,
+  PublicProjectDto,
+} from "@/types/project";
 
 type LeanProject = Omit<ProjectDocument, keyof mongoose.Document> & {
   _id: mongoose.Types.ObjectId;
@@ -15,6 +19,8 @@ type LeanProject = Omit<ProjectDocument, keyof mongoose.Document> & {
 
 function toAdminProjectDto(project: LeanProject): AdminProjectDto {
   const description = project.description?.trim();
+  const showcase = project.projectsPageShowcase;
+
   return {
     id: project._id.toString(),
     title: project.title,
@@ -22,9 +28,33 @@ function toAdminProjectDto(project: LeanProject): AdminProjectDto {
     description: description || undefined,
     homeTitle: project.homeTitle ?? undefined,
     homeSubtitle: project.homeSubtitle ?? undefined,
-    imageUrl: project.image.url,
-    imageAlt: project.image.alt,
-    imageStorageKey: project.image.storageKey ?? undefined,
+    imageUrl: project.image?.url ?? "",
+    imageAlt: project.image?.alt ?? project.title,
+    imageStorageKey: project.image?.storageKey ?? undefined,
+    ...(showcase?.url
+      ? {
+          projectsPageShowcase: {
+            url: showcase.url,
+            alt: showcase.alt,
+            ...(showcase.storageKey ? { storageKey: showcase.storageKey } : {}),
+          },
+        }
+      : {}),
+    featuredOnProjectsPage: project.featuredOnProjectsPage ?? false,
+    ...(project.projectsPageFeaturedOrder !== undefined &&
+    project.projectsPageFeaturedOrder !== null
+      ? { projectsPageFeaturedOrder: project.projectsPageFeaturedOrder }
+      : {}),
+    ...(project.projectsPageDisplayTitle?.trim()
+      ? { projectsPageDisplayTitle: project.projectsPageDisplayTitle.trim() }
+      : {}),
+    projectsPageShowFeaturedBadge: project.projectsPageShowFeaturedBadge ?? false,
+    ...(project.projectsPageShowcaseObjectPosition?.trim()
+      ? {
+          projectsPageShowcaseObjectPosition:
+            project.projectsPageShowcaseObjectPosition.trim(),
+        }
+      : {}),
     projectUrl: project.projectUrl,
     ctaLabel: project.ctaLabel,
     isPublished: project.isPublished,
@@ -48,8 +78,8 @@ function toHomeSource(project: LeanProject): HomeProjectSource {
     homeTitle: project.homeTitle ?? undefined,
     homeSubtitle: project.homeSubtitle ?? undefined,
     image: {
-      url: project.image.url,
-      alt: project.image.alt,
+      url: project.image?.url ?? "",
+      alt: project.image?.alt ?? project.title,
     },
     projectUrl: project.projectUrl,
     ctaLabel: project.ctaLabel,
@@ -63,6 +93,7 @@ export async function getHomeProjects(): Promise<PublicProjectDto[]> {
   const projects = await Project.find({
     isPublished: true,
     showOnHome: true,
+    "image.url": { $exists: true, $ne: "" },
   })
     .sort({ homeOrder: 1, updatedAt: 1, _id: 1 })
     .limit(HOME_PROJECTS_MAX)
@@ -71,7 +102,52 @@ export async function getHomeProjects(): Promise<PublicProjectDto[]> {
   return projects.map((project) => mapToHomePublicProjectDto(toHomeSource(project)));
 }
 
-export async function getProjectsPageProjects(): Promise<PublicProjectDto[]> {
+function toProjectsPagePublicProjectDto(
+  project: LeanProject
+): ProjectsPagePublicProjectDto {
+  const description = project.description?.trim();
+  const showcase = project.projectsPageShowcase;
+  const base = mapToPublicProjectDto({
+    ...toHomeSource(project),
+    title: project.title,
+    subtitle: project.subtitle,
+  });
+
+  return {
+    ...base,
+    description: description || undefined,
+    isPublished: project.isPublished,
+    showOnProjectsPage: project.showOnProjectsPage,
+    featuredOnProjectsPage: project.featuredOnProjectsPage ?? false,
+    projectsPageOrder: project.projectsPageOrder,
+    ...(project.projectsPageFeaturedOrder !== undefined &&
+    project.projectsPageFeaturedOrder !== null
+      ? { projectsPageFeaturedOrder: project.projectsPageFeaturedOrder }
+      : {}),
+    ...(project.projectsPageDisplayTitle?.trim()
+      ? { projectsPageDisplayTitle: project.projectsPageDisplayTitle.trim() }
+      : {}),
+    projectsPageShowFeaturedBadge: project.projectsPageShowFeaturedBadge ?? false,
+    ...(project.projectsPageShowcaseObjectPosition?.trim()
+      ? {
+          projectsPageShowcaseObjectPosition:
+            project.projectsPageShowcaseObjectPosition.trim(),
+        }
+      : {}),
+    ...(showcase?.url
+      ? {
+          projectsPageShowcase: {
+            url: showcase.url,
+            alt: showcase.alt,
+            ...(showcase.storageKey ? { storageKey: showcase.storageKey } : {}),
+          },
+        }
+      : {}),
+    updatedAt: project.updatedAt.toISOString(),
+  };
+}
+
+export async function getProjectsPageProjects(): Promise<ProjectsPagePublicProjectDto[]> {
   await connectDB();
 
   const projects = await Project.find({
@@ -81,13 +157,7 @@ export async function getProjectsPageProjects(): Promise<PublicProjectDto[]> {
     .sort({ projectsPageOrder: 1, updatedAt: 1, _id: 1 })
     .lean<LeanProject[]>();
 
-  return projects.map((project) =>
-    mapToPublicProjectDto({
-      ...toHomeSource(project),
-      title: project.title,
-      subtitle: project.subtitle,
-    })
-  );
+  return projects.map(toProjectsPagePublicProjectDto);
 }
 
 export async function getAdminProjects(): Promise<AdminProjectDto[]> {

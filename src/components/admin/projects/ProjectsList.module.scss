@@ -153,6 +153,35 @@
   color: #475569;
 }
 
+.pageIndicators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.pageIndicator {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+  border: 1px solid transparent;
+}
+
+.pageIndicatorOn {
+  background: rgba(79, 127, 185, 0.12);
+  border-color: rgba(79, 127, 185, 0.28);
+  color: #1e40af;
+}
+
+.pageIndicatorOff {
+  background: rgba(100, 116, 139, 0.08);
+  border-color: rgba(100, 116, 139, 0.18);
+  color: #94a3b8;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

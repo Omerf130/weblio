@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import ProjectForm from "@/components/admin/projects/ProjectForm";
-import { getProjectById } from "@/lib/data/projects";
+import { getAdminProjects, getProjectById } from "@/lib/data/projects";
+import { countProjectsPageFeaturedCandidates } from "@/lib/projects/projects-page-featured-admin";
 
 type EditProjectPageProps = {
   params: Promise<{ id: string }>;
@@ -8,11 +9,22 @@ type EditProjectPageProps = {
 
 export default async function EditProjectPage({ params }: EditProjectPageProps) {
   const { id } = await params;
-  const project = await getProjectById(id);
+  const [project, allProjects] = await Promise.all([
+    getProjectById(id),
+    getAdminProjects(),
+  ]);
 
   if (!project) {
     notFound();
   }
 
-  return <ProjectForm project={project} />;
+  const projectsPageFeaturedCount =
+    countProjectsPageFeaturedCandidates(allProjects);
+
+  return (
+    <ProjectForm
+      project={project}
+      projectsPageFeaturedCount={projectsPageFeaturedCount}
+    />
+  );
 }
