@@ -5,16 +5,15 @@ import {
   featuredTagsForProject,
 } from "@/lib/projects/projectsPageFeatured";
 import {
-  findLegacyGridSlotForProject,
-  projectHasGridShowcase,
-  resolveProjectsPageShowcaseForGrid,
-} from "@/lib/projects/projects-page-showcase-resolve";
-import { PROJECTS_PAGE_GRID_BATCH1_MAX_DESCRIPTION_CHARS } from "@/lib/projects/projectsPageGridBatch1";
-import type { ProjectsPageGridBatch1SlotId } from "@/lib/projects/projectsPageGridBatch1";
+  hasPublicProjectsPageShowcaseUrl,
+  resolvePublicProjectsPageShowcase,
+} from "@/lib/projects/projects-page-public-showcase";
 import type { ProjectsPagePublicProjectDto } from "@/types/project";
 
+export const PROJECTS_PAGE_GRID_MAX_DESCRIPTION_CHARS = 140;
+
 export type ProjectsPageGridCardModel = {
-  slotId: ProjectsPageGridBatch1SlotId | string;
+  slotId: string;
   project: ProjectsPagePublicProjectDto;
   displayTitle: string;
   showcaseImageSrc: string;
@@ -31,22 +30,20 @@ function gridDisplayTitle(project: ProjectsPagePublicProjectDto): string {
 }
 
 function buildGridCard(project: ProjectsPagePublicProjectDto): ProjectsPageGridCardModel | null {
-  const showcase = resolveProjectsPageShowcaseForGrid(project);
+  const showcase = resolvePublicProjectsPageShowcase(project);
   if (!showcase) {
     return null;
   }
 
-  const legacySlot = findLegacyGridSlotForProject(project);
-
   return {
-    slotId: legacySlot?.id ?? project.id,
+    slotId: project.id,
     project,
     displayTitle: gridDisplayTitle(project),
     showcaseImageSrc: showcase.showcaseImageSrc,
     showcaseImageAlt: showcase.showcaseImageAlt,
     description: compactFeaturedDescription(
       project.description,
-      PROJECTS_PAGE_GRID_BATCH1_MAX_DESCRIPTION_CHARS
+      PROJECTS_PAGE_GRID_MAX_DESCRIPTION_CHARS
     ),
     tags: featuredTagsForProject(project),
     objectPosition: showcase.objectPosition,
@@ -54,10 +51,7 @@ function buildGridCard(project: ProjectsPagePublicProjectDto): ProjectsPageGridC
   };
 }
 
-/**
- * Mongo-first grid cards for `/projects` (normal, non-Featured projects).
- * Legacy batch-1 mappings supply showcase/object-position only when Mongo showcase is absent.
- */
+/** Grid cards for `/projects` from Mongo/Admin fields only. */
 export function resolveProjectsPageGridCards(
   projects: ProjectsPagePublicProjectDto[]
 ): ProjectsPageGridCardModel[] {
@@ -66,7 +60,7 @@ export function resolveProjectsPageGridCards(
       project.isPublished &&
       project.showOnProjectsPage &&
       !project.featuredOnProjectsPage &&
-      projectHasGridShowcase(project)
+      hasPublicProjectsPageShowcaseUrl(project)
   );
 
   eligible.sort(

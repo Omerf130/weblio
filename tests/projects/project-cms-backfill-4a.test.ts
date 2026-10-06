@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   getProjectsPageBackfillManifest,
+  PROJECTS_PAGE_BACKFILL_GRID_ORDER_BY_SLOT,
   PROJECTS_PAGE_BACKFILL_TARGET_COUNT,
   PROJECTS_PAGE_BACKFILL_FEATURED_EVOIR_ALT,
 } from "../../src/lib/projects/projects-page-backfill-manifest";
@@ -10,15 +11,16 @@ import {
   backfillUpdatesFromPlan,
   buildBackfillPlan,
   buildDesiredPatch,
+  evaluateBackfillRow,
   resolveBackfillMatches,
   type BackfillProjectRecord,
 } from "../../src/lib/projects/projects-page-backfill";
 import {
-  PROJECTS_PAGE_FEATURED_EVOIR_DISPLAY_TITLE,
-  PROJECTS_PAGE_FEATURED_EVOIR_IMAGE,
-  PROJECTS_PAGE_FEATURED_LACE_DISPLAY_TITLE,
-  PROJECTS_PAGE_FEATURED_LACE_IMAGE,
-} from "../../src/lib/projects/projectsPageFeatured";
+  PROJECTS_PAGE_MIGRATION_FEATURED_EVOIR_DISPLAY_TITLE,
+  PROJECTS_PAGE_MIGRATION_FEATURED_EVOIR_IMAGE,
+  PROJECTS_PAGE_MIGRATION_FEATURED_LACE_DISPLAY_TITLE,
+  PROJECTS_PAGE_MIGRATION_FEATURED_LACE_IMAGE,
+} from "../../src/lib/projects/projects-page-backfill-manifest";
 import { BATCH1_SLOTS } from "../../src/lib/projects/projectsPageGridBatch1";
 
 function legacyFixtureSet(): BackfillProjectRecord[] {
@@ -115,7 +117,7 @@ function legacyFixtureSet(): BackfillProjectRecord[] {
 }
 
 describe("Checkpoint 4A — backfill manifest", () => {
-  it("defines exactly 10 legacy targets in BATCH1 order for grid", () => {
+  it("defines exactly 10 legacy targets with corrected public grid orders", () => {
     const manifest = getProjectsPageBackfillManifest();
     assert.equal(manifest.length, PROJECTS_PAGE_BACKFILL_TARGET_COUNT);
 
@@ -125,9 +127,26 @@ describe("Checkpoint 4A — backfill manifest", () => {
       grid.map((entry) => (entry.kind === "grid" ? entry.slotId : "")),
       BATCH1_SLOTS.map((slot) => slot.id)
     );
-    assert.deepEqual(
-      grid.map((entry) => (entry.kind === "grid" ? entry.projectsPageOrder : 0)),
-      [1, 2, 3, 4, 5, 6, 7, 8]
+
+    for (const entry of grid) {
+      if (entry.kind !== "grid") {
+        continue;
+      }
+      assert.equal(
+        entry.projectsPageOrder,
+        PROJECTS_PAGE_BACKFILL_GRID_ORDER_BY_SLOT[entry.slotId]
+      );
+    }
+
+    assert.equal(PROJECTS_PAGE_BACKFILL_GRID_ORDER_BY_SLOT.zouko, 9);
+    assert.equal(PROJECTS_PAGE_BACKFILL_GRID_ORDER_BY_SLOT["eden-shemesh"], 2);
+    assert.equal(
+      manifest.some(
+        (entry) =>
+          entry.kind === "grid" &&
+          (entry.label.toLowerCase().includes("tabi") || entry.slotId === ("tabi" as never))
+      ),
+      false
     );
   });
 });
@@ -214,7 +233,7 @@ describe("Checkpoint 4A — patch and conflicts", () => {
     );
 
     assert.equal(patch.projectsPageShowcase.url, "/pics/project-pics/zuoko.png");
-    assert.equal(patch.projectsPageOrder, 1);
+    assert.equal(patch.projectsPageOrder, 9);
     assert.equal("storageKey" in patch.projectsPageShowcase, false);
   });
 
@@ -234,10 +253,13 @@ describe("Checkpoint 4A — patch and conflicts", () => {
       evoirTarget
     );
 
-    assert.equal(patch.projectsPageShowcase.url, PROJECTS_PAGE_FEATURED_EVOIR_IMAGE);
+    assert.equal(patch.projectsPageShowcase.url, PROJECTS_PAGE_MIGRATION_FEATURED_EVOIR_IMAGE);
     assert.equal(patch.projectsPageShowcase.alt, PROJECTS_PAGE_BACKFILL_FEATURED_EVOIR_ALT);
     assert.equal(patch.projectsPageFeaturedOrder, 1);
-    assert.equal(patch.projectsPageDisplayTitle, PROJECTS_PAGE_FEATURED_EVOIR_DISPLAY_TITLE);
+    assert.equal(
+      patch.projectsPageDisplayTitle,
+      PROJECTS_PAGE_MIGRATION_FEATURED_EVOIR_DISPLAY_TITLE
+    );
     assert.equal(patch.projectsPageShowFeaturedBadge, true);
     assert.equal(patch.projectsPageShowcaseObjectPosition, "28% 50%");
     assert.equal(patch.projectsPageOrder, undefined);
@@ -250,8 +272,11 @@ describe("Checkpoint 4A — patch and conflicts", () => {
       { id: "lace", title: "lace", projectUrl: "https://www.lacemodel.com/" },
       laceTarget!
     );
-    assert.equal(lacePatch.projectsPageShowcase.url, PROJECTS_PAGE_FEATURED_LACE_IMAGE);
-    assert.equal(lacePatch.projectsPageDisplayTitle, PROJECTS_PAGE_FEATURED_LACE_DISPLAY_TITLE);
+    assert.equal(lacePatch.projectsPageShowcase.url, PROJECTS_PAGE_MIGRATION_FEATURED_LACE_IMAGE);
+    assert.equal(
+      lacePatch.projectsPageDisplayTitle,
+      PROJECTS_PAGE_MIGRATION_FEATURED_LACE_DISPLAY_TITLE
+    );
     assert.equal(lacePatch.projectsPageShowFeaturedBadge, false);
   });
 
@@ -350,6 +375,47 @@ describe("Checkpoint 4A — scope safety", () => {
     }
   });
 
+  it("detects incomplete Noah/Shiputi-style rows as will_update without name hacks", () => {
+    const manifest = getProjectsPageBackfillManifest();
+    const noahTarget = manifest.find(
+      (entry) => entry.kind === "grid" && entry.slotId === "noah"
+    );
+    const shiputiTarget = manifest.find(
+      (entry) => entry.kind === "grid" && entry.slotId === "shiputi"
+    );
+    assert.ok(noahTarget && shiputiTarget);
+
+    const noahRow = evaluateBackfillRow(
+      {
+        id: "noah",
+        title: "נוח",
+        projectUrl: "https://www.noah-sn.co.il/",
+        seedKey: "noah-sn.co.il",
+        imageAlt: "נוח",
+        projectsPageOrder: 5,
+        projectsPageShowcase: null,
+        projectsPageShowcaseObjectPosition: null,
+      },
+      noahTarget
+    );
+    assert.equal(noahRow.status, "will_update");
+
+    const shiputiRow = evaluateBackfillRow(
+      {
+        id: "shiputi",
+        title: "שיפוטי",
+        projectUrl: "https://shiputi.co.il/",
+        seedKey: "shiputi.co.il",
+        imageAlt: "שיפוטי",
+        projectsPageOrder: 8,
+        projectsPageShowcase: null,
+        projectsPageShowcaseObjectPosition: null,
+      },
+      shiputiTarget
+    );
+    assert.equal(shiputiRow.status, "will_update");
+  });
+
   it("second run is idempotent when values already match", () => {
     const projects = legacyFixtureSet();
     const manifest = getProjectsPageBackfillManifest();
@@ -392,5 +458,95 @@ describe("Checkpoint 4A — scope safety", () => {
     assert.equal(secondPlan.updateCount, 0);
     assert.equal(secondPlan.unchangedCount, 10);
     assert.equal(backfillUpdatesFromPlan(secondPlan).length, 0);
+  });
+});
+
+describe("Checkpoint 4B regression — backfill idempotency", () => {
+  function gridTarget(slotId: (typeof BATCH1_SLOTS)[number]["id"]) {
+    const manifest = getProjectsPageBackfillManifest();
+    const target = manifest.find(
+      (entry) => entry.kind === "grid" && entry.slotId === slotId
+    );
+    assert.ok(target);
+    return target;
+  }
+
+  it("missing persisted showcase URL => will_update", () => {
+    const row = evaluateBackfillRow(
+      {
+        id: "ogen",
+        title: "עוגן",
+        projectUrl: "https://ogen-laneshama.vercel.app/",
+        projectsPageOrder: 7,
+        projectsPageShowcaseObjectPosition: "36% 50%",
+      },
+      gridTarget("ogen")
+    );
+    assert.equal(row.status, "will_update");
+  });
+
+  it("missing object position => will_update", () => {
+    const row = evaluateBackfillRow(
+      {
+        id: "ogen",
+        title: "עוגן",
+        projectUrl: "https://ogen-laneshama.vercel.app/",
+        projectsPageOrder: 7,
+        projectsPageShowcase: { url: "/pics/project-pics/ogen.png", alt: "ogen" },
+      },
+      gridTarget("ogen")
+    );
+    assert.equal(row.status, "will_update");
+  });
+
+  it("wrong migration-managed order => will_update", () => {
+    const row = evaluateBackfillRow(
+      {
+        id: "zouko",
+        title: "זוקו",
+        projectUrl: "https://zoukoisrael.com/",
+        projectsPageOrder: 1,
+        projectsPageShowcase: { url: "/pics/project-pics/zuoko.png", alt: "זוקו" },
+        projectsPageShowcaseObjectPosition: "32% 50%",
+      },
+      gridTarget("zouko")
+    );
+    assert.equal(row.status, "will_update");
+    assert.equal(row.proposed?.projectsPageOrder, 9);
+  });
+
+  it("Zouko order 9 with complete showcase => unchanged", () => {
+    const row = evaluateBackfillRow(
+      {
+        id: "zouko",
+        title: "זוקו",
+        projectUrl: "https://zoukoisrael.com/",
+        imageAlt: "זוקו",
+        projectsPageOrder: 9,
+        projectsPageShowcase: { url: "/pics/project-pics/zuoko.png", alt: "זוקו" },
+        projectsPageShowcaseObjectPosition: "32% 50%",
+      },
+      gridTarget("zouko")
+    );
+    assert.equal(row.status, "unchanged");
+  });
+
+  it("exact persisted values => unchanged", () => {
+    const row = evaluateBackfillRow(
+      {
+        id: "eden",
+        title: "עדן",
+        projectUrl: "https://www.eden-shemesh.co.il/",
+        imageAlt: "עדן",
+        projectsPageOrder: 2,
+        projectsPageShowcase: {
+          url: "/pics/project-pics/eden-shemesh.png",
+          alt: "עדן",
+        },
+        projectsPageShowcaseObjectPosition: "34% 50%",
+      },
+      gridTarget("eden-shemesh")
+    );
+    assert.equal(row.status, "unchanged");
   });
 });

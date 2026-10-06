@@ -229,6 +229,66 @@ function patchesEqual(a: BackfillDesiredPatch, b: BackfillDesiredPatch): boolean
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
+/** Only actual persisted Mongo fields — never proposed fallbacks. */
+function buildPersistedComparablePatch(
+  project: BackfillProjectRecord,
+  target: ProjectsPageBackfillTarget
+): BackfillDesiredPatch | undefined {
+  const existingUrl = project.projectsPageShowcase?.url?.trim();
+  if (!existingUrl) {
+    return undefined;
+  }
+
+  const objectPosition = normalizeOptionalString(project.projectsPageShowcaseObjectPosition);
+  if (!objectPosition) {
+    return undefined;
+  }
+
+  const base: BackfillDesiredPatch = {
+    projectsPageShowcase: {
+      url: existingUrl,
+      alt: project.projectsPageShowcase?.alt?.trim() || showcaseAltForProject(project, target),
+    },
+    projectsPageShowcaseObjectPosition: objectPosition,
+  };
+
+  if (target.kind === "grid") {
+    if (project.projectsPageOrder == null) {
+      return undefined;
+    }
+
+    return {
+      ...base,
+      projectsPageOrder: project.projectsPageOrder,
+    };
+  }
+
+  if (project.featuredOnProjectsPage !== target.featuredOnProjectsPage) {
+    return undefined;
+  }
+
+  if (project.projectsPageFeaturedOrder !== target.projectsPageFeaturedOrder) {
+    return undefined;
+  }
+
+  const displayTitle = normalizeOptionalString(project.projectsPageDisplayTitle);
+  if (displayTitle === undefined) {
+    return undefined;
+  }
+
+  if (project.projectsPageShowFeaturedBadge === undefined) {
+    return undefined;
+  }
+
+  return {
+    ...base,
+    featuredOnProjectsPage: project.featuredOnProjectsPage,
+    projectsPageFeaturedOrder: project.projectsPageFeaturedOrder,
+    projectsPageDisplayTitle: displayTitle,
+    projectsPageShowFeaturedBadge: project.projectsPageShowFeaturedBadge,
+  };
+}
+
 export function evaluateBackfillRow(
   project: BackfillProjectRecord,
   target: ProjectsPageBackfillTarget
@@ -283,32 +343,9 @@ export function evaluateBackfillRow(
     }
   }
 
-  const currentComparable: BackfillDesiredPatch = {
-    projectsPageShowcase: existingUrl
-      ? {
-          url: existingUrl,
-          alt: project.projectsPageShowcase?.alt?.trim() || showcaseAltForProject(project, target),
-        }
-      : proposed.projectsPageShowcase,
-    projectsPageShowcaseObjectPosition:
-      normalizeOptionalString(project.projectsPageShowcaseObjectPosition) ??
-      proposed.projectsPageShowcaseObjectPosition,
-    ...(target.kind === "grid"
-      ? { projectsPageOrder: project.projectsPageOrder ?? proposed.projectsPageOrder }
-      : {
-          featuredOnProjectsPage: project.featuredOnProjectsPage ?? false,
-          projectsPageFeaturedOrder:
-            project.projectsPageFeaturedOrder ?? proposed.projectsPageFeaturedOrder,
-          projectsPageDisplayTitle:
-            normalizeOptionalString(project.projectsPageDisplayTitle) ??
-            proposed.projectsPageDisplayTitle,
-          projectsPageShowFeaturedBadge:
-            project.projectsPageShowFeaturedBadge ??
-            proposed.projectsPageShowFeaturedBadge,
-        }),
-  };
+  const persistedComparable = buildPersistedComparablePatch(project, target);
 
-  if (patchesEqual(currentComparable, proposed)) {
+  if (persistedComparable && patchesEqual(persistedComparable, proposed)) {
     return {
       target,
       status: "unchanged",

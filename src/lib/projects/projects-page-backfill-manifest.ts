@@ -1,14 +1,14 @@
-import {
-  PROJECTS_PAGE_FEATURED_EVOIR_DISPLAY_TITLE,
-  PROJECTS_PAGE_FEATURED_EVOIR_IMAGE,
-  PROJECTS_PAGE_FEATURED_LACE_DISPLAY_TITLE,
-  PROJECTS_PAGE_FEATURED_LACE_IMAGE,
-  type ProjectsPageFeaturedSlot,
-} from "@/lib/projects/projectsPageFeatured";
+import type { ProjectsPageLegacyFeaturedSlot } from "@/lib/projects/projects-page-legacy-showcase";
 import {
   BATCH1_SLOTS,
   type ProjectsPageGridBatch1SlotId,
 } from "@/lib/projects/projectsPageGridBatch1";
+
+/** Migration-only static paths (also referenced from Mongo after backfill). */
+export const PROJECTS_PAGE_MIGRATION_FEATURED_EVOIR_IMAGE = "/pics/evoir-projects.png";
+export const PROJECTS_PAGE_MIGRATION_FEATURED_LACE_IMAGE = "/pics/lace-projects.png";
+export const PROJECTS_PAGE_MIGRATION_FEATURED_EVOIR_DISPLAY_TITLE = "ÉVOIR";
+export const PROJECTS_PAGE_MIGRATION_FEATURED_LACE_DISPLAY_TITLE = "Lace Models";
 
 export const PROJECTS_PAGE_BACKFILL_FEATURED_EVOIR_ALT =
   "תצוגת אתר ÉVOIR: מחשב נייד וטלפון על רקע בושם ופרחים";
@@ -24,7 +24,7 @@ export const PROJECTS_PAGE_BACKFILL_LACE_CANONICAL_SEED_KEYS = ["lacemodel.com"]
 
 export type ProjectsPageBackfillFeaturedTarget = {
   kind: "featured";
-  slot: ProjectsPageFeaturedSlot;
+  slot: ProjectsPageLegacyFeaturedSlot;
   label: string;
   canonicalSeedKeys: readonly string[];
   mongoId?: string;
@@ -57,12 +57,12 @@ const FEATURED_TARGETS: ProjectsPageBackfillFeaturedTarget[] = [
     slot: "evoir",
     label: "ÉVOIR",
     canonicalSeedKeys: PROJECTS_PAGE_BACKFILL_EVOIR_CANONICAL_SEED_KEYS,
-    showcaseUrl: PROJECTS_PAGE_FEATURED_EVOIR_IMAGE,
+    showcaseUrl: PROJECTS_PAGE_MIGRATION_FEATURED_EVOIR_IMAGE,
     showcaseAlt: PROJECTS_PAGE_BACKFILL_FEATURED_EVOIR_ALT,
     objectPosition: "28% 50%",
     featuredOnProjectsPage: true,
     projectsPageFeaturedOrder: 1,
-    projectsPageDisplayTitle: PROJECTS_PAGE_FEATURED_EVOIR_DISPLAY_TITLE,
+    projectsPageDisplayTitle: PROJECTS_PAGE_MIGRATION_FEATURED_EVOIR_DISPLAY_TITLE,
     projectsPageShowFeaturedBadge: true,
   },
   {
@@ -70,22 +70,37 @@ const FEATURED_TARGETS: ProjectsPageBackfillFeaturedTarget[] = [
     slot: "lace",
     label: "Lace Models",
     canonicalSeedKeys: PROJECTS_PAGE_BACKFILL_LACE_CANONICAL_SEED_KEYS,
-    showcaseUrl: PROJECTS_PAGE_FEATURED_LACE_IMAGE,
+    showcaseUrl: PROJECTS_PAGE_MIGRATION_FEATURED_LACE_IMAGE,
     showcaseAlt: PROJECTS_PAGE_BACKFILL_FEATURED_LACE_ALT,
     objectPosition: "38% 52%",
     featuredOnProjectsPage: true,
     projectsPageFeaturedOrder: 2,
-    projectsPageDisplayTitle: PROJECTS_PAGE_FEATURED_LACE_DISPLAY_TITLE,
+    projectsPageDisplayTitle: PROJECTS_PAGE_MIGRATION_FEATURED_LACE_DISPLAY_TITLE,
     projectsPageShowFeaturedBadge: false,
   },
 ];
 
+/** Public grid order for legacy migration targets (Tabi = 1 is Admin-managed, not in manifest). */
+export const PROJECTS_PAGE_BACKFILL_GRID_ORDER_BY_SLOT: Record<
+  ProjectsPageGridBatch1SlotId,
+  number
+> = {
+  "eden-shemesh": 2,
+  mavrik100: 3,
+  ashkenazi: 4,
+  noah: 5,
+  ganmetukim: 6,
+  ogen: 7,
+  shiputi: 8,
+  zouko: 9,
+};
+
 function gridTargetsFromBatch1(): ProjectsPageBackfillGridTarget[] {
-  return BATCH1_SLOTS.map((slot, index) => ({
+  return BATCH1_SLOTS.map((slot) => ({
     kind: "grid" as const,
     slotId: slot.id,
     label: slot.id,
-    projectsPageOrder: index + 1,
+    projectsPageOrder: PROJECTS_PAGE_BACKFILL_GRID_ORDER_BY_SLOT[slot.id],
     showcaseUrl: slot.showcaseImageSrc,
     objectPosition: slot.objectPosition,
   }));

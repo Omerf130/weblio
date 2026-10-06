@@ -6,7 +6,6 @@ import {
   sanitizeProjectsPageShowcaseObjectPosition,
 } from "../../src/lib/projects/projects-page-showcase-object-position";
 import { resolveProjectsPageGridCards } from "../../src/lib/projects/projects-page-grid";
-import { resolveProjectsPageFeaturedCards } from "../../src/lib/projects/projectsPageFeatured";
 import { resolveProjectsPageGridBatch1 } from "../../src/lib/projects/projectsPageGridBatch1";
 import {
   buildProjectShowcaseImagePathname,
@@ -175,25 +174,9 @@ describe("Project CMS checkpoint 1 — legacy batch helper still available", () 
   });
 });
 
-describe("Project CMS checkpoint 1 — mongo-first grid uses legacy fallback", () => {
-  it("resolves lace featured legacy and zouko grid via fallback", () => {
+describe("Project CMS checkpoint 1 — mongo grid requires showcase", () => {
+  it("renders grid only when projectsPageShowcase exists", () => {
     const projects = [
-      {
-        id: "lace",
-        title: "lace",
-        subtitle: "סוכנות דוגמנות",
-        projectUrl: "https://www.lacemodel.com/",
-        imageUrl: "/pics/lace.jpeg",
-        imageAlt: "lace",
-        ctaLabel: "Take me",
-        technologies: ["Next.js"],
-        isPublished: true,
-        showOnProjectsPage: true,
-        featuredOnProjectsPage: false,
-        projectsPageOrder: 0,
-        projectsPageShowFeaturedBadge: false,
-        updatedAt: "2024-01-01T00:00:00.000Z",
-      },
       {
         id: "z",
         title: "זוקו",
@@ -209,10 +192,13 @@ describe("Project CMS checkpoint 1 — mongo-first grid uses legacy fallback", (
         projectsPageOrder: 1,
         projectsPageShowFeaturedBadge: false,
         updatedAt: "2024-01-01T00:00:00.000Z",
+        projectsPageShowcase: {
+          url: "/pics/project-pics/zuoko.png",
+          alt: "z",
+        },
       },
     ];
 
-    assert.equal(resolveProjectsPageFeaturedCards(projects).length, 1);
     assert.equal(resolveProjectsPageGridCards(projects).length, 1);
   });
 });

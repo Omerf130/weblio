@@ -5,11 +5,8 @@ import {
   validateMainProjectImageRequirement,
 } from "../../src/lib/projects/project-main-image-policy";
 import { resolveProjectsPageGridCards } from "../../src/lib/projects/projects-page-grid";
-import {
-  PROJECTS_PAGE_FEATURED_EVOIR_DISPLAY_TITLE,
-  resolveProjectsPageFeaturedCards,
-} from "../../src/lib/projects/projectsPageFeatured";
-import { resolveProjectsPageShowcaseForGrid } from "../../src/lib/projects/projects-page-showcase-resolve";
+import { resolveProjectsPageFeaturedCards } from "../../src/lib/projects/projectsPageFeatured";
+import { resolvePublicProjectsPageShowcase } from "../../src/lib/projects/projects-page-public-showcase";
 import type { ProjectsPagePublicProjectDto } from "../../src/types/project";
 
 function pageProject(
@@ -77,7 +74,7 @@ describe("Checkpoint 3 — mongo-first grid", () => {
     assert.equal(cards[0]?.slotId, "tabi-id");
   });
 
-  it("prefers Mongo showcase over legacy batch mapping", () => {
+  it("uses Mongo showcase URL for grid rendering", () => {
     const zouko = pageProject({
       id: "z",
       title: "זוקו",
@@ -88,22 +85,23 @@ describe("Checkpoint 3 — mongo-first grid", () => {
       },
     });
 
-    const showcase = resolveProjectsPageShowcaseForGrid(zouko);
+    const showcase = resolvePublicProjectsPageShowcase(zouko);
     assert.equal(showcase?.showcaseImageSrc, "https://blob.example/zouko-admin.webp");
-    assert.equal(showcase?.source, "mongo");
+
+    const cards = resolveProjectsPageGridCards([zouko]);
+    assert.equal(cards.length, 1);
+    assert.equal(cards[0]?.showcaseImageSrc, "https://blob.example/zouko-admin.webp");
+    assert.equal(cards[0]?.slotId, "z");
   });
 
-  it("uses legacy grid fallback for approved batch projects without Mongo showcase", () => {
+  it("does not render grid project without Mongo showcase", () => {
     const zouko = pageProject({
       id: "z",
       title: "זוקו",
       projectUrl: "https://zoukoisrael.com/",
     });
 
-    const cards = resolveProjectsPageGridCards([zouko]);
-    assert.equal(cards.length, 1);
-    assert.equal(cards[0]?.showcaseImageSrc, "/pics/project-pics/zuoko.png");
-    assert.equal(cards[0]?.slotId, "zouko");
+    assert.equal(resolveProjectsPageGridCards([zouko]).length, 0);
   });
 
   it("keeps non-mapped projects without showcase hidden", () => {
@@ -151,25 +149,6 @@ describe("Checkpoint 3 — mongo-first grid", () => {
 });
 
 describe("Checkpoint 3 — mongo-first featured", () => {
-  it("keeps legacy ÉVOIR/Lace visible during migration", () => {
-    const projects = [
-      pageProject({
-        id: "lace",
-        title: "lace",
-        projectUrl: "https://www.lacemodel.com/",
-      }),
-      pageProject({
-        id: "evoir",
-        title: "jozef la perfume",
-        projectUrl: "https://www.jozeflaperfume.co.il/",
-      }),
-    ];
-
-    const cards = resolveProjectsPageFeaturedCards(projects);
-    assert.equal(cards.length, 2);
-    assert.equal(cards[0]?.displayTitle, PROJECTS_PAGE_FEATURED_EVOIR_DISPLAY_TITLE);
-  });
-
   it("limits Featured cards to two and respects Mongo featured order", () => {
     const projects = [
       pageProject({
