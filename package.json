@@ -18,6 +18,7 @@
     "discovery:poc:business-verification": "tsx --env-file=.env.local scripts/discovery-poc/run-business-verification-poc.ts",
     "reclassify:tavily-intents": "tsx --env-file=.env.local scripts/reclassify-tavily-intents.ts",
     "migrate:landing-copy": "tsx --env-file=.env.local scripts/migrate-landing-guide-copy.ts",
+    "backfill:projects-page": "tsx --env-file=.env.local scripts/backfill-projects-page-legacy.ts",
     "test:auth": "tsx --test tests/auth/**/*.test.ts",
     "test:projects": "tsx --test tests/projects/**/*.test.ts",
     "test:leads": "tsx --test tests/leads/**/*.test.ts",
