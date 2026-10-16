@@ -1,0 +1,153 @@
+@use "../../../assets/styles/variables" as *;
+@use "../_admin-light-theme" as admin;
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  max-width: 900px;
+  color: admin.$admin-text;
+
+  :where(
+    h1,
+    h2,
+    h3,
+    h4,
+    p,
+    span,
+    li,
+    label,
+    strong
+  ) {
+    color: inherit;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.backLink {
+  font-size: 0.88rem;
+  color: admin.$admin-link;
+  text-decoration: none;
+  font-weight: $weight-bold;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+}
+
+.url {
+  margin: 0;
+  direction: ltr;
+  text-align: left;
+  font-size: 0.92rem;
+  color: admin.$admin-text-secondary;
+  word-break: break-all;
+}
+
+.panel {
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  box-shadow: admin.$admin-shadow;
+}
+
+.panelTitle {
+  margin: 0 0 0.65rem;
+  font-size: 1rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem 1rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.metricLabel {
+  font-size: 0.78rem;
+  color: admin.$admin-text-muted;
+}
+
+.metricValue {
+  font-size: 1.05rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.listItem {
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  background: admin.$admin-surface-muted;
+}
+
+.listItemTitle {
+  margin: 0 0 0.25rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+}
+
+.listItemBody {
+  margin: 0;
+  font-size: 0.88rem;
+  color: admin.$admin-text-secondary;
+}
+
+.muted {
+  color: admin.$admin-text-muted;
+  font-size: 0.9rem;
+}
+
+.errorBox {
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  color: #991b1b;
+}
+
+.leadButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 0.9rem;
+  border-radius: 8px;
+  background: admin.$admin-link;
+  color: #fff;
+  font-weight: $weight-bold;
+  text-decoration: none;
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  font-size: 0.88rem;
+  color: admin.$admin-text-secondary;
+}

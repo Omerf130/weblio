@@ -1,4 +1,5 @@
 import mongoose, { Schema, type InferSchemaType, type Model } from "mongoose";
+import { WEBSITE_ANALYSIS_RUN_TTL_SECONDS } from "@/lib/website-check/retention";
 
 const categoryScoresSchema = new Schema(
   {
@@ -250,7 +251,7 @@ websiteAnalysisRunSchema.index({ status: 1, createdAt: -1 });
 websiteAnalysisRunSchema.index({ createdAt: -1 });
 websiteAnalysisRunSchema.index(
   { createdAt: 1 },
-  { expireAfterSeconds: 90 * 24 * 60 * 60 }
+  { expireAfterSeconds: WEBSITE_ANALYSIS_RUN_TTL_SECONDS }
 );
 
 export type WebsiteAnalysisRunDocument = InferSchemaType<typeof websiteAnalysisRunSchema> & {

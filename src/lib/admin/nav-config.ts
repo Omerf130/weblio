@@ -9,6 +9,7 @@ import {
   MdLightbulbOutline,
   MdTravelExplore,
   MdAutoAwesome,
+  MdManageSearch,
 } from "react-icons/md";
 
 export type AdminNavItemConfig = {
@@ -42,6 +43,12 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
         label: "לידים",
         href: "/admin/leads",
         icon: MdInbox,
+      },
+      {
+        id: "website-check-runs",
+        label: "בדיקות אתר",
+        href: "/admin/website-check",
+        icon: MdManageSearch,
       },
       {
         id: "projects",

@@ -1,0 +1,309 @@
+@use "../../../assets/styles/variables" as *;
+@use "../_admin-light-theme" as admin;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 1100px;
+  color: admin.$admin-text;
+
+  :where(
+    h1,
+    h2,
+    h3,
+    h4,
+    p,
+    span,
+    li,
+    td,
+    th,
+    label,
+    strong,
+    article
+  ) {
+    color: inherit;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.heading {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.92rem;
+  color: admin.$admin-text-muted;
+  max-width: 42rem;
+}
+
+.summaryNote {
+  margin: 0;
+  font-size: 0.82rem;
+  color: admin.$admin-text-muted;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summaryCard {
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+  box-shadow: admin.$admin-shadow;
+}
+
+.summaryValue {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text;
+}
+
+.summaryLabel {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  color: admin.$admin-text-muted;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface-muted;
+}
+
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 140px;
+  flex: 1;
+}
+
+.fieldLabel {
+  font-size: 0.78rem;
+  font-weight: $weight-bold;
+  color: admin.$admin-text-muted;
+}
+
+.input,
+.select {
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid admin.$admin-border;
+  background: #fff;
+  font-family: $font-family-base;
+  font-size: 0.88rem;
+  color: admin.$admin-text;
+}
+
+.searchRow {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.searchButton {
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  border: none;
+  background: admin.$admin-link;
+  color: #fff;
+  font-weight: $weight-bold;
+  cursor: pointer;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid admin.$admin-border;
+  background: admin.$admin-surface;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+
+  th,
+  td {
+    padding: 0.65rem 0.75rem;
+    text-align: right;
+    border-bottom: 1px solid admin.$admin-border;
+    vertical-align: middle;
+    color: admin.$admin-text;
+  }
+
+  th {
+    font-size: 0.78rem;
+    color: admin.$admin-text-muted;
+    background: admin.$admin-surface-muted;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.urlCell {
+  direction: ltr;
+  text-align: left;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.84rem;
+}
+
+.scoreCell {
+  font-weight: $weight-bold;
+}
+
+.scoreGood {
+  color: #15803d;
+}
+
+.scoreMid {
+  color: #a16207;
+}
+
+.scoreLow {
+  color: #b91c1c;
+}
+
+.scoreMuted {
+  color: admin.$admin-text-muted;
+  font-weight: $weight-normal;
+}
+
+.leadYes {
+  color: #15803d;
+  font-weight: $weight-bold;
+}
+
+.leadNo {
+  color: admin.$admin-text-muted;
+}
+
+.linkButton {
+  color: admin.$admin-link;
+  font-weight: $weight-bold;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.empty,
+.alert {
+  padding: 1.25rem;
+  border-radius: 10px;
+  background: admin.$admin-surface-muted;
+  color: admin.$admin-text-muted;
+  text-align: center;
+}
+
+.alert {
+  background: rgba(239, 68, 68, 0.08);
+  color: #b91c1c;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.88rem;
+  color: admin.$admin-text-secondary;
+}
+
+.pageLink {
+  color: admin.$admin-link;
+  text-decoration: none;
+  font-weight: $weight-bold;
+}
+
+.badge {
+  display: inline-flex;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: $weight-bold;
+}
+
+.badgeCompleted {
+  background: rgba(34, 197, 94, 0.14);
+  color: #15803d;
+}
+
+.badgePartial {
+  background: rgba(234, 179, 8, 0.16);
+  color: #a16207;
+}
+
+.badgeFailed {
+  background: rgba(239, 68, 68, 0.12);
+  color: #b91c1c;
+}
+
+.badgeRunning {
+  background: rgba(59, 130, 246, 0.14);
+  color: #1d4ed8;
+}
+
+.mobileCards {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+}
+
+.mobileCard {
+  border: 1px solid admin.$admin-border;
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: admin.$admin-surface;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: admin.$admin-text;
+}
+
+.desktopTable {
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
