@@ -26,37 +26,42 @@ export default function DashboardRecentProjects({
         <p className={styles.emptyState}>עדיין לא נוספו פרויקטים.</p>
       ) : (
         <ul className={styles.projectsGrid}>
-          {projects.map((project) => (
-            <li key={project.id}>
-              <Link
-                href={`/admin/projects/${project.id}`}
-                className={styles.projectCard}
-              >
-                <span className={styles.projectCardMedia}>
-                  <img
-                    src={project.imageUrl}
-                    alt={project.imageAlt}
-                    className={styles.projectCardImage}
-                    loading="lazy"
-                  />
-                </span>
-                <span className={styles.projectCardBody}>
-                  <span className={styles.projectCardTitleRow}>
-                    <strong className={styles.projectCardTitle}>
-                      {project.title}
-                    </strong>
-                    <MdChevronLeft
-                      className={styles.projectCardArrow}
-                      aria-hidden
-                    />
+          {projects.map((project) => {
+            const imageUrl = project.imageUrl.trim();
+            return (
+              <li key={project.id}>
+                <Link
+                  href={`/admin/projects/${project.id}`}
+                  className={styles.projectCard}
+                >
+                  <span className={styles.projectCardMedia}>
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={project.imageAlt}
+                        className={styles.projectCardImage}
+                        loading="lazy"
+                      />
+                    ) : null}
                   </span>
-                  <span className={styles.projectCardDate}>
-                    {formatIsraelDateTime(project.updatedAt)}
+                  <span className={styles.projectCardBody}>
+                    <span className={styles.projectCardTitleRow}>
+                      <strong className={styles.projectCardTitle}>
+                        {project.title}
+                      </strong>
+                      <MdChevronLeft
+                        className={styles.projectCardArrow}
+                        aria-hidden
+                      />
+                    </span>
+                    <span className={styles.projectCardDate}>
+                      {formatIsraelDateTime(project.updatedAt)}
+                    </span>
                   </span>
-                </span>
-              </Link>
-            </li>
-          ))}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>

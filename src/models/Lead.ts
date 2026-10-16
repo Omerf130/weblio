@@ -65,7 +65,7 @@ const leadSchema = new Schema(
     },
     source: {
       type: String,
-      enum: ["website", "landingPage", "opportunity"],
+      enum: ["website", "landingPage", "opportunity", "websiteCheck"],
       required: true,
     },
     sourcePage: {

@@ -19,6 +19,7 @@ export const LEAD_SOURCE_LABELS: Record<LeadSource, string> = {
   website: "אתר",
   landingPage: "דף נחיתה",
   opportunity: "הזדמנות",
+  websiteCheck: "בדיקת אתר",
 };
 
 export function parseLeadSourceFilter(
@@ -27,7 +28,8 @@ export function parseLeadSourceFilter(
   if (
     searchParam === "website" ||
     searchParam === "landingPage" ||
-    searchParam === "opportunity"
+    searchParam === "opportunity" ||
+    searchParam === "websiteCheck"
   ) {
     return searchParam;
   }
@@ -80,6 +82,8 @@ export function getLeadEmptyStateMessage(sourceFilter: LeadSourceFilter): string
       return "עדיין לא התקבלו פניות מדפי נחיתה.";
     case "opportunity":
       return "עדיין לא התקבלו לידים מהמרת הזדמנויות.";
+    case "websiteCheck":
+      return "עדיין לא התקבלו פניות מבדיקת האתר.";
     default:
       return "עדיין לא התקבלו פניות.";
   }

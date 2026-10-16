@@ -1,0 +1,1129 @@
+@use "../../assets/styles/variables" as *;
+
+// ─── Design tokens (local to analyzer) ──────────────────────
+$analyzer-navy: rgba(15, 23, 42, 1);
+$analyzer-blue: $third-color; // #608bc1
+$analyzer-cream: $primary-color; // #f3f3e0
+$analyzer-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+// ─── Screen-overlay geometry ────────────────────────────────
+// Pixel-measured from public/pics/analyzer.png (1660×948).
+// Inner glass only — the blue bezel highlight and black chin
+// are excluded.
+//
+// Inner corners (px):
+//   Top-left:     358, 63
+//   Top-right:    1307, 63
+//   Bottom-right: 1335, 579
+//   Bottom-left:  329, 579
+//
+// The glass is slightly wider at the bottom (1006px vs 949px).
+// The mount is that bounding box. A clip-path trims the top
+// corners so content follows the bezel instead of a rectangle
+// that spills over the top edge.
+
+$screen-top: 6.646%;
+$screen-left: 19.819%;
+$screen-width: 60.602%;
+$screen-height: 54.43%;
+$screen-radius: 3px;
+
+// ─── Section ────────────────────────────────────────────────
+
+.analyzer {
+  position: relative;
+  padding: 100px 40px 120px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+// ─── Atmosphere ─────────────────────────────────────────────
+
+.analyzer__atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.analyzer__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(243, 243, 224, 0.03) 0 1px,
+      transparent 1px 64px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(243, 243, 224, 0.03) 0 1px,
+      transparent 1px 64px
+    );
+  mask-image: radial-gradient(
+    ellipse 80% 70% at 50% 50%,
+    black 0%,
+    transparent 75%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 70% at 50% 50%,
+    black 0%,
+    transparent 75%
+  );
+}
+
+.analyzer__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+
+  &--top {
+    width: 520px;
+    height: 320px;
+    top: -80px;
+    left: 10%;
+    background: radial-gradient(
+      circle,
+      rgba(96, 139, 193, 0.18) 0%,
+      transparent 70%
+    );
+  }
+
+  &--bottom {
+    width: 400px;
+    height: 280px;
+    bottom: -60px;
+    right: 15%;
+    background: radial-gradient(
+      circle,
+      rgba(96, 139, 193, 0.12) 0%,
+      transparent 70%
+    );
+  }
+}
+
+// ─── Inner layout ───────────────────────────────────────────
+
+.analyzer__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4.5rem);
+}
+
+// ─── Content (right side in RTL) ────────────────────────────
+
+.analyzer__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  text-align: right;
+}
+
+.analyzer__eyebrow {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(243, 243, 224, 0.72);
+  background: rgba(96, 139, 193, 0.12);
+  border: 1px solid rgba(96, 139, 193, 0.28);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.analyzer__headline {
+  margin: 0.15rem 0 0;
+  font-size: clamp(2.45rem, 4.6vw, 3.75rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  background: linear-gradient(118deg, #ffffff 8%, #e7f0fb 46%, #7aa6d6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.analyzer__subheadline {
+  margin: 0.35rem 0 0;
+  font-size: clamp(1.12rem, 2vw, 1.42rem);
+  font-weight: 600;
+  line-height: 1.45;
+  color: rgba(248, 250, 252, 0.94);
+}
+
+.analyzer__description {
+  margin: 0.45rem 0 0;
+  font-size: clamp(0.95rem, 1.35vw, 1.05rem);
+  line-height: 1.75;
+  color: rgba(226, 232, 240, 0.78);
+  max-width: 34rem;
+}
+
+// ─── Marketing CTA ──────────────────────────────────────────
+
+.analyzer__cta-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  align-self: flex-start;
+  margin-top: 1.15rem;
+  padding: 0.95rem 1.55rem;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #6d9ed4 0%, #6a78c8 55%, #7a64b8 100%);
+  color: #ffffff;
+  font-family: $font-family-base;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.3;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow:
+    0 0 22px rgba(122, 140, 210, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition:
+    transform 0.22s $analyzer-ease,
+    box-shadow 0.22s $analyzer-ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 0 28px rgba(122, 140, 210, 0.48),
+      inset 0 1px 0 rgba(255, 255, 255, 0.24);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(186, 210, 245, 0.95);
+    outline-offset: 3px;
+  }
+}
+
+.analyzer__cta-link-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  flex-shrink: 0;
+}
+
+.analyzer__highlights {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem 0.75rem;
+  width: 100%;
+  max-width: 34rem;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.analyzer__highlight {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: rgba(226, 232, 240, 0.82);
+}
+
+.analyzer__highlight-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+  color: rgba(147, 180, 214, 0.95);
+}
+
+// ─── Visual (left side in RTL) ──────────────────────────────
+
+.analyzer__visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ─── Device composition ─────────────────────────────────────
+// The stage is the positioning context for the floating cards.
+// It matches the laptop box so card percentages stay on the device.
+
+.analyzer-stage {
+  position: relative;
+  width: min(100%, 700px);
+  z-index: 0;
+
+  &--live::before {
+    content: "";
+    position: absolute;
+    inset: 18% 8% 22%;
+    z-index: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0.35;
+    background: radial-gradient(
+      ellipse at 50% 62%,
+      rgba(96, 139, 193, 0.22) 0%,
+      rgba(96, 139, 193, 0.08) 42%,
+      transparent 72%
+    );
+    animation: analyzer-stage-glow 7s ease-in-out infinite;
+  }
+}
+
+.analyzer-device {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+// ─── Screen scan (clipped to inner glass) ───────────────────
+
+.analyzer-screen-scan {
+  position: absolute;
+  top: $screen-top;
+  left: $screen-left;
+  width: $screen-width;
+  height: $screen-height;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: $screen-radius;
+  clip-path: polygon(2.833% 0%, 97.167% 0%, 100% 100%, 0% 100%);
+}
+
+.analyzer-screen-scan__beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.2) 18%,
+    rgba(186, 230, 253, 0.98) 50%,
+    rgba(56, 189, 248, 0.2) 82%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 16px rgba(56, 189, 248, 0.5),
+    0 0 36px rgba(56, 189, 248, 0.28),
+    0 -8px 24px rgba(56, 189, 248, 0.12),
+    0 8px 24px rgba(56, 189, 248, 0.12);
+}
+
+.analyzer-screen-scan__wash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(56, 189, 248, 0.07) 0%,
+    rgba(56, 189, 248, 0.04) 40%,
+    transparent 68%
+  );
+}
+
+// ─── Score card motion wrappers ─────────────────────────────
+
+.analyzer-score__reveal {
+  width: 100%;
+  height: 100%;
+}
+
+.analyzer-score__float {
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 1025px) {
+  .analyzer-score__float--performance {
+    animation: analyzer-score-float 3.4s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .analyzer-score__float--seo {
+    animation: analyzer-score-float 3.2s ease-in-out infinite;
+    animation-delay: 0.2s;
+  }
+
+  .analyzer-score__float--accessibility {
+    animation: analyzer-score-float 3.6s ease-in-out infinite;
+    animation-delay: 0.4s;
+  }
+
+  .analyzer-score__float--ux {
+    animation: analyzer-score-float 3.3s ease-in-out infinite;
+    animation-delay: 0.55s;
+  }
+
+  .analyzer-score__float--paused {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes analyzer-score-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes analyzer-stage-glow {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.42;
+    transform: scale(1.03);
+  }
+}
+
+// ─── Floating HUD score cards ───────────────────────────────
+// Horizontal panels anchored just outside the screen glass
+// (x 19.8%–80.4%). Lower cards sit further out and lower,
+// on the outer ring rather than its bright center.
+
+.analyzer-scores {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.analyzer-score {
+  position: absolute;
+  width: 156px;
+  pointer-events: none;
+}
+
+.analyzer-score--performance {
+  top: 5%;
+  left: 18.2%;
+  z-index: 6;
+  width: 164px;
+  transform: translateX(-100%) rotate(-2.8deg);
+}
+
+.analyzer-score--seo {
+  bottom: -6%;
+  left: 14.5%;
+  z-index: 4;
+  width: 146px;
+  transform: translateX(-100%) translateY(10%) rotate(1.8deg) scale(0.96);
+}
+
+.analyzer-score--accessibility {
+  top: 8%;
+  left: 81.6%;
+  z-index: 6;
+  width: 148px;
+  transform: rotate(2.4deg);
+}
+
+.analyzer-score--ux {
+  bottom: -4%;
+  left: 81.2%;
+  z-index: 4;
+  width: 152px;
+  transform: translateY(8%) rotate(-1.6deg) scale(0.95);
+}
+
+.analyzer-score__panel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 96px;
+  padding: 0.65rem 0.6rem;
+  border-radius: 14px;
+  background:
+    linear-gradient(155deg, rgba(22, 40, 68, 0.78), rgba(8, 14, 28, 0.66));
+  border: 1px solid rgba(147, 180, 214, 0.28);
+  box-shadow:
+    0 0 20px rgba(96, 139, 193, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.analyzer-score--performance .analyzer-score__panel {
+  min-height: 104px;
+}
+
+.analyzer-score--green .analyzer-score__panel {
+  background:
+    linear-gradient(155deg, rgba(16, 48, 40, 0.84), rgba(8, 16, 28, 0.72));
+  border-color: rgba(52, 211, 153, 0.5);
+  box-shadow:
+    0 0 22px rgba(52, 211, 153, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.analyzer-score--green .analyzer-score__ring-value,
+.analyzer-score--green .analyzer-score__icon {
+  color: #6ee7b7;
+}
+
+.analyzer-score--amber .analyzer-score__panel {
+  background:
+    linear-gradient(155deg, rgba(48, 36, 14, 0.58), rgba(10, 14, 24, 0.48));
+  border-color: rgba(245, 185, 66, 0.42);
+  box-shadow:
+    0 0 16px rgba(245, 185, 66, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.analyzer-score--amber .analyzer-score__icon {
+  color: #f5c56b;
+}
+
+.analyzer-score--blue .analyzer-score__panel {
+  background:
+    linear-gradient(155deg, rgba(16, 36, 64, 0.8), rgba(8, 14, 28, 0.68));
+  border-color: rgba(96, 165, 250, 0.48);
+  box-shadow:
+    0 0 20px rgba(96, 165, 250, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.analyzer-score--blue .analyzer-score__icon {
+  color: #93c5fd;
+}
+
+.analyzer-score--purple .analyzer-score__panel {
+  background:
+    linear-gradient(155deg, rgba(36, 24, 64, 0.56), rgba(10, 12, 24, 0.46));
+  border-color: rgba(167, 139, 250, 0.4);
+  box-shadow:
+    0 0 14px rgba(167, 139, 250, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.analyzer-score--purple .analyzer-score__icon {
+  color: #c4b5fd;
+}
+
+.analyzer-score__ring-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
+}
+
+.analyzer-score__ring {
+  width: 100%;
+  height: 100%;
+}
+
+.analyzer-score__ring-track,
+.analyzer-score__ring-value {
+  fill: none;
+  stroke-width: 2.6;
+}
+
+.analyzer-score__ring-track {
+  stroke: rgba(255, 255, 255, 0.12);
+}
+
+.analyzer-score__ring-value {
+  stroke: currentColor;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.analyzer-score__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.analyzer-score__icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex-shrink: 0;
+}
+
+.analyzer-score__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.28rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.analyzer-score__value {
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #f8fafc;
+  font-variant-numeric: tabular-nums;
+}
+
+.analyzer-score__ring-wrap .analyzer-score__value {
+  position: absolute;
+  font-size: 1.15rem;
+}
+
+.analyzer-score__label {
+  margin: 0;
+  max-width: 100%;
+  font-size: 0.84rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0;
+  text-align: right;
+  color: rgba(243, 243, 224, 0.9);
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+.analyzer-score--ux .analyzer-score__label {
+  white-space: normal;
+}
+
+.analyzer-device__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1660 / 948;
+}
+
+.analyzer-device__asset {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+  user-select: none;
+}
+
+// ─── Screen overlay ─────────────────────────────────────────
+// Percentages are of the 1660×948 image box. The mount is the
+// bounding box of the inner glass. clip-path trims the narrower
+// top edge so the preview follows the bezel.
+
+.analyzer-device__screen-mount {
+  position: absolute;
+  top: $screen-top;
+  left: $screen-left;
+  width: $screen-width;
+  height: $screen-height;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: $screen-radius;
+  clip-path: polygon(2.833% 0%, 97.167% 0%, 100% 100%, 0% 100%);
+}
+
+.analyzer-device__screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: $screen-radius;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Mock website preview (polished, resembles a real site)
+// ═══════════════════════════════════════════════════════════════
+
+.analyzer-screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(ellipse 60% 40% at 70% 0%, rgba(96, 139, 193, 0.18), transparent 60%),
+    linear-gradient(180deg, #0e1525 0%, #0a101c 100%);
+  font-family: $font-family-base;
+  color: #fff;
+  font-size: clamp(3px, 0.7vw, 7px);
+}
+
+// ── Mock nav ──
+
+.analyzer-screen__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1em 2em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.analyzer-screen__nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.analyzer-screen__logo-mark {
+  width: 1.8em;
+  height: 1.8em;
+  border-radius: 4px;
+  background: linear-gradient(135deg, $analyzer-blue, lighten($analyzer-blue, 14%));
+  flex-shrink: 0;
+}
+
+.analyzer-screen__logo-text {
+  font-weight: 700;
+  font-size: 1.4em;
+  letter-spacing: 0.04em;
+  color: rgba(243, 243, 224, 0.9);
+}
+
+.analyzer-screen__nav-links {
+  display: flex;
+  gap: 2em;
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.5);
+
+  span {
+    color: inherit;
+  }
+}
+
+.analyzer-screen__nav-cta {
+  padding: 0.5em 1.2em;
+  border-radius: 4px;
+  font-size: 0.95em;
+  font-weight: 600;
+  color: #fff;
+  background: $analyzer-blue;
+}
+
+// ── Mock hero ──
+
+.analyzer-screen__hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  padding: 3em 3em 2em;
+  text-align: center;
+  background:
+    radial-gradient(ellipse 50% 55% at 50% 40%, rgba(96, 139, 193, 0.08), transparent),
+    radial-gradient(circle at 30% 80%, rgba(96, 139, 193, 0.05), transparent 50%);
+}
+
+.analyzer-screen__hero-badge {
+  padding: 0.4em 1em;
+  border-radius: 999px;
+  font-size: 0.85em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(96, 139, 193, 0.85);
+  border: 1px solid rgba(96, 139, 193, 0.25);
+  background: rgba(96, 139, 193, 0.08);
+}
+
+.analyzer-screen__hero-h {
+  margin: 0;
+  font-size: 3.2em;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 30%, rgba(96, 139, 193, 0.85) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.analyzer-screen__hero-p {
+  margin: 0;
+  font-size: 1.3em;
+  color: rgba(255, 255, 255, 0.45);
+  max-width: 32em;
+}
+
+.analyzer-screen__hero-actions {
+  display: flex;
+  gap: 1em;
+  margin-top: 0.5em;
+}
+
+.analyzer-screen__hero-btn {
+  padding: 0.65em 1.6em;
+  border-radius: 5px;
+  font-size: 1em;
+  font-weight: 600;
+  background: linear-gradient(135deg, $analyzer-blue, darken($analyzer-blue, 8%));
+  color: #fff;
+
+  &--ghost {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+// ── Mock features ──
+
+.analyzer-screen__features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2em;
+  padding: 2em 3em 2.5em;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.analyzer-screen__feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+  padding: 1.2em;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.analyzer-screen__feature-icon {
+  width: 2.4em;
+  height: 2.4em;
+  border-radius: 6px;
+  background: rgba(96, 139, 193, 0.15);
+  border: 1px solid rgba(96, 139, 193, 0.2);
+}
+
+.analyzer-screen__feature-title {
+  width: 60%;
+  height: 0.9em;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.analyzer-screen__feature-desc {
+  width: 80%;
+  height: 0.6em;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Responsive
+// ═══════════════════════════════════════════════════════════════
+
+@media (max-width: 1200px) {
+  .analyzer__inner {
+    grid-template-columns: 1.1fr 1fr;
+  }
+
+  .analyzer-score--performance {
+    left: 18.4%;
+    width: 112px;
+  }
+
+  .analyzer-score--accessibility {
+    left: 83.2%;
+    width: 112px;
+  }
+
+  .analyzer-score--seo {
+    left: 16.5%;
+    bottom: -8%;
+    width: 104px;
+  }
+
+  .analyzer-score--ux {
+    left: 83.6%;
+    bottom: -6%;
+    width: 108px;
+  }
+
+  .analyzer-score__panel,
+  .analyzer-score--performance .analyzer-score__panel {
+    gap: 0.45rem;
+    min-height: 74px;
+    padding: 0.45rem 0.5rem;
+  }
+
+  .analyzer-score__ring-wrap {
+    width: 36px;
+    height: 36px;
+  }
+
+  .analyzer-score__mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+  }
+
+  .analyzer-score__icon {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .analyzer-score__value {
+    font-size: 1.2rem;
+  }
+
+  .analyzer-score__ring-wrap .analyzer-score__value {
+    font-size: 0.72rem;
+  }
+
+  .analyzer-score__label {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .analyzer {
+    padding: 80px 28px 100px;
+  }
+
+  .analyzer__inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .analyzer__content {
+    text-align: center;
+    align-items: center;
+    justify-self: center;
+    max-width: 36rem;
+  }
+
+  .analyzer__eyebrow {
+    align-self: center;
+  }
+
+  .analyzer__description {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .analyzer__cta-link {
+    align-self: center;
+  }
+
+  .analyzer__highlights {
+    max-width: 28rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .analyzer-score--performance {
+    left: 18.2%;
+    width: 164px;
+    transform: translateX(-100%) rotate(-2.8deg);
+  }
+
+  .analyzer-score--accessibility {
+    left: 81.6%;
+    width: 148px;
+    transform: rotate(2.4deg);
+  }
+
+  .analyzer-score--seo {
+    left: 14.5%;
+    bottom: -6%;
+    width: 146px;
+    transform: translateX(-100%) translateY(10%) rotate(1.8deg) scale(0.96);
+  }
+
+  .analyzer-score--ux {
+    left: 81.2%;
+    bottom: -4%;
+    width: 152px;
+    transform: translateY(8%) rotate(-1.6deg) scale(0.95);
+  }
+
+  .analyzer-score__panel,
+  .analyzer-score--performance .analyzer-score__panel {
+    gap: 0.65rem;
+    min-height: 96px;
+    padding: 0.65rem 0.6rem;
+  }
+
+  .analyzer-score__ring-wrap {
+    width: 58px;
+    height: 58px;
+  }
+
+  .analyzer-score__mark {
+    width: 42px;
+    height: 42px;
+  }
+
+  .analyzer-score__value {
+    font-size: 1.65rem;
+  }
+
+  .analyzer-score__ring-wrap .analyzer-score__value {
+    font-size: 1.15rem;
+  }
+
+  .analyzer-score__label {
+    font-size: 0.84rem;
+  }
+
+  .analyzer__visual {
+    order: 1;
+  }
+
+  .analyzer-stage {
+    width: min(100%, 560px);
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .analyzer-scores {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+    width: 100%;
+    margin-top: 0.9rem;
+    pointer-events: auto;
+  }
+
+  .analyzer-score,
+  .analyzer-score--performance,
+  .analyzer-score--seo,
+  .analyzer-score--accessibility,
+  .analyzer-score--ux {
+    position: static;
+    width: auto;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    transform: none;
+  }
+
+  .analyzer-score__panel,
+  .analyzer-score--performance .analyzer-score__panel {
+    min-height: 0;
+    gap: 0.65rem;
+    padding: 0.75rem 0.7rem;
+  }
+
+  .analyzer-score__ring-wrap {
+    width: 46px;
+    height: 46px;
+  }
+
+  .analyzer-score__mark {
+    width: 34px;
+    height: 34px;
+  }
+
+  .analyzer-score__value {
+    font-size: 1.35rem;
+  }
+
+  .analyzer-score__label {
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+}
+
+@media (max-width: 640px) {
+  .analyzer {
+    padding: 60px 16px 80px;
+  }
+
+  .analyzer__cta-link {
+    width: 100%;
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .analyzer__highlights {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 100%;
+  }
+
+  .analyzer-stage {
+    width: 100%;
+  }
+
+  .analyzer-screen__features {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .analyzer-screen__nav-links {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .analyzer__headline {
+    font-size: 2rem;
+    line-height: 1.12;
+  }
+
+  .analyzer__subheadline {
+    font-size: 1.05rem;
+  }
+
+  .analyzer-screen__features {
+    display: none;
+  }
+
+  .analyzer-screen__hero-actions {
+    flex-direction: column;
+    gap: 0.5em;
+  }
+}
+
+// ─── Reduced motion ─────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  .analyzer__cta-link {
+    transition: none;
+  }
+
+  .analyzer-score__float,
+  .analyzer-score__float--performance,
+  .analyzer-score__float--seo,
+  .analyzer-score__float--accessibility,
+  .analyzer-score__float--ux {
+    animation: none !important;
+  }
+
+  .analyzer-stage--live::before {
+    animation: none;
+    opacity: 0.32;
+    transform: none;
+  }
+}

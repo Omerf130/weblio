@@ -14,6 +14,7 @@ const TABS: { id: LeadSourceFilter; label: string }[] = [
   { id: "website", label: "אתר" },
   { id: "landingPage", label: "דף נחיתה" },
   { id: "opportunity", label: "הזדמנות" },
+  { id: "websiteCheck", label: "בדיקת אתר" },
 ];
 
 function buildHref(source: LeadSourceFilter, query?: string): string {

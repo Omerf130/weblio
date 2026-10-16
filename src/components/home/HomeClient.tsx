@@ -11,6 +11,7 @@ import Nav from "../nav/Nav";
 import Projects from "../projects/Projects";
 import Services from "../services/Services";
 import Testimonials from "../testimonials/Testimonials";
+import WebsiteAnalyzer from "../analyzer/WebsiteAnalyzer";
 import WhyWeblioSection from "../whyWeblio/WhyWeblioSection";
 import type { WebsiteLeadFormAction } from "../contact/contact-form-types";
 import type { PublicProjectDto } from "../../types/project";
@@ -46,6 +47,7 @@ export default function HomeClient({
       ) : (
         <>
           <Hero />
+          <WebsiteAnalyzer />
           <About />
           <Services />
           <WhyWeblioSection />
